@@ -1,0 +1,87 @@
+<%-include('../includes/admin/adminHead')%>
+
+<div id="main-wrapper">
+
+    <%-include('../includes/admin/adminNav')%>
+    
+    <%- include('../includes/admin/adminSidebar')%>
+    
+    <div class="content-body">
+        <div class="container-fluid">
+            <h3 id="pgHead">PRODUCTS</h3>
+            <div class="addCategory" style="text-align: end;">
+                <a href="/addProducts" class="addProducts-link" style="text-decoration: none;color:#fff;">
+                <button class="btn btn-dark" type="submit"   style="width: 30%; height: 50px;margin: 20px;">
+                    
+                        <h4>Add Products</h4>
+                    
+                </button>
+            </a>
+            </div>
+            <% if(products.length) { %>
+
+
+            <table class="table">
+                <thead class="thead-dark">
+                  <tr>
+                    
+                    <th scope="col">Product</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Size</th>
+                    <th scope="col">Colour</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Stock</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Images</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <% for( let product of products) { %>
+                  <% if(product.isDeleted !== true) { %>
+                <tbody>
+                  <tr>
+                    
+                    <td><%= product.product %></td>
+                    
+                 
+                    <td><%= product.category %></td>
+                 
+                    <td><%= product.size %></td>
+                 
+                    <td><%= product.color %></td>
+
+                    <td><%= product.price %></td>
+                 
+                    <td><%= product.stock %></td>
+                  
+                    <td><%= product.description %></td>
+                  
+                    <td><%= product.image %></td>
+                    
+                      <td class="d-flex">
+                        <a href="/editProduct/<%= product._id %>">
+                        <i class='bx bxs-edit-alt'></i> 
+                        </a>
+
+                        <form action="/deleteProduct/<%= product._id %>?_method=DELETE" method="post">
+                          <button type="submit" style="background: none;border: transparent;">
+                      <i class='bx bxs-trash'></i>
+                  </button>
+                      </form>
+
+                      
+                        <!-- <i class='bx bxs-trash'></i> -->                
+                       
+                    
+                
+                    </td>
+                  </tr>
+                </tbody>
+                <% }} %>
+              </table>
+            <% } %>
+
+        </div>
+    </div>
+</div>
+<%-include('../includes/admin/adminEnd')%>

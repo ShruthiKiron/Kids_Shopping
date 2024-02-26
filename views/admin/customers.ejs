@@ -1,0 +1,66 @@
+<%-include('../includes/admin/adminHead')%>
+<style>
+    
+</style>
+
+<div id="main-wrapper">
+
+<%-include('../includes/admin/adminNav')%>
+
+<%- include('../includes/admin/adminSidebar')%>
+
+<div class="content-body">
+    <div class="container-fluid">
+
+<h3 id="pgHead">CUSTOMERS</h3>
+        <% if(customers.length) { %>
+            <table class="table">
+                <thead class="thead-dark">
+                  <tr>
+                    
+                    <th scope="col">FIRST NAME</th>
+                    <th scope="col">LAST NAME</th>
+                    <th scope="col">E-MAIL</th>
+                    <th scope="col">ORDERS</th>
+                    <th scope="col">ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <% for(let i=0; i < customers.length ; i++){ %>
+                  <tr>
+                    
+                    <td><%= customers[i].firstName %></td>
+                    <td><%= customers[i].lastName %></td>
+                    <td><%= customers[i].email %></td>
+                    <td><a href="/orders/<%= customers[i]._id %> ">Order</a> </td>
+                    <td>
+                        <div class="d-flex" style="align-items: center;">
+                            <div class="icon-container">
+                             
+                             <% if (customers[i].isBlocked) { %>
+                              <a href="/userBlock/<%= customers[i]._id %>"> <i class='bx bx-block block text-danger'></i></a>
+                              <div class="message">Unblock</div>
+                          <% } else { %>
+                            <a href="/userBlock/<%= customers[i]._id %>"> <i class='bx bx-block block text-success'></i></a>
+                             <div class="message">Block</div>
+                          <% } %>
+                            
+                                
+                            </div>
+                        
+                            <div class="icon-container">
+                                <i class='bx bxs-user-detail'></i>
+                                <div class="message">Details</div>
+                            </div>
+                        </div> 
+                    </td>
+                  </tr>
+                  <% } %>
+                  
+                </tbody>
+              </table>
+        <% } %>
+    </div>
+    </div>
+</div>
+<%-include('../includes/admin/adminEnd')%>

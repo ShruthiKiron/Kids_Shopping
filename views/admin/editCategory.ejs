@@ -1,0 +1,28 @@
+<%-include('../includes/admin/adminHead')%>
+
+<div id="main-wrapper">
+
+    <%-include('../includes/admin/adminNav')%>
+    
+    <%- include('../includes/admin/adminSidebar')%>
+
+    <div class="content-body">
+        <div class="container-fluid">
+            <h3 id="pgHead">EDIT CATEGORY</h3>
+           
+
+            <div class="viewForm" style="display: block;"><h4 id="subHead">Edit Category</h4>
+                <form action="/editCategory/<%= catData._id %>?_method=PATCH" method="post">
+
+                    <input class="form-control form-control-lg category" name="categoryName" type="text" placeholder="Category" value="<%= catData.categoryName %>">
+                    <button type="submit" class="btn btn-primary btn-lg" style="margin-top: 20px;">Edit</button>
+
+                 </form>
+               
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<%-include('../includes/admin/adminEnd')%>

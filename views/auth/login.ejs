@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!--css-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> 
+
+  <link rel="stylesheet" href="/styles/style.css" >
+
+  <!-- Boxicons CSS -->
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+  <section class="container forms">
+    <div class="form login">
+    <header>Login</header>
+    <form action="/login" method="post" id="form">
+      <% if(error){ %>
+        <div class="text-danger"><%= error %></div>
+        <% } %>
+      <div class="field input-field">
+        <input type="email" name="email" id="email" placeholder="Email" class="input">
+        <p class="forValidation" style="font-size:xx-small;color: red;"></p>
+      </div>
+      <div class="field input-field">
+        <input type="password" name="password" id="password" placeholder="Password" class="password">
+        <i class='bx bx-hide eye-icon'></i>
+        <p class="forValidation" style="font-size:xx-small;color: red;"></p>
+      </div>
+      <div class="form-link">
+        <a href="#" class="forgot-pass">Forgot password?</a>
+      </div>
+      <div class="field button-field">
+        <button type="submit">Login</button>
+      </div>
+      <div class="form-link">
+        <span>Don't have an account? <a href="/signup" class="signup-link">Signup</a></span>
+
+      </div>
+      
+    </form>
+    
+    <div class="line">
+
+    </div>
+    <div class="media-options">
+      <a href="/auth/google" class="field google">
+        <img src="images/google.png" alt="" class="google-img">
+        <span>Login with Google</span>
+      </a>
+    </div>
+    
+
+
+
+
+  </div>
+
+    <div >
+      <img src="/images/istockphoto-1360868137-612x612.jpg" 
+        class="img-fluid" alt="Sample image">
+    </div>
+
+
+  </section>
+  <!--JS-->
+  <script src="/js/script.js"></script>
+  <script src="/js/loginValidation.js" ></script>
+  
+</body>
+</html>

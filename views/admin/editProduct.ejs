@@ -1,0 +1,139 @@
+<%-include('../includes/admin/adminHead')%>
+
+<div id="main-wrapper">
+
+    <%-include('../includes/admin/adminNav')%>
+    
+    <%- include('../includes/admin/adminSidebar')%>
+
+    <div class="content-body">
+        <div class="container-fluid">
+            <h3 id="pgHead">EDIT PRODUCTS</h3>
+            <form action="/editProduct/<%= productData._id %>?_method=PATCH" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                  <label for="products">Products</label>
+                  <input type="text" class="form-control" name="productName" id="productName" value="<%= productData.product %>">
+                </div>
+                
+        
+                <div class="form-group">
+                  <label for="categoryName">Category</label>
+                  <select class="form-control" id="category" name="categoryName" >
+                    <!-- <% for( let cat of category ) { %>  
+                        <option value="<% productData.categoryName %>"><%= cat.categoryName %></option>  
+                    <% } %> -->
+
+                     <% for (let cat of category) { %>
+                      <option value="<%= cat.categoryName %>" <%= cat.categoryName === selectedCategory ? 'selected' : '' %>>
+                          <%= cat.categoryName %>
+                      </option>
+                  <% } %>
+
+
+                  </select>
+                </div>
+                
+                
+        
+                <div class="form-group">
+                  <label for="size">Size</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="size" value="<%= productData.size %>" id="size1" <% if (productData.size.includes('3-9m')) { %>checked<% } %>>
+                  <label class="form-check-label" for="size1">
+                    3-9m
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="size" value="<%= productData.size %>" id="size2" <% if (productData.size.includes('9-12m')) { %>checked<% } %>>
+                  <label class="form-check-label" for="size2">
+                    9-12m
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="size" value="<%= productData.size %>" id="size3" <% if (productData.size.includes('1-3y')) { %>checked<% } %>>
+                  <label class="form-check-label" for="size3">
+                    1-3y
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="size" value="<%= productData.size %>" id="size4" <% if (productData.size.includes('3-5y')) { %>checked<% } %>>
+                  <label class="form-check-label" for="size4">
+                    3-5y
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="size" value="<%= productData.size %>" id="size5" <% if (productData.size.includes('5-7y')) { %>checked<% } %>>
+                  <label class="form-check-label" for="size5">
+                    5-7y
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="size" value="<%= productData.size %>" id="size6" <% if (productData.size.includes('8-10y')) { %>checked<% } %>>
+                  <label class="form-check-label" for="size6">
+                    8-10y
+                  </label>
+                </div>
+                </div>
+                <!-- <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="defaultCheck2" disabled>
+                  <label class="form-check-label" for="defaultCheck2">
+                    Disabled checkbox
+                  </label>
+                </div> -->
+        
+        
+        
+        
+                <div class="form-group">
+                    <label for="productColor">Colour</label>
+                    <input type="text" class="form-control" name="colour" id="productColor" value="<%= productData.color %>">
+                  </div>
+                  <div class="form-group">
+                    <label for="productColor">Price</label>
+                    <input type="text" class="form-control" name="price" id="productPrice" value="<%= productData.price %>">
+                  </div>
+                  <div class="form-group">
+                    <label for="stock">Stock</label>
+                    <input type="text" class="form-control" name="stock" id="stock" value="<%= productData.stock %>">
+                  </div>
+        
+        
+                <div class="form-group">
+                  <label for="productDescription">Description</label>
+                  <input type="text" class="form-control" name="description" id="description" value="<%= productData.description %>">
+
+                  <!-- <textarea class="form-control" id="productDescription" name="description" rows="3" ></textarea> -->
+                </div>
+                
+                  <div class="form-group">
+                    <label for="productImage">Product Images</label>
+                    <input type="file" class="form-control-file" name="images" id="productImage" value="<% productData.image %>" > 
+                  </div>
+                  <!-- <div class="row">
+                    <% for(let img of productData.image) { %>
+                      <div class="edit-images" style="display: flex; flex-direction: column; justify-content: center; ">
+                        
+                        <div><img src="/images/productImages/<%= img %> "  alt="Product Images" style="max-width: 200px; max-height: 200px;"></div>
+                      </div>
+                    <% } %>
+
+                  </div> -->
+
+                  <div class="row" style="display: flex; flex-wrap: wrap;">
+                    <% for (let i = 0; i < productData.image.length; i++) { %>
+                        <div class="edit-images" style="display: flex; flex-direction: column; justify-content: center; flex: 1;margin: 5;">
+                            <div><img src="/images/productImages/<%= productData.image[i] %>" alt="Product Images" style="max-width: 200px; max-height: 200px;"></div>
+                            <div>File Name: <%= productData.image[i] %></div>
+                            <!-- <a class="btn btn-dark" href="/removeImage" role="button" style="width: fit-content;">Remove</a> -->
+                        </div>
+                        >
+                    <% } %>
+                </div>
+                
+
+                  <button type="submit" class="btn btn-primary btn-lg" style="margin-top: 20px;">Edit</button>
+        
+              </form>
+             
+        
+              <%-include('../includes/admin/adminEnd')%>

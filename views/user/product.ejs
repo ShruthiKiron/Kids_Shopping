@@ -1,0 +1,69 @@
+<%- include('../includes/user/userHead') %>
+<div style="padding-top: 50px;">
+<div class="bg0 m-t-23 p-b-140">
+	<div class="container">
+
+<div class="flex-w flex-sb-m p-b-52">
+	<div class="flex-w flex-l-m filter-tope-group m-tb-10">
+		<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
+			All Products
+		</button>
+
+		<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".girls">
+			Girls
+		</button>
+
+		<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".boys">
+			Boys
+		</button>
+
+		<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".infants">
+			Infants
+		</button>
+
+		
+	</div>
+
+	<div class="flex-w flex-c-m m-tb-10">
+		<div class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 js-show-filter">
+			<i class="icon-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-filter-list"></i>
+			<i class="icon-close-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+			 Filter
+		</div>
+
+		<div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
+			<i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
+			<i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+			Search
+		</div>
+	</div>
+	</div>
+	<!--Products-->
+	
+	<div class="row isotope-grid">
+		<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+			<% if (product.image && Array.isArray(product.image)) { %>
+				<% for (let i = 0; i < product.image.length; i++) { %>
+					<div class="product" style="display: flex; justify-content: center; flex-direction: column; flex: 1; margin: 5px;">
+						<div>
+							<img src="/images/productImages/<%= product.image[i] %>" alt="Product Images" style="max-width: 200px; max-height: 200px;">
+						</div>
+						<div>
+							<p>Product Name: <%= product.name %></p>
+							<p>Price: <%= product.price %></p>
+							<!-- Add more details as needed -->
+						</div>
+					</div>
+				<% } %>
+			<% } else { %>
+				<p>No images available for this product.</p>
+			<% } %>
+		</div>
+	</div>
+	
+
+	</div>
+	</div>
+</div>
+
+<%- include('../includes/user/userEnd') %>

@@ -1,0 +1,106 @@
+<%-include('../includes/admin/adminHead')%>
+
+<div id="main-wrapper">
+
+    <%-include('../includes/admin/adminNav')%>
+    
+    <%- include('../includes/admin/adminSidebar')%>
+    
+    <div class="content-body">
+        <div class="container-fluid">
+            <h3 id="pgHead">ADD PRODUCTS</h3>
+            <form action="/addProducts" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="products">Products</label>
+          <input type="text" class="form-control" name="productName" id="productName" placeholder="Product Name" >
+        </div>
+        
+
+        <div class="form-group">
+          <label for="categoryName">Category</label>
+          <select class="form-control" id="category" name="categoryName">
+            <% for( let cat of category ) { %>
+              <option value="<%= cat.categoryName %>"><%= cat.categoryName %></option>
+            <% } %>
+          </select>
+        </div>
+        
+        
+
+        <div class="form-group">
+          <label for="size">Size</label>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="size" value="3-9m"  id="size1" >
+          <label class="form-check-label" for="size1">
+            3-9m
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="size" value="9-12m" id="size2">
+          <label class="form-check-label" for="size2">
+            9-12m
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="size" value="1-3y" id="size3">
+          <label class="form-check-label" for="size3">
+            1-3y
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="size" value="3-5y" id="size4">
+          <label class="form-check-label" for="size4">
+            3-5y
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="size" value="5-7y" id="size5">
+          <label class="form-check-label" for="size5">
+            5-7y
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="size" value="8-10y" id="size6">
+          <label class="form-check-label" for="size6">
+            8-10y
+          </label>
+        </div>
+        </div>
+        <!-- <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" id="defaultCheck2" disabled>
+          <label class="form-check-label" for="defaultCheck2">
+            Disabled checkbox
+          </label>
+        </div> -->
+
+
+
+
+        <div class="form-group">
+            <label for="productColor">Colour</label>
+            <input type="text" class="form-control" name="colour" id="productColor" placeholder="Product Colour">
+          </div>
+          <div class="form-group">
+            <label for="productColor">Price</label>
+            <input type="text" class="form-control" name="price" id="productPrice" placeholder="Product Price">
+          </div>
+          <div class="form-group">
+            <label for="stock">Stock</label>
+            <input type="text" class="form-control" name="stock" id="stock" placeholder="Stock">
+          </div>
+
+
+        <div class="form-group">
+          <label for="productDescription">Description</label>
+          <textarea class="form-control" id="productDescription" name="description" rows="3"></textarea>
+        </div>
+        
+           <div class="form-group">
+            <label for="productImage">Product Images</label>
+            <input type="file" class="form-control-file" name="images" id="productImage">
+          </div> 
+          
+          <button type="submit" class="btn btn-primary btn-lg" style="margin-top: 20px;">Add</button>
+
+      </form>
+      <%-include('../includes/admin/adminEnd')%>

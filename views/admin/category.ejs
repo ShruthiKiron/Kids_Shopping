@@ -1,0 +1,77 @@
+<%-include('../includes/admin/adminHead')%>
+
+<div id="main-wrapper">
+
+    <%-include('../includes/admin/adminNav')%>
+    
+    <%- include('../includes/admin/adminSidebar')%>
+    
+    <div class="content-body">
+        <div class="container-fluid">
+            <h3 id="pgHead">CATEGORY</h3>
+            <div class="addCategory" style="text-align: end;">
+                <button class="btn btn-dark" type="submit" id="add"  style="width: 30%; height: 50px;margin: 20px;"><h4>Add Category</h4></button>
+            </div>
+            
+            <div class="viewForm" style="display: none;"><h4 id="subHead">Add New Category</h4>
+                <form action="/category" method="post">
+
+                    <input class="form-control form-control-lg category" name="newCategory" type="text" placeholder="Category">
+                    <button type="submit" class="btn btn-primary btn-lg" style="margin-top: 20px;">Add</button>
+
+                 </form>
+
+            </div>
+            
+
+            <% if(category.length) { %>
+
+
+                <table class="table">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th scope="col">CATEGORY</th>
+                        <th scope="col">ACTIONS</th>                                                                      
+                    </tr>
+                </thead>
+                <tbody>
+                   <% for( let cat of category ) { %>
+                    <% if(!cat.isDeleted){ %> 
+                    <tr>
+                        <td><%= cat.categoryName %></td>                        
+                        <td class="d-flex">
+                            <a href="/editCategory/<%= cat._id %>">
+                            <i class='bx bxs-edit-alt'></i> 
+                            </a>
+                            <form action="/deleteCategory/<%= cat._id %>?_method=DELETE" method="post">
+                                <button type="submit" style="background: none;border: transparent;">
+                            <i class='bx bxs-trash'></i>
+                        </button>
+                            </form>
+                           
+                        </td>
+                    </tr>
+                    <%  } } } %>
+                </tbody>
+            
+            </table>
+
+
+
+
+
+        </div>
+    </div>
+</div>
+<script>
+const button = document.getElementById('add')
+button.addEventListener('click',() => {
+    const catForm = document.querySelector('.viewForm')
+    catForm.style.display = 'block'
+})
+
+
+</script>
+
+
+<%-include('../includes/admin/adminEnd')%>
