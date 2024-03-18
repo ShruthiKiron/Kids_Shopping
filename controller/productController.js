@@ -7,7 +7,8 @@ module.exports = {
 
     getProduct : async(req,res) => {
         try {
-            const productData = await productSchema.find()
+            const productData = await productSchema.find().sort({date : -1})
+            const pro = productData
             
         res.render('admin/products',{products : productData })
         } catch (error) {
@@ -20,7 +21,7 @@ module.exports = {
         try {
             const categories = await categorySchema.find()
 
-           res.render('admin/addProducts',{category : categories}) 
+           res.render('admin/addProducts',{category : categories,error: req.flash("error")}) 
             
         } catch (error) {
             console.log('Error in post products '+error);
@@ -29,16 +30,42 @@ module.exports = {
     postAddProducts : async (req,res) => {
         try {
 
+            console.log("At post add products ");
+
+
+            for(let file of req.files){
+                if(
+                    file.mimetype !== 'image/jpg' &&
+                    file.mimetype !== 'image/jpeg' &&
+                    file.mimetype !== 'image/png' &&
+                    file.mimetype !== 'image/gif' &&
+                    file.mimetype !== 'image/webp'
+                ){
+                    req.flash("error","Check the image type")
+                    return res.redirect('/addProducts')
+                }
+            }
+
             console.log(req.files);
             console.log(req.body);
             const img = []
             for( let items of req.files) {
-                const croppedImage = await cropAndSaveImage(items);
-                img.push(path.basename(croppedImage));
-               // img.push(items.filename)
+
+                // const croppedImage = await cropAndSaveImage(items);
+                // img.push(path.basename(croppedImage));
+
+                img.push(items.filename)
             }
-
-
+            if(req.body.price < 0)
+            {
+                req.flash('error','Invalid price')
+                res.redirect('/addProducts')
+            }
+            else if(req.body.stock < 0){
+                req.flash('error','Invalid stock')
+                res.redirect('/addProducts')
+            }
+            else{
 
             const productDetail = new productSchema({
                 product : req.body.productName,
@@ -51,12 +78,10 @@ module.exports = {
                 image : img
             })
 
-
-
              await productDetail.save()
             res.redirect('/products')
 
-
+        }
 
         } catch (error) {
             console.log("Error in post add products "+error);
@@ -68,7 +93,7 @@ module.exports = {
     },
     getEditProduct : async (req,res) => {
         try {
-
+            
             console.log("edit Product")
             const productData = await productSchema.findOne({_id : req.params.id})
             console.log(productData)
@@ -93,33 +118,50 @@ module.exports = {
         try {
             console.log("patch edit product");
 
-            const productData = await productSchema.findOne({_id : req.params.id})
-             const image = productData.image
-            // console.log("Image "+image)
-            console.log("Uploaded Files: ", req.files);
+            
 
+            const productData = await productSchema.findOne({_id : req.params.id})
+             const image = productData.image             
+            // console.log("Image "+image)
+
+            for(let file of req.files){
+                if(
+                    file.mimetype !== 'image/jpg' &&
+                    file.mimetype !== 'image/jpeg' &&
+                    file.mimetype !== 'image/png' &&
+                    file.mimetype !== 'image/gif' &&
+                    file.mimetype !== 'image/webp'
+                ){
+                    req.flash("error","Check the image type")
+                    return res.redirect('/ediProducts')
+                }
+            }
+
+            console.log("Uploaded Files: ", req.files);
+            let img = []
+            img = image
            
             for (let items of req.files) {
-                const croppedImage = await cropAndSaveImage(items);
-                image.push(path.basename(croppedImage));
-                console.log("Pushed Image: ", path.basename(croppedImage));
+                // const croppedImage = await cropAndSaveImage(items);
+                // image.push(path.basename(croppedImage));
+                // console.log("Pushed Image: ", path.basename(croppedImage));
+                img.push(items.filename)
             }
             console.log("Final Image Array: ", image);
 
            
-            console.log("Image to be Updated: ", img);
-
+            
             
             await productSchema.updateOne({_id : req.params.id},
                 {$set : {
-                product : req.body.product,
+                product : req.body.productName,
                 category : req.body.categoryName,
                 size : (productData.size)? productData.size : req.body.size,
                 color : req.body.colour,
                 price : req.body.price,
                 stock : req.body.stock,
                 description : req.body.description,
-                image : image,
+                image : img,
     
             }})
             
@@ -141,7 +183,15 @@ module.exports = {
             
         }
     },
-    
+     postSearch : async (req,res) => {
+        try {
+            const value = req.body.value
+            const searchData = await categorySchema.find({$or : [{categoryName}]})
+            
+        } catch (error) {
+            console.log("Error in search "+error);
+        }
+     },
    
 
 }

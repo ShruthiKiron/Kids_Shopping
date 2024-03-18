@@ -8,12 +8,12 @@ passport.serializeUser((user,done) => {
 passport.use(new GoogleStrategy({
     clientID:process.env.CLIENT_ID,
     clientSecret:process.env.CLIENT_SECRET,
-    callbackURL:'https://localhost:4000/auth/google/home',
+    callbackURL:'http://localhost:4000/auth/google/home',
     passReqToCallback:true
-}, async (accessToken, refreshToken, profile, done) => {
+}, async (accessToken, refreshToken, profile, cb) => {
     try {
         let user = await userSchema.findOne({googleId : profile.id})
-
+        console.log("user :"+user)
         if(!user)
         {
             user = new userSchema({
@@ -24,17 +24,19 @@ passport.use(new GoogleStrategy({
 
             await user.save()
         }
+        console.log("user "+user)
         // Store user information in session or database
-    return done(null, user.id);
+    return cb(null, user._id);
     } catch (error) {
-        return done(error, null);
+        console.log("error "+error)
+        return cb(error, null);
     }
     
 }));
 
 passport.serializeUser((user, done) => {
     // Serialize user by storing the user ID in the session
-    done(null, user.id);
+    done(null, user._id);
 });
 
 passport.deserializeUser(async (userId, done) => {

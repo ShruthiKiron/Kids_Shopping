@@ -1,0 +1,160 @@
+<%- include('../includes/user/userHead') %>
+<div style="padding-top: 50px;">
+    <div class="bg0 m-t-23 p-b-140">
+        <div class="container">
+
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Product Details</li>
+                </ol>
+            </nav>
+
+
+            <div class="product-detail">
+                <div class="product-images">
+                    <div class="main-image">
+                        <img src="/images/productImages/<%= product.image[0] %>" alt="Product Image 1" class="active">
+                    </div>
+                    <div class="thumbnail-images">
+                        <img src="/images/productImages/<%= product.image[0] %>" alt="Product Image 1" class="thumbnail">
+                        <img src="/images/productImages/<%= product.image[1] %>" alt="Product Image 2" class="thumbnail">
+                        <img src="/images/productImages/<%= product.image[2] %>" alt="Product Image 3" class="thumbnail">
+                       
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 style="font-family: 'Times New Roman', Times, serif; font-weight: 200;">PRODUCT DETAILS</h3>
+                   
+                    <h6 class="product-name"><%= product.product %></h6>
+                 
+                    <p class="product-description"><%= product.description %></p>
+                    <p class="product-price">₹ <%= product.price %></p>
+                   
+                    <p class="product-stock <%= product.stock <= 0 ? 'out-of-stock' : 'in-stock' %>">
+                        <%= product.stock <= 0 ? 'Out of Stock' : 'In Stock' %>
+                    </p>
+                    
+                    
+                    
+                
+                    <div class="size-selection">
+                        <label for="size">Size:</label>
+                        <select name="size" id="size">
+                            <% for(let i = 0 ; i<= product.size.length-1; i++) { %>
+                            <option value="<%= product.size[i] %>"><%= product.size[i] %></option>
+                            <% } %>
+                            <!-- <option value="10_months">10 months</option>
+                            <option value="1_3_months">1-3 months</option>
+                            <option value="4_6_months">4-6 months</option>
+                            <option value="7_9_months">7-9 months</option>
+                            <option value="10_12_months">10-12 months</option> -->
+                        </select>
+                    </div>
+                    <!-- Quantity Selection -->
+                    <!--<div class="quantity-selection">
+                        <label for="quantity">Quantity:</label>
+                        <select name="quantity" id="quantity">
+                            
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>-->
+                            <!-- Add more quantity options as needed -->
+                        <!-- </select>
+                    </div>  -->
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        
+                        <% if(useId) { %>
+                            <button class="btn btn-cart" data-product-id="<%= product._id %>"  id="cart">Add to Cart</button>
+                        <button class="btn btn-buy-now">Buy Now</button>
+                        <button class="btn btn-wishlist">Add to Wishlist</button>
+                            <% } else { %>
+                                <button class="btn btn-cart" onclick="location.href='/login'"  >Add to Cart</button>
+                        <button class="btn btn-buy-now" onclick="location.href='/login'" >Buy Now</button>
+                        <button class="btn btn-wishlist" onclick="location.href='/login'" >Add to Wishlist</button>
+                                <% } %>
+                        
+                    </div>
+                    <!-- Review Section -->
+                    
+                </div>
+            </div>
+            <div class="review-section">
+                <h3>Reviews</h3>
+                <textarea name="review" id="review" cols="30" rows="5" placeholder="other customers review"></textarea>
+                
+            </div>
+
+
+
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the "Add to Cart" button element
+        var addToCartButton = document.getElementById('cart');
+
+        // Attach a click event listener to the button
+        addToCartButton.addEventListener('click', function () {
+          
+            // Get the selected size and quantity values
+            var selectedSize = document.getElementById('size').value;
+           
+            var productId = addToCartButton.getAttribute("data-product-id")
+
+            // Create an object representing the product and its details
+            var productDetails = {
+                name: '<%= product.product %>',
+                size: selectedSize,
+              
+                price: '<%= product.price %>',
+                productId: productId
+                // Add other relevant product details here
+            };
+
+            // Call the addToCart function with the product details
+            addToCart(productDetails);
+        });
+
+        // Function to add the product to the cart (replace this with your actual function)
+        function addToCart(productDetails) {
+            
+               fetch('/add_to_cart' , {
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify(productDetails)
+               })
+               .then(response => response.json())
+               .then(data => {
+                    if (data.success) {
+                      
+                        $("#cart").text('Added'); 
+                        setTimeout(() => {
+                            $("#cart").text('Add to Cart');
+                        }, 1500);
+                    } else {
+                        // Show error alert
+                        alert('Failed to add item to cart. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                
+                    alert('An error occurred while adding item to cart. Please try again.');
+                });
+          
+            
+
+           
+        }
+    });
+</script>
+
+<%- include('../includes/user/userEnd') %>            

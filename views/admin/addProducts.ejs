@@ -10,6 +10,9 @@
         <div class="container-fluid">
             <h3 id="pgHead">ADD PRODUCTS</h3>
             <form action="/addProducts" method="post" enctype="multipart/form-data">
+              <% if(error){ %>
+                <div class="text-danger"><%= error %></div>
+                <% } %>
         <div class="form-group">
           <label for="products">Products</label>
           <input type="text" class="form-control" name="productName" id="productName" placeholder="Product Name" >
@@ -97,9 +100,9 @@
         
            <div class="form-group">
             <label for="productImage">Product Images</label>
-            <input type="file" class="form-control-file" name="images" id="productImage">
+            <input type="file" class="form-control" name="images" id="productImage" accept="image/*" multiple>
           </div> 
-          
+         
           <button type="submit" class="btn btn-primary btn-lg" style="margin-top: 20px;">Add</button>
 
       </form>

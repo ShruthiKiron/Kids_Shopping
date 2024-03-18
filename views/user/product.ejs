@@ -37,33 +37,376 @@
 			Search
 		</div>
 	</div>
-	</div>
-	<!--Products-->
+		<!-- Search product -->
+				<div class="dis-none panel-search w-full p-t-10 p-b-15">
+					<div class="bor8 dis-flex p-l-15 navbar-search-autocomplete">
+						<button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
+							<i class="zmdi zmdi-search"></i>
+						</button>
+
+						<input class="mtext-107 cl2 size-114 plh2 p-r-15" id="search" type="text" name="search-product" placeholder="Search">
+					</div>	
+				</div>
+				<!-- Filter -->
+				<div class="dis-none panel-filter w-full p-t-10">
+					<div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
+						<div class="filter-col1 p-r-15 p-b-27">
+							
+							 <div class="  cl2 p-b-15">
+								<span class="mtext-102" >Sort By</span>
+								<ul>
+								
+
+									<li class="p-b-6">
+										<input class="form-check-input filter" type="radio" name="price" value="-1" id="flexCheckDefault">
+											<label class="form-check-label" for="flexCheckDefault">
+											  Price : Low to High									</label>
+									</li>
 	
-	<div class="row isotope-grid">
-		<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-			<% if (product.image && Array.isArray(product.image)) { %>
-				<% for (let i = 0; i < product.image.length; i++) { %>
-					<div class="product" style="display: flex; justify-content: center; flex-direction: column; flex: 1; margin: 5px;">
-						<div>
-							<img src="/images/productImages/<%= product.image[i] %>" alt="Product Images" style="max-width: 200px; max-height: 200px;">
+									<li class="p-b-6">
+										<input class="form-check-input filter" type="radio" name="price" value="+1" id="flexCheckDefault">
+											<label class="form-check-label" for="flexCheckDefault">
+											  Price : High to Low									</label>
+									</li>
+	
+									<li class="p-b-6">
+										<input class="form-check-input filter" type="checkbox" value="" id="flexCheckDefault">
+											<label class="form-check-label" for="flexCheckDefault">
+											  Average Rating
+											</label>
+									</li>
+	
+									<li class="p-b-6">
+	
+										<input class="form-check-input filter" type="radio" name="alphaOrder" value="+1" id="flexCheckDefault">
+											<label class="form-check-label" for="flexCheckDefault">
+											  aA - zZ
+											</label>
+											<input class="form-check-input filter" type="radio" name="alphaOrder" value="-1" id="flexCheckDefault">
+											<label class="form-check-label" for="flexCheckDefault">
+											  zZ - aA
+											</label>
+									</li>
+	
+									<li class="p-b-6">
+										
+									</li>
+									<li class="p-b-6">
+										<input class="form-check-input filter" type="checkbox" value="" id="flexCheckDefault">
+											<label class="form-check-label" for="flexCheckDefault">
+											  Popularity
+											</label>
+									</li>
+								</ul> 
+							</div>
+
+							
 						</div>
-						<div>
-							<p>Product Name: <%= product.name %></p>
-							<p>Price: <%= product.price %></p>
-							<!-- Add more details as needed -->
+
+						<div class="filter-col2 p-r-15 p-b-27">
+							
+							 <div class="mtext-102 cl2 p-b-15">
+								Category
+							</div>
+
+							<ul>
+								<% category.forEach(cat => { %>
+									<%	if(!cat.isDeleted) { %>
+								<li class="p-b-6">
+									<input class="form-check-input filter" type="checkbox" value="<%= cat.categoryName %>" id="flexCheckDefault">
+										<label class="form-check-label" for="flexCheckDefault">
+										  <%= cat.categoryName %>
+										</label>
+								</li>
+
+								<% } %>
+								<% } ) %>
+							</ul> 
+						</div>
+
+						<div class="filter-col3 p-r-15 p-b-27">
+							
+							 <div class="mtext-102 cl2 p-b-15">
+								Color
+							</div>
+
+							<ul>
+								<li class="p-b-6">
+									<input class="form-check-input filter" type="checkbox" value="White" id="flexCheckDefault">
+										<label class="form-check-label" for="flexCheckDefault">
+										  White
+										</label>
+								</li>
+
+								<li class="p-b-6">
+									<input class="form-check-input filter" type="checkbox" value="Red" id="flexCheckDefault">
+										<label class="form-check-label" for="flexCheckDefault">
+										  Red
+										</label>
+								</li>
+
+								<li class="p-b-6">
+									<input class="form-check-input filter" type="checkbox" value="Pink" id="flexCheckDefault">
+										<label class="form-check-label" for="flexCheckDefault">
+										  Pink
+										</label>
+								</li>
+
+								<li class="p-b-6">
+									<input class="form-check-input filter" type="checkbox" value="Blue" id="flexCheckDefault">
+										<label class="form-check-label" for="flexCheckDefault">
+										  Blue
+										</label>
+								</li>
+
+								<li class="p-b-6">
+									<input class="form-check-input filter" type="checkbox" value="Green" id="flexCheckDefault">
+										<label class="form-check-label" for="flexCheckDefault">
+										  Green
+										</label>
+								</li>
+
+								<li class="p-b-6">
+									<input class="form-check-input filter" type="checkbox" value="Yellow" id="flexCheckDefault">
+										<label class="form-check-label" for="flexCheckDefault">
+										  Yellow
+										</label>
+								</li>
+								<li class="p-b-6">
+									<input class="form-check-input filter" type="checkbox" value="Black" id="flexCheckDefault">
+										<label class="form-check-label" for="flexCheckDefault">
+										  Black
+										</label>
+								</li>
+							</ul> 
+						</div>
+
+						<div class="filter-col4 p-b-27">
+						
+							 <div class="mtext-102 cl2 p-b-15">
+								Age Group
+							</div>
+
+							<ul>
+								<li class="p-b-6">
+									<input class="form-check-input filter" type="checkbox" value="3m - 9m" id="flexCheckDefault">
+										<label class="form-check-label" for="flexCheckDefault">
+											3m - 9m
+										</label>
+								</li>
+								<li class="p-b-6">
+									<input class="form-check-input filter" type="checkbox" value="9m - 12m" id="flexCheckDefault">
+										<label class="form-check-label" for="flexCheckDefault">
+											9m - 12m
+										</label>
+								</li>
+								<li class="p-b-6">
+									<input class="form-check-input filter" type="checkbox" value="1y - 3y" id="flexCheckDefault">
+										<label class="form-check-label" for="flexCheckDefault">
+											1y - 3y
+										</label>
+								</li>
+								<li class="p-b-6">
+									<input class="form-check-input filter" type="checkbox" value="3y - 5y" id="flexCheckDefault">
+										<label class="form-check-label" for="flexCheckDefault">
+											3y - 5y
+										</label>
+								</li>
+								<li class="p-b-6">
+									<input class="form-check-input filter" type="checkbox" value="5y - 7y" id="flexCheckDefault">
+										<label class="form-check-label" for="flexCheckDefault">
+											5y - 7y
+										</label>
+								</li>
+								<li class="p-b-6">
+									<input class="form-check-input filter" type="checkbox" value="8y - 10y" id="flexCheckDefault">
+										<label class="form-check-label" for="flexCheckDefault">
+											8y - 10y
+										</label>
+								</li>
+							</ul>
 						</div>
 					</div>
-				<% } %>
-			<% } else { %>
-				<p>No images available for this product.</p>
-			<% } %>
-		</div>
+				</div>
+			</div>
+
+	
 	</div>
+	<% if(error){ %>
+		<div class="text-danger"><%= error %></div>
+		<% } %>
+	<!--Products-->
+	
+	<div class="row isotope-grid" id="product_container">
+		<% if(products.length) {%>
+		<% products.forEach(product => { %>
+			<% if(!product.isDeleted) { %>
+		<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+			
+				
+			<div class="block2">
+				<div class="block2-pic hov-img0">
+					
+					<img src="/images/productImages/<%= product.image[0] %>" alt="IMG-PRODUCT" style="width: 287px;height: 355px;" >
+
+					<a href="/productDetail/<%= product._id %>" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+						View
+					</a>
+
+				</div>
+
+				<div id="pro" class="block2-txt flex-w flex-t p-t-14">
+					<div class="block2-txt-child1 flex-col-l ">
+						<a href="/product" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+							<%= product.product %>
+						</a>
+
+						<span class="stext-105 cl3">
+							<i class='bx bx-rupee'></i><%= product.price %>
+						</span>
+					</div>
+
+					<div class="block2-txt-child2 flex-r p-t-3">
+						<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+							<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
+							<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
+						</a>
+					</div>
+				</div>
+			</div>
+			
+			
+		</div>
+		<% } %>
+	  <% }) %>
+	  <% } else { %>
+		<p>No images available for this product.</p>
+	<% } %>
+	</div>
+
+
+	
+	
 	
 
 	</div>
 	</div>
 </div>
 
+
+<script>
+// Assuming you're using jQuery for simplicity
+$(document).ready(function() {
+    $('#search').on('input', function() {
+        var searchValue = $(this).val();
+        // Perform search when user types
+        if (searchValue.trim() !== '') {
+            // Send searchValue to server for processing
+            $.ajax({
+                type: 'POST',
+                url: '/search',
+                data: { value: searchValue },
+                success: function(response) {
+				$('#product_container').empty()
+                let productHtml='';
+
+					if(response.found){
+						console.log(response.product[0])
+						response.product.forEach(element => {
+							
+							productHtml +=`<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+		                        <div class="block2">
+									<div class="block2-pic hov-img0">
+										
+										<img src="/images/productImages/${element.image[0]}" alt="IMG-PRODUCT" style="width: 287px;height: 355px;" >
+
+										<a href="/productDetail/${element._id}" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+											View
+										</a>
+
+									</div>
+
+									<div id="pro" class="block2-txt flex-w flex-t p-t-14">
+										<div class="block2-txt-child1 flex-col-l ">
+											<a href="/product" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+												${element.product}
+											</a>
+
+											<span class="stext-105 cl3">
+												<i class='bx bx-rupee'></i>${element.price}
+											</span>
+										</div>
+
+										<div class="block2-txt-child2 flex-r p-t-3">
+											<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+												<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
+												<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
+											</a>
+										</div>
+									</div>
+								</div>
+								
+								
+							</div>`
+						});
+
+						$('#product_container').append(productHtml)
+						
+
+						
+					}
+                   
+                },
+                error: function(err) {
+                    console.error('Error:', err);
+                }
+            });
+        } else {
+            // Clear previous search results or hide them
+        }
+    });
+});
+
+const filterButton = document.querySelectorAll('.filter')
+  let sortValue = []
+  filterButton.forEach((button)=>{
+	button.addEventListener('change',()=>{
+		sortValue.push(button.value)
+		alert(button.value)
+		fetchData(sortValue)
+
+	})
+
+
+  })
+
+  function fetchData(){
+	fetch('/filter_product' , {
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify(sortValue)
+               })
+               .then(response => response.json())
+               .then(data => {
+                    if (data.success) {
+                       
+                        
+                    } else {
+                        // Show error alert
+                        alert('Failed to add item to cart. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                
+                    alert('An error occurred while adding item to cart. Please try again.');
+                });
+
+  }
+
+
+
+</script>
 <%- include('../includes/user/userEnd') %>

@@ -6,13 +6,28 @@ module.exports = {
 
 userLogin : async(req,res,next) =>{
     try {
-        
-
-
-
-    } catch (error) {
+        if(req.session.userId){
+            res.redirect('/home')
+        }else{
+            next();
+        }
+      } catch (error) {
         
     }
-}
+},
+adminLogin : async(req,res,next) => {
+    try {
+        if(req.session.adminId){
+            res.redirect('/admin')
+        }
+        else{
+            next()
+        }
+        
+    } catch (error) {
+        console.log("Error in admin login middleware "+error);
+    }
+
+},
 
 }

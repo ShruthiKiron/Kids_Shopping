@@ -1,0 +1,117 @@
+<%- include('../includes/user/userHead') %>
+<div style="padding-top: 50px;">
+<div class="bg0 m-t-23 p-b-140">
+	<div class="container border">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="text-center">
+          <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150" style="padding-top: 40px;">
+        </div>
+      </div>
+      <div class="col-md-8 " style="padding-top: 15px;">
+        <div class="card mb-3 border-0">
+          <div class="card-body">
+            
+            
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Full Name</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                <%= user.firstName %>  <%= user.lastName %>
+              </div>
+            </div>
+            
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Email</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                <%= user.email %>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Phone</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                <%= user.mobile %>
+              </div>
+            </div>
+            <hr>
+            
+           
+            <div class="row">
+              <div class="col-sm-12">
+                <a class="btn btn-primary " href="/editProfile/<%= useId %>">Edit</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
+    
+    </div>
+</div>
+
+<div class="container border mt-5">  
+  <div class="row mt-5">
+    <div class="col-sm-3">
+      <h6 class="mb-0">Password</h6>
+    </div>
+    <div class="col-sm-3 text-secondary">
+      *********
+    </div>
+    <div  class="col-sm-3 float-end d-flex justify-content-end m-4" >
+
+      <a class="btn btn-primary" href="/changePassword/<%= useId %>">Change Password</a>
+    </div>
+  </div> 
+
+</div>
+
+
+
+
+
+
+
+<div class="row">
+ <% address.forEach(item => { %>
+<div class="card px-4 py-2" style="width: 30%; margin-left: 150px;margin-top: 70px;">
+  <div class="card-body">
+   <div class="row"><i class='bx bx-map'></i>
+    <h5 class="card-title text-center">  Address </h5>
+  </div>
+ 
+    <p class="card-text">
+      <%= item.address %><br>
+      <%= item.country %><br>
+      <%= item.state %><br>
+      <%= item.city %><br>
+      <%= item.zip %><br>
+    </p>
+ 
+    
+  <div class="row d-flex justify-content-end">
+    <span class="me-2"><a href="/editAddress/<%= item._id %>"><i class='bx bxs-edit-alt' style="font-size: 20px;"></i></a></span>
+    <form action="/deleteAddress/<%= item._id %>?_method=PATCH" method="post">
+      <button type="submit" style="background: none;border: transparent;">
+  <i class='bx bxs-trash' style="font-size: 20px;"></i>
+</button>
+  </form>
+  </div>
+
+  </div>
+
+</div>
+<% }) %>
+<div style="width: 90vw;" class=" float-end d-flex justify-content-end" >
+  <a class="btn btn-primary" href="/addAddress">Add Address</a>
+</div>
+
+</div>
+
+<%- include('../includes/user/userEnd') %>

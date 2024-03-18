@@ -152,7 +152,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 </div>
 
 <!-- Modal1 -->
-<div class="wrap-modal1 js-modal1 p-t-60 p-b-20">
+<!-- <div class="wrap-modal1 js-modal1 p-t-60 p-b-20">
     <div class="overlay-modal1 js-hide-modal1"></div>
 
     <div class="container">
@@ -216,9 +216,9 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
                         <p class="stext-102 cl3 p-t-23">
                             Nulla eget sem vitae eros pharetra viverra. Nam vitae luctus ligula. Mauris consequat ornare feugiat.
                         </p>
+                         -->
                         
-                        <!--  -->
-                        <div class="p-t-33">
+                        <!-- <div class="p-t-33">
                             <div class="flex-w flex-r-m p-b-10">
                                 <div class="size-203 flex-c-m respon6">
                                     Size
@@ -276,10 +276,10 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
                                     </button>
                                 </div>
                             </div>	
-                        </div>
+                        </div> -->
 
                         <!--  -->
-                        <div class="flex-w flex-m p-l-100 p-t-40 respon7">
+                        <!-- <div class="flex-w flex-m p-l-100 p-t-40 respon7">
                             <div class="flex-m bor9 p-r-10 m-r-11">
                                 <a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 js-addwish-detail tooltip100" data-tooltip="Add to Wishlist">
                                     <i class="zmdi zmdi-favorite"></i>
@@ -297,13 +297,32 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
                             <a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100" data-tooltip="Google Plus">
                                 <i class="fa fa-google-plus"></i>
                             </a>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- 
+<script>
+    $(document).ready(function () {
+      $("#myAccountBtn").click(function () {
+        $(".sub-link").toggle();
+      });
+  
+      // Close the sub-menu if the user clicks outside of it
+      $(document).click(function (event) {
+        if (!$(event.target).closest("#myAccountBtn, .sub-link").length) {
+          $(".sub-link").hide();
+        }
+      });
+    });
+  </script> -->
+
+
+
 
 <!--===============================================================================================-->	
 <script src="/vendor/jquery/jquery-3.2.1.min.js"></script>
@@ -404,6 +423,30 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
         })
     });
 </script>
+
+
+ <!-- JavaScript for image zoom functionality -->
+ <!-- <script src="script.js"></script> -->
+ <script>
+     document.addEventListener('DOMContentLoaded', function() {
+         const thumbnails = document.querySelectorAll('.thumbnail');
+         const mainImage = document.querySelector('.main-image img');
+
+         thumbnails.forEach(thumbnail => {
+             thumbnail.addEventListener('click', function() {
+                 const thumbnailSrc = this.getAttribute('src');
+                 mainImage.setAttribute('src', thumbnailSrc);
+             });
+         });
+     });
+ </script>
+
+
+
+
+
+
+
 <!--===============================================================================================-->
 <script src="/js/main.js"></script>
 

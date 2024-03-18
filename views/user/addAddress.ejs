@@ -1,0 +1,44 @@
+<%- include('../includes/user/userHead') %>
+<div style="padding-top: 50px">
+  <div class="bg0 m-t-23 p-b-140">
+    <div class="container border">
+      <form class="form-horizontal" action="/addAddress/<%= useId %>" method="post" role="form">
+        <div class="form-group">
+          <label class="col-lg-3 control-label">House name/no</label>
+          <div class="col-lg-8">
+            <input class="form-control" type="text" name="houseName" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-lg-3 control-label">Country</label>
+          <div class="col-lg-8">
+            <input class="form-control" type="text" name="country" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-lg-3 control-label">State</label>
+          <div class="col-lg-8">
+            <input class="form-control" type="text" name="state" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-lg-3 control-label">City</label>
+          <div class="col-lg-8">
+            <input class="form-control" type="text" name="city" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-lg-3 control-label">Zip</label>
+          <div class="col-lg-8">
+            <input class="form-control" type="text" name="zip" />
+          </div>
+        </div>
+        <div class="col d-flex justify-content-end">
+          <button class="btn btn-primary" type="submit">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../includes/user/userEnd') %>

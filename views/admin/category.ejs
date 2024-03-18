@@ -14,9 +14,15 @@
             </div>
             
             <div class="viewForm" style="display: none;"><h4 id="subHead">Add New Category</h4>
-                <form action="/category" method="post">
-
+                <form action="/category" method="post" enctype="multipart/form-data">
+                    <% if(error) {%>
+                        <div class="text-danger"><%= error %></div>
+                        <% } %>
                     <input class="form-control form-control-lg category" name="newCategory" type="text" placeholder="Category">
+                    <div class="form-group">
+                        <label for="productImage">Category Images</label>
+                        <input type="file" class="form-control-file" name="images" id="categoryImage" accept="image/*" multiple>
+                      </div>
                     <button type="submit" class="btn btn-primary btn-lg" style="margin-top: 20px;">Add</button>
 
                  </form>
@@ -26,11 +32,14 @@
 
             <% if(category.length) { %>
 
-
+                <% if(error){ %>
+                    <div class="text-danger"><%= error %></div>
+                    <% } %>
                 <table class="table">
                     <thead class="thead-dark">
                       <tr>
                         <th scope="col">CATEGORY</th>
+                        <th scope="col">IMAGES</th>
                         <th scope="col">ACTIONS</th>                                                                      
                     </tr>
                 </thead>
@@ -38,7 +47,10 @@
                    <% for( let cat of category ) { %>
                     <% if(!cat.isDeleted){ %> 
                     <tr>
-                        <td><%= cat.categoryName %></td>                        
+                        <td><%= cat.categoryName %></td>  
+                        <td><div><img src="/images/productImages/<%= cat.image[0] %>" alt="Category-Img" style="max-width: 200px; height: 150px;"></div>
+                            <div>File Name: <%= cat.image %></div>
+                        </td>                      
                         <td class="d-flex">
                             <a href="/editCategory/<%= cat._id %>">
                             <i class='bx bxs-edit-alt'></i> 

@@ -51,9 +51,11 @@
                     <td><%= product.color %></td>
 
                     <td><%= product.price %></td>
-                 
+                 <% if(product.stock == 0){ %>
+                 <td><p class="text-danger">Out of Stock</p></td>
+                  <% } else { %>
                     <td><%= product.stock %></td>
-                  
+                  <% } %>
                     <td><%= product.description %></td>
                   
                     <td><%= product.image %></td>
@@ -61,7 +63,7 @@
                       <td class="d-flex">
                         <a href="/editProduct/<%= product._id %>">
                         <i class='bx bxs-edit-alt'></i> 
-                        </a>
+                      </a>
 
                         <form action="/deleteProduct/<%= product._id %>?_method=DELETE" method="post">
                           <button type="submit" style="background: none;border: transparent;">

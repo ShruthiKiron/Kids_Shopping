@@ -1,0 +1,108 @@
+<%-include('../includes/admin/adminHead')%>
+
+<div id="main-wrapper">
+  <%-include('../includes/admin/adminNav')%> <%-
+  include('../includes/admin/adminSidebar')%>
+
+  <div class="content-body">
+    <div class="container-fluid">
+      <h3 id="pgHead">ORDERS</h3>
+      <table id="example" class="table table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Order Id</th>
+                <th>Product</th>
+                <th>Pay Method</th>
+                <th>Grand Total</th>
+                <th>Order Stage</th>
+                <th>Order Status</th>
+                <th>Update Orders</th>
+                <!-- <th></th> -->
+            </tr>
+        </thead>
+        <tbody>
+          <% order.forEach(item => { %>
+          <tr>
+            <td><%= item.userInfo.firstName %> <%= item.userInfo.lastName %></td>
+            <td><%= item.orderId %></td>
+            <td>
+              <div class="btn-group dropstart">
+              <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                Product Details
+              </button>
+              <ul class="dropdown-menu">
+                <div class="px-3 py-1">
+               <% item.product.forEach(data  => { %>
+                <div> NAME:<%= data.productDetails.productName %></div> 
+                <div>QTY : <%= data.quantity %></div> 
+                <div>SIZE : <%= data.size %></div> 
+                <div class="border my-1"></div>
+
+                <% }) %>
+              </div>
+              </ul>
+            </div></td>
+            <td><%= item.paymentMethod %></td>
+            
+            <td>₹<%= item.grandTotal %></td>
+            <td><%= item.orderStage %></td>
+            <td><%= item.orderStatus %></td>
+            
+            <td>
+
+              <div class="dropdown-center">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Update Order
+                </button>
+                <ul class="dropdown-menu">
+                  <li><button class="btn" id="order-stage-update" data-order-id="<%= item._id %>" data-order-stage="DELIVERED" href="#">Delivered</button></li>
+                  <li><button class="btn" id="order-stage-update" data-order-id="<%= item._id %>" data-order-stage="OUT OF DELIVERY" href="#">Out Of Delivery</button></li>
+                  <li><button class="btn" id="order-stage-update" data-order-id="<%= item._id %>" data-order-stage="SHIP ORDER" href="#">Ship Order</button></li>
+                  <li><button class="btn" id="order-stage-update" data-order-id="<%= item._id %>" data-order-stage="DISPATCH ORDER" href="#">Disptach Order</button></li>
+                  <li><button class="btn" id="order-stage-update" data-order-id="<%= item._id %>" data-order-stage="CANCEL ORDER" href="#">Cancel Order</button></li>
+                </ul>
+              </div>
+              
+              
+               </td>
+        </tr>
+        <% }) %>
+    </div>
+  </div>
+</div>
+<%-include('../includes/admin/adminEnd')%>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+<script>
+  $(document).ready(function() {
+    $(document).on('click' , '#order-stage-update' ,function() {
+       const value  = $(this).data('order-stage')
+
+       const orderId = $(this).data('order-id');
+       const data ={
+        stage:value,
+        orderID:orderId
+       }
+
+       
+      $.ajax({
+        url:'/update-order-stage/'+orderId,
+        method:'POST',
+        data:data,
+        success:function(response ){
+          if(response.success){
+           console.log(orderId)
+           console.log(data)
+          }else{
+            alert(response.msg)
+          }
+        },error:function(error){
+          console.log(error);
+        }
+
+      })
+    })
+  })
+</script>

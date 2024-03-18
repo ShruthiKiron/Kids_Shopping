@@ -4,13 +4,13 @@ const categorySchema = require('../models/categoryModel')
 module.exports = {
 
     getCategory : async (req,res) => {
+        
         try {
-            const categoryData = await categorySchema.find()
-            res.render('admin/category',{category : categoryData})
+            const categoryData = await categorySchema.find().sort({date : -1})
+            res.render('admin/category',{category : categoryData,error : req.flash('error')})
             
         } catch (error) {
-            console.log("Error in get category "+error)
-            
+            console.log("Error in get category "+error)            
         }
      },
 
@@ -18,18 +18,24 @@ module.exports = {
         try {
             const categoryDetails = await categorySchema.findOne({categoryName : req.body.newCategory})
             console.log(req.body.newCategory);
-            if(categoryDetails){
+            const img = []
+            for( let items of req.files) {
+                img.push(items.filename)
+            }
+
+            if(categoryDetails){                
                 
-                res.send("Category already exist")
+                req.flash('error', 'Category already exist')
+                res.redirect('/category')
             }
             else{
-                const catData =  new categorySchema({categoryName : req.body.newCategory})
+                const catData =  new categorySchema({categoryName : req.body.newCategory,image : img})
                 await catData.save()
                 res.redirect('/category')
             }
             
         } catch (error) {
-            console.log("Error i addin category "+error);
+            console.log("Error in adding category "+error);
             
         }
 
@@ -40,7 +46,7 @@ module.exports = {
             const catData = await categorySchema.findOne({_id : req.params.id})
             if(catData){
                 
-                res.render('admin/editCategory',{ catData })
+                res.render('admin/editCategory',{ catData,error : req.flash('error') })
             }
             
         } catch (error) {
@@ -53,9 +59,17 @@ module.exports = {
         try {
             
             const catData = await categorySchema.findOne({_id : req.params.id})
+            const newCategoryName = req.body.categoryName
+            const categoryData = await categorySchema.findOne({categoryName : newCategoryName})
+            if(!categoryData){
             const catName = await categorySchema.updateOne({_id : req.params.id},{$set : {categoryName : req.body.categoryName}})
-            
+       
             res.redirect('/category')
+        }
+        else{
+            req.flash("error","Cannot edit,Category already exist")
+            res.redirect('/category')
+        }
         } catch (error) {
             
             console.log("Error in patch edit "+ error);

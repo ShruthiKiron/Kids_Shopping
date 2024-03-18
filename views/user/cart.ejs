@@ -1,0 +1,217 @@
+<%- include('../includes/user/userHead') %> 
+<!-- <style>
+    @media (min-width: 1025px) {
+.h-custom {
+height: 100vh !important;
+}
+}
+
+.card-registration .select-input.form-control[readonly]:not([disabled]) {
+font-size: 1rem;
+line-height: 2.15;
+padding-left: .75em;
+padding-right: .75em;
+}
+
+.card-registration .select-arrow {
+top: 13px;
+}
+
+.bg-grey {
+background-color: #eae8e8;
+}
+
+@media (min-width: 992px) {
+.card-registration-2 .bg-grey {
+border-top-right-radius: 16px;
+border-bottom-right-radius: 16px;
+}
+}
+
+@media (max-width: 991px) {
+.card-registration-2 .bg-grey {
+border-bottom-left-radius: 16px;
+border-bottom-right-radius: 16px;
+}
+}
+</style> -->
+ <div style="padding-top: 50px;">
+    <div class="bg0 m-t-23 p-b-140">
+        <div class="container">
+            
+
+            <section class="h-100 h-custom" style="background-color: #d2c9ff;">
+                <div class="container py-5 h-100">
+                  <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col-12">
+                      <div class="card card-registration card-registration-2" style="border-radius: 15px;">
+                        <div class="card-body p-0">
+                          <div class="row g-0">
+                            <div class="col-lg-8">
+                              <div class="p-5">
+                                <div class="d-flex justify-content-between align-items-center mb-5">
+                                  <h1 class="fw-bold mb-0 text-black">Total Items</h1>
+                                  <h6 class="mb-0 text-muted"><%= items %></h6>
+                                </div>
+
+                                <hr class="my-4">
+                                <% products.forEach(product =>{ %>
+                                <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                  <div class="col-md-2 col-lg-2 col-xl-2">
+                                    <img
+                                      src="/images/productImages/<%= product.Product.images[0] %>"
+                                      class="img-fluid rounded-3" alt="Cotton T-shirt">
+                                  </div>
+                                  <div class="col-md-3 col-lg-3 col-xl-3">
+                                    
+                                    <h5 class="text-black mb-0"><%= product.Product.productName %></h5>
+                                    <h6 style="color: lightgrey;" class=" mb-0"><%= product.size %></h6>
+                                  </div>
+                                  <!-- <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                                    <button class="btn ">-</button>
+                                     <div class="d-flex align-items-center justify-content-center px-2"><span><%= product.quantity %></span></div>
+                                    <button class="btn">+</button>
+                                  </div> -->
+                                  <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                                    <button class="btn minus-btn updateCartButton" data-cartitem-id="<%= product._id %>" data-cart-quantity="-1">-</button>
+                                    <div class="d-flex align-items-center justify-content-center px-2"><span id="quantity"><%= product.quantity %></span></div>
+                                    <button class="btn plus-btn updateCartButton" data-cartitem-id="<%= product._id %>" data-cart-quantity="1"  >+</button>
+                                </div>
+                                
+                                  
+                                  <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                                    <h6 class="mb-0">₹<%= product.totalPrice %></h6>
+                                  </div>
+                                  <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                                    <form action="/deleteItemCart/<%= product._id %>?_method=DELETE" method="post">
+                                    <button  type="submit" style="background: none;border: transparent;">
+                                      <i class='bx bxs-trash'></i>
+                                  </button>
+                                </form>
+                                  </div>
+                                  
+                                </div>
+              
+                                <hr class="my-4">
+                                <% }) %>
+                                
+              
+              
+                               
+              
+                                <div class="pt-5">
+                                  <h6 class="mb-0"><a href="/product" class="text-body"><i
+                                        class="fas fa-long-arrow-alt-left me-2"></i>Back to shop</a></h6>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-lg-4 bg-grey">
+                              <div class="p-5">
+                                <h3 class="fw-bold mb-5 mt-2 pt-1">Summary</h3>
+                                <hr class="my-4">
+              
+                                <div class="d-flex justify-content-between mb-4">
+                                  <h5 class="text-uppercase">items <%= items %> </h5>
+                                  <h5>₹ <%= grandTotal %></h5>
+                                </div>
+              
+                                <h5 class="text-uppercase mb-3">Shipping</h5>
+              
+                                <div class="mb-4 pb-2">
+                                  <select class="select">
+                                    <option value="1">Standard Shipping</option>
+                                    <!-- <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                    <option value="4">Four</option> -->
+                                  </select>
+                                  
+                                </div>
+                                <div class="d-flex justify-content-between mb-4">
+                                  <h5 class="text-uppercase">Shipping Charge </h5>
+                                  <h5>₹ 0 %></h5>
+                                </div>
+              
+                                <h5 class="text-uppercase mb-3">Give code</h5> 
+              
+                                <div class="mb-5">
+                                  <div class="form-outline">
+                                    <input type="text" id="form3Examplea2" class="form-control form-control-lg" />
+                                    <label class="form-label" for="form3Examplea2">Enter your code</label>
+                                  </div>
+                                </div> 
+              
+                                <hr class="my-4">
+              
+                                <div class="d-flex justify-content-between mb-5">
+                                  <h5 class="text-uppercase">Total price</h5>
+                                  <h5>₹ <%= grandTotal %></h5>
+                                </div>
+                                <% if(products.length > 0) { %>
+                                <button type="submit" class="btn btn-dark btn-block btn-lg"
+                                  data-mdb-ripple-color="dark"><a href="/checkout" class="text-body"style="text-decoration: none;color: white;"> Checkout </a></button>
+                                  <% } else { %>
+                                    <button onclick="alert('Cart is empty')" type="submit" class="btn btn-dark btn-block btn-lg"
+                                    data-mdb-ripple-color="dark"><a  class="text-body"style="text-decoration: none;color: white;"> Checkout </a></button>
+                                  <% } %>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+           
+        </div>
+    </div>
+</div>
+<script>
+  
+const changeQuantityButtons = document.querySelectorAll(".updateCartButton");
+
+changeQuantityButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const qty = button.getAttribute('data-cart-quantity');
+    const id =   button.getAttribute('data-cartitem-id')
+  
+    fetch(`/cart/change_quantity/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        quantity: qty
+        
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      if(data.success){
+        location.reload(
+          
+        )
+      }
+    })
+    .catch(error => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
+  });
+});
+
+
+
+
+
+</script>
+<%- include('../includes/user/userEnd') %>                        
+
+
+
+

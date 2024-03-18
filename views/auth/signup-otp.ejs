@@ -24,23 +24,24 @@
                 <div>
                     <span>OTP code has been sent to your mail</span>
                 </div>
-                <form action="/signup-otp" method="POST" id="otpForm">
-                    <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2" >
-                        <input  type="text" name="value" id="otp" maxlength="6" style="width: 25%;"/>                        
-                    </div>
+                <form  id="otpForm">
                     
-                    <input type="hidden" name="email" value="email" id="">
-                    <div class="mt-4">  
-                        
-                        <input type="submit" value="Validate" class="btn btn-danger px-4 validate">
-                        
+                    <div class="text-danger alert-msg"></div>
+                   
+                    <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2" >
+                        <input  type="text"  id="otpValue" maxlength="6" style="width: 25%;"/>                        
                     </div>
-                    <div class="countdown-text">
-                        <p>Time Remaining: <span>0:<span id="countdown">59</span></span></p>
-              
-                        <button class="resnd-btn disabled btn" id="resendButton">Resend OTP</button>
-                      </div>
-                </form>
+                 </form>
+                <div class="mt-4">  
+                        
+                    <button  id="signupOtpSubmitButton" class="btn btn-danger px-4 validate">Validate</button>
+                    
+                </div>
+                <div class="countdown-text">
+                    <p>Time Remaining: <span>0:<span id="countdown">59</span></span></p>
+          
+                    <button class="resnd-btn disabled btn" id="resendButton">Resend OTP</button>
+                  </div>
             </div>
         </div>
         

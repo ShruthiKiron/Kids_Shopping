@@ -2,6 +2,7 @@ const form = document.getElementById('form')
 const firstName = document.getElementById('firstName')
 const lastName = document.getElementById('lastName')
 const email = document.getElementById('email')
+// const mobile = document.getElementById('mobile')
 const password = document.getElementById('password')
 const confirmPassword = document.getElementById('confirmPassword')
 
@@ -35,11 +36,13 @@ const setError = (element,message) => {
         let passwordLower = /^(?=.*?[a-z])/;
         let passwordDigit = /^(?=.*?[0-9])/;
         let passwordSpecial = /^(?=.*?[#?!@$%^&*-])/;
+        let mobileNumber = /^(?=.*?[0-9])/;
       
 
     const firstNameValue = firstName.value.trim()
     const lastNameValue = lastName.value.trim()
     const emailValue = email.value.trim()
+    // const mobileValue = mobile.value.trim()
     const passwordValue = password.value.trim()
     const confirmPasswordValue = confirmPassword.value.trim()
     const hasError = false

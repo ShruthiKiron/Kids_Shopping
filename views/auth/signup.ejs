@@ -18,6 +18,9 @@
     <div class="form signup">
     <header>Signup</header>
     <form action="/signup" method="post" id="form">
+      <% if(error){ %>
+        <div class="text-danger"><%= error %></div>
+        <% } %>
       <div class="field input-field">
         <input type="text" name="firstName" id="firstName" placeholder="First Name" class="input">
         <p class="forValidation" style="font-size:xx-small;color: red;"></p>

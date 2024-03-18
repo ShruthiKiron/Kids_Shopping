@@ -8,7 +8,7 @@ module.exports = {
     //admin signup
 
     getAdminSignup : async (req,res) => { 
-        res.render('admin/adminSignup')
+        res.render('admin/adminSignup',{ error: req.flash("error") })
     },
 
     postAdminSignup : async (req,res) => {
@@ -19,6 +19,7 @@ module.exports = {
             console.log(req.body.password)
 
             if(adminData){
+                req.flash("error", "Admin already exist");
                 res.redirect('/adminSignup')
             }
             else{
@@ -47,7 +48,7 @@ module.exports = {
     //get Admin login
 
     getAdminLogin : async (req,res) => {
-        res.render('admin/admin')
+        res.render('admin/admin',{ error: req.flash("error") })
     },
 
     //post Admin login
@@ -56,27 +57,51 @@ module.exports = {
         try {
             const adminData = await adminSchema.findOne({email : req.body.email})
             if(!adminData){
+                req.flash("error", "Admin dosen't exist");
                 res.redirect('/admin')
             }
             else{
               const passwordMatch = await bcrypt.compare(req.body.password,adminData.password)
                 if(passwordMatch)
                 {
+                    req.session.admin = true;
+                    req.session.adminId = adminData._id;
+                    console.log("admin id "+req.session.adminId);
                     res.redirect('/dashboard')
                 }
                 else{
-                    res.send('Wrong Password')
+                    req.flash("error", "Incorrect Password");
+                    res.redirect('/admin')
                 }
             }
             
         } catch (error) {
+            
             console.log("Error in admin login "+error);
             
         }
     },
+    adminLogout : async (req,res) => {
+        try{
+           console.log('logout')
+           delete req.session.adminId
+          
+           res.redirect('/admin')
+        }catch(er)
+        {
+          console.log(er)
+        }
+      },
 
     getDashboard : (req,res) => {
-        res.render('admin/dashboard')
+        if(req.session.adminId){
+            res.render('admin/dashboard')
+        }
+        else{
+            req.flash("error","Please login")
+            res.redirect('/admin')
+        }
+        
     },
 
     

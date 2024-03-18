@@ -1,0 +1,151 @@
+<%- include('../includes/user/userHead') %>
+<div style="padding-top: 50px">
+  <div class="bg0 m-t-23 p-b-140">
+    <div class="container border">
+      <div class="row">
+        <div class="col-md-6 mt-2">
+          <div class="border">
+            <div class="d-flex justify-content-end mt-2">
+              <a class="btn btn-primary" href="/addAddress">Add Address</a>
+            </div>
+            <div class="col text-left">
+              <h4 class="card-title text-left ml-4">Delivery to</h4>
+              <% address.forEach(item => { %>
+              <div class="px-4">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  data-address-id="<%= item._id %>"
+                  name="address"
+                  id="flexRadioDefault1"
+                  checked
+                />
+                <p>
+                  <%= item.address %>,<%= item.country %>,<%= item.state %>,<%=
+                  item.city %>,<%= item.zip %>
+                </p>
+                <div class="row float-end d-flex justify-content-end">
+                  <span class="me-2"
+                    ><a href="/editAddress/<%= item._id %>"
+                      ><i
+                        class="bx bxs-edit-alt"
+                        style="font-size: 20px"
+                      ></i></a
+                  ></span>
+                  <form
+                    action="/deleteAddress/<%= item._id %>?_method=PATCH"
+                    method="post"
+                  >
+                    <button
+                      type="submit"
+                      style="background: none; border: transparent"
+                    >
+                      <i class="bx bxs-trash" style="font-size: 20px"></i>
+                    </button>
+                  </form>
+                </div>
+              </div>
+              <% }) %>
+              <br />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div>
+            <div class="bg-grey mb-4 pb-2 border mt-2">
+              <div class="p-5">
+                <h3 class="fw-bold mb-5 mt-2 pt-1">Payment Method</h3>
+                <select class="select" id="payment-method">
+                  <option selected value="COD">Cash On Delivery</option>
+                  <option value="ONLINE">Razorpay</option>
+                 </select>
+              </div>
+              <button
+                type="submit"
+                id="place-order-button"
+                class="btn btn-dark btn-block btn-lg"
+                data-mdb-ripple-color="dark"
+              >
+              Place Order
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="bg-grey border mt-2">
+            <div class="p-5">
+              <h3 class="fw-bold mb-5 mt-2 pt-1">Summary</h3>
+              <hr class="my-4" />
+
+              <div class="d-flex justify-content-between mb-4">
+                <h5 class="text-uppercase">items</h5>
+              </div>
+              <% cartItem.forEach(cart =>{ %>
+              <div class="border my-2"></div>
+              <div>
+                <div>
+                  <span class="fs-18" style="font-weight: 600"><%= cart.Product.productName %></span>
+                  <div class="d-flex justify-content-between">
+                    <span>Price</span>
+                    <span>₹ <%= cart.Product.price %></span>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <span>Qty</span>
+                    <span><%= cart.quantity %></span>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <span>Order Total</span>
+                    <span><%= cart.totalPrice %></span>
+                  </div>
+                </div>
+              </div>
+              <% } ) %>
+              <hr class="my-4" />
+
+              <div class="d-flex justify-content-between mb-5">
+                <h5 class="text-uppercase">Total price</h5>
+                <h5>₹ <%= grandTotal %></h5>
+              </div>
+              <hr class="my-4" />
+              <div class="d-flex justify-content-between mb-4">
+                <h5 class="text-uppercase">Shipping Charge</h5>
+                <h5>₹ 0</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include('../includes/user/userEnd') %>
+</div>
+<script>
+
+  $(document).ready(function() {
+    $(document).on('click','#place-order-button' ,function() {
+      var checkedAddressId = $('input[name="address"]:checked').data('address-id');
+      var paymentMethod = $('#payment-method').val()
+   
+       const data = {
+        address:checkedAddressId,
+        payment:paymentMethod
+       }
+
+       $.ajax({
+        url:'/place-order',
+        method:'POST',
+        data:data,
+        success:function(response){
+          if(response.orderPlaced){
+
+            location.href = '/order-success'
+          }
+
+        },error:function(error){
+          console.log(error)
+        }
+       })
+    }) 
+  })
+  </script>

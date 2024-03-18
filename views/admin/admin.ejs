@@ -23,6 +23,9 @@
     <div class="form login">
     <header>Login</header>
     <form action="/admin" method="post" id="form">
+      <% if(error){ %>
+        <div class="text-danger" style="color: red;"><%= error %></div>
+        <% } %>
       <div class="field input-field">
         <input type="email" name="email" id="email" placeholder="Email" class="input">
       </div>
@@ -30,9 +33,9 @@
         <input type="password" name="password" id="password" placeholder="Password" class="password">
         <i class='bx bx-hide eye-icon'></i>
       </div>
-      <div class="form-link">
+      <!-- <div class="form-link">
         <a href="#" class="forgot-pass">Forgot password?</a>
-      </div>
+      </div> -->
       <div class="field button-field">
         <button type="submit">Login</button>
       </div>
