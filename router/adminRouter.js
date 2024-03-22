@@ -5,7 +5,8 @@ const customerController = require("../controller/customerController");
 const productController = require("../controller/productController");
 const orderController = require("../controller/orderController")
 const upload = require("../middleware/multer");
-const auth = require('../middleware/isAuth')
+const auth = require('../middleware/isAuth');
+const couponController = require("../controller/couponController");
 
 router.get("/adminSignup",auth.adminLogin , adminController.getAdminSignup);
 router.post("/adminSignup",auth.adminLogin , adminController.postAdminSignup);
@@ -41,6 +42,14 @@ router.delete("/deleteProduct/:id", productController.deleteProduct);
 
 router.get("/orders",orderController.getOrder)
 router.post('/update-order-stage/:id',orderController.postUpdateStage)
+
+router.get('/coupons',couponController.getCoupon)
+
+router.get('/addCoupons',couponController.getAddCoupons)
+router.post('/addCoupons',couponController.postAddCoupons)
+
+router.delete('/deleteCoupon/:id',couponController.deleteCoupon)
+
 
 // router.post('/admin',adminController.postAdminLogin)
 // router.get('/dashboard',adminController.getDashboard)

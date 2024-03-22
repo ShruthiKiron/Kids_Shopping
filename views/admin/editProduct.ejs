@@ -120,14 +120,22 @@
                   </div> -->
 
                   <div class="row" style="display: flex; flex-wrap: wrap;">
-                    <% for (let i = 0; i < productData.image.length; i++) { %>
+                    
                         <div class="edit-images" style="display: flex; flex-direction: column; justify-content: center; flex: 1;margin: 5;">
-                          <input type="file" class="form-control" name="images" id="productImage" accept="image/*" multiple>
-                          <div><img src="/images/productImages/<%= productData.image[i] %>" alt="Product Images" style="max-width: 200px; max-height: 200px;"></div>
+                          <% for (let i = 0; i < productData.image.length; i++) { %>
+                          <div>
+                            <!-- <form action="/deleteImage/<%= productData.image[i] %>?_method=DELETE" method="post">
+                              <button type="submit" style="background: none;border: transparent;"> -->
+
+                            <i class='bx bx-x-circle d-flex justify-content '></i>
+                            <!-- </button>
+                            </form> -->
+                            <img src="/images/productImages/<%= productData.image[i] %>" alt="Product Images" style="max-width: 100px; max-height: 100px;">
+                          </div>
                             <div>File Name: <%= productData.image[i] %></div>
                             <!-- <a class="btn btn-dark" href="/removeImage" role="button" style="width: fit-content;">Remove</a> -->
                         </div>
-                        >
+                        
                     <% } %>
                 </div>
                 

@@ -148,8 +148,7 @@ module.exports = {
                 img.push(items.filename)
             }
             console.log("Final Image Array: ", image);
-
-           
+        
             
             
             await productSchema.updateOne({_id : req.params.id},
@@ -191,6 +190,14 @@ module.exports = {
         } catch (error) {
             console.log("Error in search "+error);
         }
+     },
+     deleteImage : async (req,res) => {
+        try {
+            
+        } catch (error) {
+            console.log("Error in delete image in edit product page "+ error);
+        }
+
      },
    
 

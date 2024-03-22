@@ -1,0 +1,63 @@
+<%-include('../includes/admin/adminHead')%>
+
+<div id="main-wrapper">
+  <%-include('../includes/admin/adminNav')%> <%-
+  include('../includes/admin/adminSidebar')%>
+
+  <div class="content-body">
+    <div class="container-fluid">
+      <h3 id="pgHead">COUPONS</h3>
+      <div class="addCoupons" style="text-align: end;">
+        <a href="/addCoupons" class="addProducts-link" style="text-decoration: none;color:#fff;">
+        <button class="btn btn-dark" type="submit"   style="width: 30%; height: 50px;margin: 20px;">
+            
+                <h4>Add Coupons</h4>
+            
+        </button>
+    </a>
+    </div>
+    
+      <table id="example" class="table table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>Coupon Code</th>
+                <th>Discount</th>
+                <th>Expiry</th>
+                <th>Min Order Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+          
+          <%coupon.forEach(cpn => {%>
+            <tr>
+                <td class="text-uppercase"><%= cpn.couponCode %></td>
+                <td><%= cpn.discountPercentage %></td>
+                <td><%= cpn.expiry.toLocaleString() %></td>
+                <td><%= cpn.minOrderAmount %></td>
+                <td><%= cpn.isActive %></td>
+                <td><form action="/deleteCoupon/<%= cpn._id %>?_method=DELETE" method="post">
+                  <button  type="submit" style="background: none;border: transparent;">
+                    <i class='bx bxs-trash'></i>
+                </button>
+              </form></td>
+                
+            </tr>
+            <% } ) %>
+           
+            </tbody>
+            </table>
+
+
+
+
+    </div>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+<%-include('../includes/admin/adminEnd')%>

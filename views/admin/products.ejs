@@ -57,8 +57,14 @@
                     <td><%= product.stock %></td>
                   <% } %>
                     <td><%= product.description %></td>
+                    
+                    <td>
+                      <% for (let i = 0; i < product.image.length; i++) { %>
+                      <div class="row"><img src="/images/productImages/<%= product.image[i] %>" alt="Product Images" style="max-width: 100px; max-height: 100px;"></div>
+                      <% } %>
+                    </td>
                   
-                    <td><%= product.image %></td>
+                     <!-- <td><%= product.image %></td>  -->
                     
                       <td class="d-flex">
                         <a href="/editProduct/<%= product._id %>">

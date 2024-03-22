@@ -74,7 +74,7 @@ border-bottom-right-radius: 16px;
                                   </div> -->
                                   <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
                                     <button class="btn minus-btn updateCartButton" data-cartitem-id="<%= product._id %>" data-cart-quantity="-1">-</button>
-                                    <div class="d-flex align-items-center justify-content-center px-2"><span id="quantity"><%= product.quantity %></span></div>
+                                    <div class="d-flex align-items-center justify-content-center px-2 quantity-display"><span id="quantity"><%= product.quantity %></span></div>
                                     <button class="btn plus-btn updateCartButton" data-cartitem-id="<%= product._id %>" data-cart-quantity="1"  >+</button>
                                 </div>
                                 
@@ -175,6 +175,28 @@ changeQuantityButtons.forEach(button => {
   button.addEventListener('click', () => {
     const qty = button.getAttribute('data-cart-quantity');
     const id =   button.getAttribute('data-cartitem-id')
+    const quantityDisplay = button.parentElement.querySelector(".quantity-display");
+
+    const currentQuantity = parseInt(quantityDisplay.textContent);
+    const maxQuantityPerPerson = 5;
+            
+            if (qty === "-1" && parseInt(quantityDisplay.textContent) === 1) {
+                // If quantity is 1, don't allow further decrease
+                return;
+            }
+
+            if (qty === "1" && currentQuantity >= maxQuantityPerPerson) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Maximum Quantity Reached',
+        text: 'You can\'t add more than 5 of this product.',
+        confirmButtonColor: '#ae1313',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
+
   
     fetch(`/cart/change_quantity/${id}`, {
       method: 'PATCH',
@@ -210,6 +232,7 @@ changeQuantityButtons.forEach(button => {
 
 
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <%- include('../includes/user/userEnd') %>                        
 
 

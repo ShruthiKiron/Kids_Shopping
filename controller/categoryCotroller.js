@@ -60,7 +60,8 @@ module.exports = {
             
             const catData = await categorySchema.findOne({_id : req.params.id})
             const newCategoryName = req.body.categoryName
-            const categoryData = await categorySchema.findOne({categoryName : newCategoryName})
+            const regex = new RegExp(newCategoryName, 'i');
+            const categoryData = await categorySchema.findOne({categoryName : regex})
             if(!categoryData){
             const catName = await categorySchema.updateOne({_id : req.params.id},{$set : {categoryName : req.body.categoryName}})
        
