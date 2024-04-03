@@ -96,6 +96,10 @@
                     <label for="stock">Stock</label>
                     <input type="text" class="form-control" name="stock" id="stock" value="<%= productData.stock %>">
                   </div>
+                  <div class="form-group">
+                    <label for="stock">Ideal for</label>
+                    <input type="text" class="form-control" name="ideal" id="ideal" value="<%= productData.idealFor %>">
+                  </div>
         
         
                 <div class="form-group">
@@ -137,10 +141,11 @@
                         </div>
                         
                     <% } %>
+                    <button type="submit" class="btn btn-primary btn-lg" style="margin-top: 20px;">Edit</button>
+
                 </div>
                 
 
-                  <button type="submit" class="btn btn-primary btn-lg" style="margin-top: 20px;">Edit</button>
         
               </form>
              

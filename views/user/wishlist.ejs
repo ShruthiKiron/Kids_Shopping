@@ -1,0 +1,63 @@
+<%- include('../includes/user/userHead') %>
+<div style="padding-top: 50px;">
+    <div class="bg0 m-t-23 p-b-140">
+	    <div class="container">
+
+
+
+            <div class="table-responsive wishlist-table margin-bottom-none">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <!-- <th class="text-center"><a class="btn btn-sm btn-outline-dark" href="#">Clear Wishlist</a></th> -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+
+                        <% wishlistData.forEach(item =>{ %>
+                            
+                        <tr>
+                            
+                            <td>
+                                <div class="product-item" style="display: flex; align-items: center;">
+                                    <div>
+                                        <a class="product-thumb" href="#"><img src="/images/productImages/<%= item.productData.image[0] %>" alt="Product" style="width: 287px;height: 355px;"></a>
+                                    </div>
+                                    <div class="product-info" style="flex: 1;">
+                                        <h4 class="product-title"><%= item.productData.product %></h4>
+                                        <div class="text-lg text-medium text-muted"><%= item.productData.price %></div>
+                                    </div>
+                                    <div>
+                                        <form action="/delete-wishlist/<%= item.productData._id %>?_method=DELETE" method="post">
+                                            <button type="submit" style="background: none; border: transparent;">
+                                                <i class='bx bxs-trash fs-20'></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                            
+                            <td class="text-center"><a class="remove-from-cart" href="#" data-toggle="tooltip" title="" data-original-title="Remove item"><i class="icon-cross"></i></a></td>
+                        </tr>
+                        
+                        <% }) %>
+                            
+
+                        
+                    </tbody>
+                </table>
+            </div>
+            <hr class="mb-4">
+
+
+
+
+
+
+        </div>
+    </div>
+</div>
+<script src="/js/wishlists.js"></script>
+<%- include('../includes/user/userEnd') %>

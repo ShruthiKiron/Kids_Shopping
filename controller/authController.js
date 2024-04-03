@@ -1,4 +1,5 @@
 const userSchema = require("../models/userModel");
+const walletSchema = require('../models/walletModel')
 
 const verificationController = require("./verificationController");
 //const homeController = require('./homeController')
@@ -65,11 +66,14 @@ module.exports = {
 
       if (date < otpExpiry) {
         if (otpValue == otp) {
+          const referralCode = verificationController.referralCodeGenerator()
           const userData = {
             firstName: req.session.userInfo.firstName,
             lastName: req.session.userInfo.lastName,
             email: req.session.userInfo.email,
             password: req.session.userInfo.password,
+            
+            referralCode : referralCode,
             token: {
               otp: req.session.userInfo.otp,
               generatedTime: req.session.userInfo.generatedTime,
@@ -78,6 +82,21 @@ module.exports = {
 
           const user = await userSchema.insertMany(userData);
           req.session.userId = user[0]._id;
+          await walletSchema.insertMany({userId : req.session.userId})
+          await walletSchema.updateOne({userId : req.session.userId},{
+            $inc : {
+              wallet : 100
+            },
+            $push : {
+              walletHistory : {
+                date : Date.now(),
+                amount : 100,
+                message : "Join bonus"
+              }
+            }
+          })
+
+
         res.json({ success: true });
         } else {
           res.json({ invalid: true, message: "Invalid OTP" });

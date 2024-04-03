@@ -16,17 +16,32 @@ module.exports = {
   postUpdateStage : async (req,res) => {
     try {
       const order = await orderSchema.findById(req.params.id)
-      // if (order.orderStage !== "CANCELLATION REQUESTED") {
-      //   if (order.orderStage !== "CANCELLED") {
-          
-      //   }else{
-      //     await orderSchema.updateOne({_id : req.params.id},{$set : {orderStage : $stage}})
-      //   }
-      // }else{
-
-      // }
-      const valid = await checkOrderTransition(order.orderStage,req.body.stage)
+      console.log("update order "+order);
+      if (order.orderStage !== "CANCELLATION REQUESTED") {
+        if (order.orderStage !== "CANCELLED") {
+          if(order.orderStage !== "PAYMENT PENDING"){
+            const valid = await checkOrderTransition(order.orderStage,req.body.stage)
       console.log(valid)
+      if(valid){
+        await orderSchema.updateOne({_id : req.params.id},{$set : {orderStage : req.body.stage, orderStatus : 'CANCELLED'}})
+      }
+          }
+          else{
+            console.log("PAyment is pending");
+          }
+          
+        }else{
+          console.log("cancelled");
+        }
+      }else{
+        console.log("cancel");
+      }
+      console.log("stage ",req.body.stage);
+      // const valid = await checkOrderTransition(order.orderStage,req.body.stage)
+      // console.log(valid)
+      // if(!valid){
+      //   await orderSchema.updateOne({_id : req.params.id},{$set : {orderStage : req.body.stage, orderStatus : 'CANCELLED'}})
+      // }
       
     } catch (error) {
       console.log("Error in post update stage "+error);

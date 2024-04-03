@@ -4,7 +4,20 @@ const authController = require("../controller/authController");
 const addressSchema = require("../models/addressModel");
 const cartSchema = require("../models/cartModel");
 const orderSchema = require("../models/orderModel");
+const couponSchema = require('../models/couponModel')
 const bcrypt = require("bcrypt");
+const Razorpay = require("razorpay");
+const CryptoJS = require("crypto-js");
+const crypto = require('crypto')
+
+const instance = new Razorpay({
+  key_id: process.env.RAZORPAY_ID_KEY,
+  key_secret: process.env.RAZORPAY_SECRET_KEY,
+});  
+
+const {createRazorpayOrder,verifyPayment } = require('../helpers/razorpayHelper')
+
+const {generateOrderID } = require('../helpers/orderHelper')
 
 const { ObjectId } = require("mongodb");
 const {
@@ -168,7 +181,7 @@ module.exports = {
     try {
       const useId = req.session.userId;
       console.log("Get Change password");
-      res.render("user/changePassword", { useId, error: req.flash("error") });
+      res.render("user/changePassword", { useId, error: req.flash("error"),passwordChanged: req.session.passwordChanged });
     } catch (error) {
       console.log("Error in get change password " + error);
     }
@@ -202,6 +215,7 @@ module.exports = {
               },
             }
           );
+          req.session.passwordChanged = true;
           res.redirect("/userProfile/" + useId);
         } else {
           req.flash("error", "Password not match");
@@ -211,7 +225,7 @@ module.exports = {
         req.flash("error", "Current password is wrong");
         res.redirect("/changePassword/" + useId);
       }
-
+      
       res.redirect("/userProfile/" + useId);
     } catch (error) {
       console.log("Error in post change password " + error);
@@ -228,11 +242,29 @@ module.exports = {
       const grandTotal = cartData.length > 0 ? cartData[0].grandTotal : 0;
       const products = cartData.length > 0 ? cartData[0].products : [];
 
+      const coupon = await couponSchema.find()
+     console.log(coupon);
+
+      if(coupon.length > 0 && coupon[0].isActive == true){
+        if(grandTotal >= coupon[0].minOrderAmount){
+          const updateCoupon = await couponSchema.updateOne(
+            { _id: coupon.id }, 
+            { $addToSet: { usedUsers: { user_id: useId } } }
+          );
+          console.log(updateCoupon);
+          res.render('user/cart',{useId,items,grandTotal,products,coupon : coupon[0],error: req.flash("error")})
+        }
+
+      }
+
       //    // console.log("User id in get cart "+useId);
       //    console.log("product in cart "+ productData.product);
+      // else{
 
-      res.render("user/cart", { useId, items, grandTotal, products });
+      // res.render("user/cart", { useId, items, grandTotal, products,coupon :false });
+      // }
       // res.render('user/cart',{useId})
+      res.render("user/cart", { useId, items, grandTotal, products,coupon :false,error: req.flash("error") });
     } catch (error) {
       console.log("Error in get user cart ", error);
     }
@@ -303,8 +335,12 @@ module.exports = {
         },
         { $inc: { "items.$.quantity": Number(req.body.quantity) } }
       );
+      const useId = req.session.userId;
 
-      res.json({ success: true });
+      const cartItem = await cartAggregation(useId);
+      const grandTotal = cartItem[0].grandTotal
+      res.json({ success: true ,grandTotal});
+
     } catch (error) {
       console.log(error);
     }
@@ -330,31 +366,67 @@ module.exports = {
   getCheckout: async (req, res) => {
     try {
       const useId = req.session.userId;
+      const cartData = await cartAggregation(useId);
+      const data = await consolidateDocuments(cartData[0].products);
+      const inStock = await checkStock(data);
+      console.log("instock "+inStock);
+      if(inStock == true){
+      
       req.session.cart = true;
       const address = await addressSchema.find({
         userId: useId,
         isDeleted: false,
       });
-      const cartData = await cartAggregation(useId);
+      
+      console.log("Received cart data");
       res.render("user/checkout", {
         useId,
         address,
         cartItem: cartData[0].products,
         grandTotal: cartData[0].grandTotal,
-      });
+      });}
+      else{
+        req.flash("error",`${inStock} is not available at this quantity`)
+        res.redirect(`/cart/${useId}`)
+      }
     } catch (error) {
       console.log("Error in get checkout " + error);
     }
   },
+  // createRazorpayOrder : async(req,res) => {
+  //   try {
+  //     const cartData = await cartAggregation(req.session.userId);
+  //       const orderId = generateOrderID();
+  //       const options = {
+  //           amount: cartData[0].grandTotal * 100, // amount in the smallest currency unit
+  //           currency: "INR",
+  //           receipt: "" + orderId,
+  //           //receipt: CryptoJS.randomBytes(10).toString("hex")
+  //       };
+
+  //       createRazorpayOrder(instance, options, async (err, order) => {
+  //           if (err) {
+  //               console.error("Error creating Razorpay order:", err);
+  //               res.status(500).json({ error: "Failed to create Razorpay order" });
+  //               return;
+  //           }
+  //           console.log("Razorpay order created:", order);
+  //           res.json({ order });
+  //       });
+  //   } catch (error) {
+      
+  //   }
+
+  // },
 
   postPlaceOrder: async (req, res) => {
     try {
       const { address, payment } = req.body;
-
+     
       const cartData = await cartAggregation(req.session.userId);
       const data = await consolidateDocuments(cartData[0].products);
       const inStock = await checkStock(data);
-
+      console.log("post place order ",req.body);
       if (inStock == true) {
         if (req.body.payment == "COD") {
           const order = await makeOrder(
@@ -372,18 +444,73 @@ module.exports = {
           }
         } else if (req.body.payment == "ONLINE") {
           console.log("Razopay");
-        }
+          const order = await makeOrder(
+            cartData[0].grandTotal,
+            address,
+            payment,
+            req.session.userId
+          );
+          let orders = await orderSchema.insertMany(order);
+          const orderId = generateOrderID();
+          const options = {
+                      amount: cartData[0].grandTotal * 100, 
+                      currency: "INR",
+                      receipt: "" + order.orderId,
+                      
+                  };
+          instance.orders.create(options,(err,order)=>{
+            if(err)
+            {
+              console.log(err);
+            }
+            else{
+              res.json({order})
+            }
+          })
+      }
+
       } else {
-        console.log(inStock);
+        console.log("Out of stock "+ inStock);
         res.json({
           outOfStock: true,
           message: `${inStock} is Not Available in this quantity remove from the cart and proceed`,
         });
       }
-    } catch (error) {
-      console.log(error);
+    } 
+    catch (error) {
+      console.log("Error in placing order"+error);
     }
+
   },
+  postVerifyPayment: async (req, res) => {
+    try {
+      console.log(req.body);
+      let hmac = crypto.createHmac("sha256", process.env.RAZORPAY_SECRET_KEY);
+
+    hmac.update(
+      req.body["payment[razorpay_order_id]"] +
+        "|" +
+        req.body["payment[razorpay_payment_id]"]
+    );
+    hmac = hmac.digest("hex");
+    if (hmac == req.body["payment[razorpay_signature]"]) {
+      await orderSchema.updateOne({orderId : req.body["order[order][receipt]"]},
+      {$set : {orderStage : "PREPARING FOR DISPATCH",orderStatus : "ACTIVE"
+      
+    }})
+    const useId = req.session.userId;
+    await cartSchema.updateOne({userId : new Object (useId)},{$set : {items : []}})
+    res.json({paymentSuccess:true})
+    }
+
+
+        
+    } catch (error) {
+        console.error(error);
+        
+    }
+},
+  
   getOrderSuccess: async (req, res) => {
     try {
       res.render("user/order-success", { useId: req.session.userId });
@@ -391,6 +518,7 @@ module.exports = {
       console.log("Error in get order success message " + error);
     }
   },
+  
   getOrderHistory: async (req, res) => {
     try {
       console.log(req.params.id);

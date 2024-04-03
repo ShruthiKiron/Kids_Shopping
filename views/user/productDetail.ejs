@@ -69,7 +69,7 @@
                         <% if(useId) { %>
                             <button class="btn btn-cart" data-product-id="<%= product._id %>"  id="cart">Add to Cart</button>
                         <button class="btn btn-buy-now">Buy Now</button>
-                        <button class="btn btn-wishlist">Add to Wishlist</button>
+                        <button class="btn btn-wishlist wishlist-btn" data-product-id="<%= product._id %>" data-toggle="modal" data-target="#exampleModal">Add to Wishlist</button>
                             <% } else { %>
                                 <button class="btn btn-cart" onclick="location.href='/login'"  >Add to Cart</button>
                         <button class="btn btn-buy-now" onclick="location.href='/login'" >Buy Now</button>
@@ -155,6 +155,46 @@
            
         }
     });
+
+
+    const wishlistBtn = document.querySelector('.wishlist-btn')
+        wishlistBtn.addEventListener('click', function (event) {
+            const productId = wishlistBtn.getAttribute('data-product-id')
+           // alert('clicked')
+            // Fetch request
+            fetch(`/add-wishlist?productId=${productId}`, {
+                method: 'POST', 
+            })
+            .then(response => {
+                if (response.ok) {
+                   // alert('Product added to wishlist!');
+                   response.text().then(message => {
+            console.log('Success:', message);
+            // response.text().then(message => {
+            //     // Show success modal with the response message
+            //     $('#successModal .modal-body').text(message);
+            //     $('#successModal').modal('show');
+             });
+             } else {
+                    //alert('Failed to add product to wishlist. Please try again.');
+                    response.text().then(message => {
+            console.error('Error:', message); // Log the error message
+        });
+        // response.text().then(message => {
+        //         // Show error modal with the error message
+        //         $('#errorModal .modal-body').text(message);
+        //         $('#errorModal').modal('show');
+        //     });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to add product to wishlist. Please try again.');
+            });
+        });
+
+
 </script>
+
 
 <%- include('../includes/user/userEnd') %>            

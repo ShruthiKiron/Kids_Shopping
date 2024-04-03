@@ -1,0 +1,48 @@
+<%-include('../includes/admin/adminHead')%>
+
+<div id="main-wrapper">
+  <%-include('../includes/admin/adminNav')%> <%-
+  include('../includes/admin/adminSidebar')%>
+
+  <div class="content-body">
+    <div class="container-fluid">
+      <h3 id="pgHead">OFFERS</h3>
+      <div class="addOffers" style="text-align: end;">
+        <a href="/addOffers" class="addOffers-link" style="text-decoration: none;color:#fff;">
+        <button class="btn btn-dark" type="submit"   style="width: 30%; height: 50px;margin: 20px;">
+            
+                <h4>Add Offers</h4>
+            
+        </button>
+    </a>
+    </div>
+
+      <table id="example" class="table table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Offer Type</th>
+                <th>Starting Date</th>
+                <th>Expiry Date</th>
+                <th>Percentage</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+          <% offers.forEach(offer => { %>
+            <tr>
+              <td><%= offer.name %></td>
+              <td><%= offer.offerType %></td>
+              <td><%= offer.startDate.toDateString() %></td>
+              <td><%= offer.expiryDate.toDateString() %></td>
+              <td><%= offer.percentage %></td>
+              <td><%= offer.status%></td>
+            </tr>
+
+         <% }) %>
+        </tbody>
+      </table>
+    </div>
+</div>
+</div>
+<%-include('../includes/admin/adminEnd')%>

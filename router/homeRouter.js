@@ -47,5 +47,16 @@ router.get('/view-order/:id',userController.getOrderDetail)
 router.post('/place-order',userController.postPlaceOrder)
 router.get('/order-history/:id',userController.getOrderHistory)
 router.post('/cancel-order/:id',userController.postCancelOrder)
+router.post('/verify_payment',userController.postVerifyPayment)
+//router.post('/create-order',userController.createRazorpayOrder)
+
+router.get('/wishlist/:id',homeController.getWishlist)
+router.post('/add-wishlist',homeController.addWishlist)
+router.delete('/delete-wishlist/:id',homeController.deleteWishlist)
+
+router.get('/wallet/:id',homeController.getWallet)
+
+
+
 
 module.exports = router

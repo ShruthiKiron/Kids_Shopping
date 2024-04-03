@@ -28,6 +28,14 @@ const couponSchema = mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  usedUsers:[
+    {
+        user_id:{
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "user",
+        }
+    }
+  ]
 });
 const couponModel = new mongoose.model('coupon' ,couponSchema)
 module.exports = couponModel

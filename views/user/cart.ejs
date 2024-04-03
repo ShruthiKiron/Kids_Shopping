@@ -74,13 +74,13 @@ border-bottom-right-radius: 16px;
                                   </div> -->
                                   <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
                                     <button class="btn minus-btn updateCartButton" data-cartitem-id="<%= product._id %>" data-cart-quantity="-1">-</button>
-                                    <div class="d-flex align-items-center justify-content-center px-2 quantity-display"><span id="quantity"><%= product.quantity %></span></div>
+                                    <div class="d-flex align-items-center justify-content-center px-2 quantity-display"><span id="quantity<%= product._id %>"><%= product.quantity %></span></div>
                                     <button class="btn plus-btn updateCartButton" data-cartitem-id="<%= product._id %>" data-cart-quantity="1"  >+</button>
                                 </div>
                                 
                                   
                                   <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                                    <h6 class="mb-0">₹<%= product.totalPrice %></h6>
+                                    <h6 class="mb-0" id="price<%= product._id %>">₹<%= product.totalPrice %></h6>
                                   </div>
                                   <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
                                     <form action="/deleteItemCart/<%= product._id %>?_method=DELETE" method="post">
@@ -112,7 +112,7 @@ border-bottom-right-radius: 16px;
               
                                 <div class="d-flex justify-content-between mb-4">
                                   <h5 class="text-uppercase">items <%= items %> </h5>
-                                  <h5>₹ <%= grandTotal %></h5>
+                                  <h5 class="grandTotal">₹ <%= grandTotal %></h5>
                                 </div>
               
                                 <h5 class="text-uppercase mb-3">Shipping</h5>
@@ -128,10 +128,19 @@ border-bottom-right-radius: 16px;
                                 </div>
                                 <div class="d-flex justify-content-between mb-4">
                                   <h5 class="text-uppercase">Shipping Charge </h5>
-                                  <h5>₹ 0 %></h5>
+                                  <h5>₹ 0 </h5>
                                 </div>
+
+                                <% if(grandTotal >= coupon.minOrderAmount) {%>
+                                  <div class="d-flex justify-content-between mb-4">
+                                    <h5 class="text-uppercase">Available Coupon </h5>
+                                    
+                                    <h5 class="text-uppercase"><%= coupon.couponCode %></h5>
+                                  
+                                  </div>
+                                  
               
-                                <h5 class="text-uppercase mb-3">Give code</h5> 
+                                <h5 class="text-uppercase mb-3">Apply coupon code</h5> 
               
                                 <div class="mb-5">
                                   <div class="form-outline">
@@ -139,12 +148,13 @@ border-bottom-right-radius: 16px;
                                     <label class="form-label" for="form3Examplea2">Enter your code</label>
                                   </div>
                                 </div> 
+                                <% } %>
               
                                 <hr class="my-4">
               
                                 <div class="d-flex justify-content-between mb-5">
                                   <h5 class="text-uppercase">Total price</h5>
-                                  <h5>₹ <%= grandTotal %></h5>
+                                  <h5 class="grandTotal">₹ <%= grandTotal %></h5>
                                 </div>
                                 <% if(products.length > 0) { %>
                                 <button type="submit" class="btn btn-dark btn-block btn-lg"
@@ -167,6 +177,7 @@ border-bottom-right-radius: 16px;
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   
 const changeQuantityButtons = document.querySelectorAll(".updateCartButton");
@@ -216,9 +227,22 @@ changeQuantityButtons.forEach(button => {
     })
     .then(data => {
       if(data.success){
-        location.reload(
-          
-        )
+        const price = document.getElementById(`price${id}`)
+        const quantity = document.getElementById(`quantity${id}`)
+        const grandTotal = document.querySelectorAll('.grandTotal')
+        const check = quantity.textContent
+        const updatedQty = parseInt(check)+parseInt(qty)
+        quantity.innerHTML = updatedQty
+        const totalPrice = price.textContent.substring(1)
+        
+        const priceOfOneProduct = parseInt(totalPrice)/parseInt(check)
+       const updatedPrice = parseInt(priceOfOneProduct * updatedQty)
+       price.innerHTML = `₹${updatedPrice}`
+       grandTotal.forEach(element => {
+        element.innerHTML = `₹${data.grandTotal}`
+       })
+       
+        
       }
     })
     .catch(error => {
@@ -229,10 +253,21 @@ changeQuantityButtons.forEach(button => {
 
 
 
+const error = "<%=error%>"
+console.log(error)
+if(error.length > 0 && error)
+{
+  Swal.fire({
+  
+  text: error,
+  icon: "error"
+});
+}
+
 
 
 </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <%- include('../includes/user/userEnd') %>                        
 
 

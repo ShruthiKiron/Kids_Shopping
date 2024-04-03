@@ -1,6 +1,9 @@
 const userSchema = require("../models/userModel");
 const productSchema = require("../models/productModel");
 const categorySchema = require("../models/categoryModel");
+const wishlistSchema = require('../models/wishlistModel')
+const walletSchema = require('../models/walletModel')
+const {ObjectId} = require('mongodb')
 
 module.exports = {
   getHome: async (req, res) => {
@@ -89,6 +92,86 @@ module.exports = {
     } catch (error) {
       console.log("Error in post filter "+error);
     }
+  },
+  getWishlist : async(req,res)=>{
+    try {
+      const useId = req.session.userId;
+    // const products = await productSchema.find()
+    // const wishlistData = await wishlistSchema.find()
+    const wishlistData = await wishlistSchema.aggregate([{$match : {userId : new ObjectId(useId)}},{$unwind : '$productId'
+    },{$lookup : {
+      from : 'products',
+      localField : 'productId',
+      foreignField : '_id',
+      as : 'productData'
+      
+    }},{$unwind : '$productData'}])
+    console.log("unwind ",wishlistData);
+    
+    res.render('user/wishlist',{wishlistData,useId})
+
+    } catch (error) {
+      console.log("Error in get wishlist "+error);
+    }
+
+  },
+  addWishlist : async(req,res) => {
+    try {
+      console.log("clicked");
+      const useId = req.session.userId;
+      const productId = req.query.productId;
+      console.log("productId ",productId);
+      const checkProduct = await wishlistSchema.find({productId : productId})
+      console.log("checking product ",checkProduct);
+      if (checkProduct.length === 0){
+      await wishlistSchema.updateOne(
+        { userId: new ObjectId(useId) },
+        { $push: {  productId: new ObjectId(productId)}  },
+        { upsert: true }
+      );
+      res.status(200).send("Product added to wishlist successfully");
+    }
+    else{
+      
+
+      res.status(409).send("Product is already in the wishlist");
+    }
+     // console.log("Wishlist data "+wishlistData);
+      
+      
+    } catch (error) {
+      console.log("Error in add wishlist "+error);
+    }
+
+  },
+  deleteWishlist : async(req,res) => {
+    try {
+      const useId = req.session.userId;
+      const productId = req.params.id
+      console.log("deleteitemsfromw wislist " , req.params.id);
+      await wishlistSchema.updateOne(
+        {userId : new ObjectId(useId)},
+        {$pull : {productId : req.params.id}}
+        )
+        res.redirect(`/wishlist/${productId}`)
+     
+    } catch (error) {
+      console.log("Error in deleting wishlist");
+    }
+  },
+  getWallet : async (req,res)=>{
+    try {
+      const useId = req.session.userId;
+      //const wallet = await walletSchema.find({userId : new ObjectId(useId)})
+      const wallet = await walletSchema.aggregate([{ $unwind: '$walletHistory' }]);
+      console.log("walletDaat ",wallet);
+      //console.log("wallet ",wallet);
+      res.render('user/wallet',{wallet,useId})
+      
+    } catch (error) {
+      console.log("Error in get wallet "+error);
+    }
+
   },
 
 };

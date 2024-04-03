@@ -1,4 +1,5 @@
 <%- include('../includes/user/userHead') %>
+
 <div style="padding-top: 50px">
   <div class="bg0 m-t-23 p-b-140">
     <div class="container border">
@@ -117,10 +118,10 @@
       </div>
     </div>
   </div>
-
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <%- include('../includes/user/userEnd') %>
 </div>
-<script>
+ <script>
 
   $(document).ready(function() {
     $(document).on('click','#place-order-button' ,function() {
@@ -141,6 +142,10 @@
 
             location.href = '/order-success'
           }
+          else{
+            razorPayment(response)            
+            console.log(response);
+          }
 
         },error:function(error){
           console.log(error)
@@ -148,4 +153,170 @@
        })
     }) 
   })
+  function razorPayment(order) {
+  var options = {
+    key: "rzp_test_QUrSp68jcj7T0r",
+    amount: order.order.amount,
+    currency: "INR",
+    name: "Giggle Wardrobe",
+    description: "Test Transaction",
+    
+    order_id: order.order.id,
+    handler: function (response) {
+      verifyPayment(response, order);
+    },
+    prefill: {
+      name: 'Customer Name',
+      email: 'customer@example.com',
+      contact: '9999999999'
+    },
+    notes: {
+      address: "Razorpay Corporate Office",
+    },
+    theme: {
+      color: "#dc3545",
+    },
+  };
+  var rzp1 = new Razorpay(options);
+  rzp1.open();
+}
+function verifyPayment(payment, order){
+  $.ajax({
+    url: "/verify_payment",
+    data: {
+      payment,
+      order,
+    },
+    method: "POST",
+    success: function (response) {
+      if (response.paymentSuccess) {
+        location.href = '/order-success'
+      } 
+    },
+    error: function (error) {
+      console.log(error);
+    },
+  });
+
+}
+
   </script>
+
+  <!-- <script>
+    document.getElementById('place-order-button').addEventListener('click', async function() {
+    const paymentMethod = document.getElementById('payment-method').value;
+    try{
+      const response = await fetch('/place-order',{
+        method : 'POST',
+        headers:{
+                    'Content-Type':'application/json'
+                },
+        body : JSON.stringify({
+          paymentMethod : paymentMethod,
+
+
+      })  
+    })
+    await response.json
+    if(response.ok){
+      console.log('Payment successful');
+
+    }
+    else{
+      console.log('Payment failed:', response.statusText);
+    }
+    }    
+    
+    catch(error){
+      console.log("Error in fetching payment method");
+    }
+  })
+  </script> -->
+  <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <script>
+           const rzp = new Razorpay({
+    key: process.env.RAZORPAY_ID_KEY, 
+    amount: orderData.amount,
+    currency: orderData.currency,
+    order_id: orderData.id,
+    name: 'Giggle Wardrobe',
+    description: 'Kids dress',
+    handler: function(response) {
+      // Handle successful payment response
+      console.log('Payment successful:', response);
+      // Redirect to order success page or perform other actions
+      location.href = '/order-success';
+    },
+    prefill: {
+      name: 'Customer Name',
+      email: 'customer@example.com',
+      contact: '9999999999'
+    }
+  });
+    document.getElementById('place-order-button').addEventListener('click', async function() {
+      var checkedAddressId = document.querySelector('input[name="address"]:checked').dataset.addressId;
+      var paymentMethod = document.getElementById('payment-method').value;
+  
+      const data = {
+        address: checkedAddressId,
+        payment: paymentMethod
+      };
+  
+      try {
+        let response;
+        if (paymentMethod === 'COD') {
+          
+          response = await fetch('/place-order', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          });
+        } else if (paymentMethod === 'ONLINE') {
+          // If Razorpay is selected, proceed with Razorpay integration
+          // Fetch necessary details to create the order
+          const orderData = await fetch('/create-order', { method: 'POST' }).then(res => res.json());
+  
+   
+  rzp.open();
+  
+          // Redirect to order success page after successful payment
+          //location.href = '/order-success';
+        } else {
+          // Handle other payment methods if necessary
+        }
+  
+        // Check the response if needed
+        if (response && response.ok) {
+          // Payment successful, handle accordingly
+          console.log('Payment successful');
+          // Redirect to order success page
+          location.href = '/order-success';
+        } else {
+          // Payment failed, handle accordingly
+          console.error('Payment failed:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error processing payment:', error);
+      }
+    });
+
+// Handler function for Razorpay payment completion
+// rzp.on('payment.success', function(response) {
+//     console.log('Payment successful:', response);
+//     // Redirect to order success page or perform other actions
+//     location.href = '/order-success';
+// });
+
+// // Handler function for Razorpay payment failure
+// rzp.on('payment.error', function(error) {
+//     console.error('Payment failed:', error);
+//     // Handle payment failure
+// });
+
+
+
+  </script>
+   -->

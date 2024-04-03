@@ -46,7 +46,32 @@ const userSchema = new mongoose.Schema({
   date : {
     type : Date,
     default : Date.now()
-  }
+  },
+//   wallet : {
+//     type : Number,
+//     default : 0
+// },
+
+// walletHistory : [{
+//     date : {
+//         type : Date,
+//     },
+//     amount : {
+//         type : Number
+//     },
+//     message : {
+//         type : String
+//     }
+
+// }],
+referralCode : {
+  type : String
+},
+
+isReferred : {
+  type : String
+}
+
 });
 
 

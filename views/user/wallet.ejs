@@ -1,0 +1,43 @@
+<%- include('../includes/user/userHead') %>
+<div style="padding-top: 50px;">
+    <div class="bg0 m-t-23 p-b-140">
+	    <div class="container">
+
+
+
+<div class="col-md-9">
+<!--                
+    <div class="row mt-3 pl-lg-5 p-2 mx-auto">
+        <a class="btn btn-primary fw-bold address" style="width: 250px;" data-toggle="modal" data-target="#form">Add to wallet</a>
+    </div>
+     -->
+<div class="table-responsive py-5"> 
+   
+    <table class="table table-bordered table-hover">
+    <thead class="thead-dark">
+        <tr>
+        <th scope="col">Date</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Message</th>
+        </tr>
+    </thead>
+     <tbody>
+       <% wallet.forEach(items => { %> 
+                 <tr>
+                     <td><%= items.walletHistory.date %></td>
+                   <% if ( items.walletHistory.amount > 0 ) { %>
+                         <td class="text-success"><%= items.walletHistory.amount  %></td>
+                     <% } else { %>
+                         <td class="text-danger"><%= items.walletHistory.amount  %></td>
+                     <% } %>
+                     <td><%= items.walletHistory.message %></td>
+                 </tr>
+            
+        <% }) %>
+     </tbody> 
+    </table>
+    
+</div>
+</div>
+</div>
+<%- include('../includes/user/userEnd') %>

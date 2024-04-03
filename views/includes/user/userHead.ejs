@@ -180,21 +180,34 @@
 							Logout
 						</a>
 						<a href="/cart/<%= useId %>" class="flex-c-m trans-04 p-lr-25">
-							My Cart 																
+							My Cart <i class='bx bxs-cart fs-20'></i>																
 						</a>
 						<a href="/order-history/<%= useId %>" class="flex-c-m trans-04 p-lr-25">
 							My Orders
+						</a>
+						<a href="/wishlist/<%= useId %>" class="flex-c-m trans-04 p-lr-25">
+							My Wishlist<i class='bx bxs-heart'></i>
+						</a>
+						<a href="/wallet/<%= useId %>" class="flex-c-m trans-04 p-lr-25">
+							My Wallet<i class='bx bxs-wallet'></i>
 						</a>
 						<% } else {%>
 							<a href="/login" class="flex-c-m trans-04 p-lr-25">
 								Login
 							</a>
 							<a href="/login" class="flex-c-m trans-04 p-lr-25">
-								My Cart
+								My Cart<i class='bx bxs-cart fs-20'></i>
 							</a>
 							<a href="/login" class="flex-c-m trans-04 p-lr-25">
 								My Orders
 							</a>
+							<a href="/login" class="flex-c-m trans-04 p-lr-25">
+								My Wishlist<i class='bx bxs-heart fs-20'></i>
+							</a>
+							<a href="/login" class="flex-c-m trans-04 p-lr-25">
+								My Wallet<i class='bx bxs-wallet fs-20'></i>
+							</a>
+
 							<% } %>
 
 
