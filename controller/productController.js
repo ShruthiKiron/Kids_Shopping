@@ -1,6 +1,7 @@
 const categorySchema = require('../models/categoryModel')
 const productSchema = require('../models/productModel')
 const path = require('path')
+const fs = require('fs-extra')
 const { cropAndSaveImage } = require('../helpers/imageCrop')
 
 module.exports = {
@@ -121,7 +122,8 @@ module.exports = {
             
 
             const productData = await productSchema.findOne({_id : req.params.id})
-             const image = productData.image             
+             const image = productData.image   
+            let images = productData.image          
             // console.log("Image "+image)
 
             for(let file of req.files){
@@ -138,15 +140,41 @@ module.exports = {
             }
 
             console.log("Uploaded Files: ", req.files);
+            let newImages = [];
+
+    // Push the new image filenames to the array
+    for (let file of req.files) {
+      newImages.push(file.filename);
+    }
+    const updatedImages = images.concat(newImages);
+
+    console.log("Updated Image Array: ", updatedImages);
+
+
+
+
+
+
             let img = []
             img = image
            
-            for (let items of req.files) {
-                // const croppedImage = await cropAndSaveImage(items);
-                // image.push(path.basename(croppedImage));
-                // console.log("Pushed Image: ", path.basename(croppedImage));
-                img.push(items.filename)
+            if (req.files && req.files.length > 0) {
+                // Remove existing images from the array
+                images = [];
+    
+                // Add new images to the array
+                for (let file of req.files) {
+                    images.push(file.filename);
+                }
             }
+
+
+            // for (let items of req.files) {
+            //     // const croppedImage = await cropAndSaveImage(items);
+            //     // image.push(path.basename(croppedImage));
+            //     // console.log("Pushed Image: ", path.basename(croppedImage));
+            //     img.push(items.filename)
+            // }
             console.log("Final Image Array: ", image);
         
             
@@ -160,7 +188,7 @@ module.exports = {
                 price : req.body.price,
                 stock : req.body.stock,
                 description : req.body.description,
-                image : img,
+                image : updatedImages,
     
             }})
             
@@ -191,14 +219,31 @@ module.exports = {
             console.log("Error in search "+error);
         }
      },
-     deleteImage : async (req,res) => {
+     deleteImage: async (req, res) => {
         try {
-            
+            const productId = req.params.id;
+            const imageName = req.params.imageName;
+            console.log(req.params.imageName);    
+            await productSchema.findOneAndUpdate(
+                { _id: productId },
+                { $pull: { image: imageName } }
+            );
+            const filePath = path.join(__dirname,'../public/images/productImages/'+imageName);
+            console.log(filePath);
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                  console.error("Error deleting image:", err);
+                } else {
+                  console.log("Image deleted successfully");
+                }
+              });     
+              res.redirect('/products')     
+    
+           // res.redirect(`/editProduct/${productId}`);
         } catch (error) {
-            console.log("Error in delete image in edit product page "+ error);
+            console.log("Error in delete image in edit product page " + error);
         }
-
-     },
+    },
    
 
 }

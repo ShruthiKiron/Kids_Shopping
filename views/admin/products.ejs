@@ -71,8 +71,8 @@
                         <i class='bx bxs-edit-alt'></i> 
                       </a>
 
-                        <form action="/deleteProduct/<%= product._id %>?_method=DELETE" method="post">
-                          <button type="submit" style="background: none;border: transparent;">
+                        <form id="deleteForm_<%= product._id %>" action="/deleteProduct/<%= product._id %>?_method=DELETE" method="post" onsubmit="return false;">
+                          <button type="submit" onclick="confirmDelete('<%= product._id %>')" style="background: none;border: transparent;">
                       <i class='bx bxs-trash'></i>
                   </button>
                       </form>
@@ -93,3 +93,41 @@
     </div>
 </div>
 <%-include('../includes/admin/adminEnd')%>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  function confirmDelete(productId) {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Once deleted, you will not be able to recover this product!",
+      icon: "warning",
+      buttons: {
+        cancel: {
+          text: "Cancel",
+          value: null,
+          visible: true,
+          className: "",
+          closeModal: true,
+        },
+        confirm: {
+          text: "Delete",
+          value: true,
+          visible: true,
+          className: "bg-danger",
+          closeModal: true
+        }
+      },
+      dangerMode: true,
+    })
+    .then((willDelete) => {
+      if (willDelete) {
+        // If the user confirms deletion, submit the form
+        document.getElementById('deleteForm_' + productId).submit();
+      }
+      else{
+        return false
+      }
+    });
+  }
+</script>

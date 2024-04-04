@@ -38,9 +38,17 @@ module.exports = {
       const productData = await productSchema.find();
       const categoryData = await categorySchema.find();
       const useId = req.session.userId;
-      // console.log("pro "+productData);
+      const wishlistData = await wishlistSchema.aggregate([{$match : {userId : new ObjectId(useId)}},{$unwind : '$productId'
+    },{$lookup : {
+      from : 'products',
+      localField : 'productId',
+      foreignField : '_id',
+      as : 'productData'
+      
+    }},{$unwind : '$productData'}])
+    console.log(wishlistData);
 
-      res.render("user/product", { products: productData,category: categoryData, useId ,error : req.flash("error")});
+      res.render("user/product", { products: productData,category: categoryData, useId ,wishlist : wishlistData,error : req.flash("error")});
     } catch (error) {
       console.log("Error in get user product " + error);
     }

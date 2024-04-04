@@ -131,7 +131,7 @@
                             <!-- <form action="/deleteImage/<%= productData.image[i] %>?_method=DELETE" method="post">
                               <button type="submit" style="background: none;border: transparent;"> -->
 
-                            <i class='bx bx-x-circle d-flex justify-content '></i>
+                            <i class='bx bx-x-circle d-flex justify-content 'onclick="deleteImage('<%= productData._id %>', '<%= productData.image[i] %>')"></i>
                             <!-- </button>
                             </form> -->
                             <img src="/images/productImages/<%= productData.image[i] %>" alt="Product Images" style="max-width: 100px; max-height: 100px;">
@@ -151,3 +151,37 @@
              
         
               <%-include('../includes/admin/adminEnd')%>
+              <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+              <script>
+                function deleteImage(productId, imageName) {
+                  // Display a confirmation dialog using SweetAlert
+                  Swal.fire({
+                    title: "Are you sure?",
+                    text: "Once deleted, you will not be able to recover this image!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                  })
+                  .then((willDelete) => {
+                    if (willDelete) {
+                      $.ajax({
+                        url: `/deleteImage/${productId}/${imageName}`,
+                        type: 'DELETE',
+                        success: function(data) {
+                          // Update the page without reloading after successful deletion
+                          location.reload();
+                        },
+                        error: function(xhr, status, error) {
+                          console.error('Error deleting image:', error);
+                          // Handle error if necessary
+                        }
+                      });
+                    } else {
+                      // If the user cancels deletion, do nothing
+                      return;
+                    }
+                  });
+                }
+              </script>
+              

@@ -40,6 +40,7 @@ router.get("/editProduct/:id", productController.getEditProduct);
 router.patch("/editProduct/:id",upload.array("images", 3),productController.patchEditProduct);
 
 router.delete("/deleteProduct/:id", productController.deleteProduct);
+router.delete('/deleteImage/:id/:imageName', productController.deleteImage);
 
 router.get("/orders",orderController.getOrder)
 router.post('/update-order-stage/:id',orderController.postUpdateStage)
