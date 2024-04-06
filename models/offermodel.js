@@ -9,6 +9,9 @@ const offerSchema =  mongoose.Schema({
         type : String,
         required : true
     },
+    offerFor:{
+        type : String,
+    },
 
     startDate : {
         type : Date,

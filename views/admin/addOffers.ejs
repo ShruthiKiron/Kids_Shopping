@@ -26,6 +26,12 @@
                           
                         </select>
                       </div>
+                      
+                        <div class="form-group" id="offerItems">
+                          <input type="hidden" id="offerFor" name="offerFor">
+                       
+                      </div>
+                      
                       <div class="form-group">
                         <label for="startDate">Starting Date</label>
                         <input type="date" class="form-control" id="startDate" name="startDate" required>
@@ -54,3 +60,144 @@
             </div>
 </div>
 <%-include('../includes/admin/adminEnd')%>
+<!-- <script>
+  document.getElementById('offerType').addEventListener('change', function() {
+    var offerType = this.value;
+    var url = '/getOfferItems?offerType=' + encodeURIComponent(offerType);
+    var radio
+    var label
+    var selectedOffer
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        console.log('Response data:', data);
+        var filteredData = data.filter(item => !item.isDeleted);
+        document.getElementById('offerItems').innerHTML = '';
+
+        // Render items based on offer type
+        if (offerType === 'Product Offer') {
+          renderProducts(filteredData);
+        } else if (offerType === 'Category Offer') {
+          renderCategories(filteredData);
+        }
+      })
+      .catch(error => console.error('Error:', error));
+  });
+
+  function renderProducts(products) {
+    products.forEach(product => {
+      radio = document.createElement('input');
+      radio.type = 'radio'; 
+      radio.name = 'selectedProduct'; 
+      radio.value = product._id;
+      radio.onclick = function() {
+        handleRadioSelection(this);
+      };
+
+      label = document.createElement('label');
+      label.appendChild(radio);
+      label.appendChild(document.createTextNode(product.product));
+
+      document.getElementById('offerItems').appendChild(label);
+    });
+  }
+
+  function renderCategories(categories) {
+    categories.forEach(category => {
+      radio = document.createElement('input');
+      radio.type = 'radio'; 
+      radio.name = 'selectedCategory';
+      radio.value = category._id;
+      radio.onclick = function() {
+        handleRadioSelection(this);
+      };
+
+      label = document.createElement('label');
+      label.appendChild(radio);
+      label.appendChild(document.createTextNode(category.categoryName));
+
+      document.getElementById('offerItems').appendChild(label);
+    });
+  }
+
+  function handleRadioSelection(radio) {
+    selectedOffer = radio.value;
+    document.getElementById('offerFor').value = selectedOffer;
+    console.log("selected offer ", selectedOffer);
+  }
+</script>
+ -->
+
+
+
+
+ <script>
+  // Function to handle changes in the offer type selection
+  document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('offerType').addEventListener('change', function() {
+    var offerType = this.value;
+    var url = '/getOfferItems?offerType=' + encodeURIComponent(offerType);
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        console.log('Response data:', data);
+        var filteredData = data.filter(item => !item.isDeleted);
+        document.getElementById('offerItems').innerHTML = '';
+
+        // Render items based on offer type
+        if (offerType === 'Product Offer') {
+          renderProducts(filteredData);
+        } else if (offerType === 'Category Offer') {
+          renderCategories(filteredData);
+        }
+      })
+      .catch(error => console.error('Error:', error));
+  });
+});
+
+  // Function to render product items
+  function renderProducts(products) {
+    products.forEach(product => {
+      var radio = createRadioButton('selectedProduct', product._id, product.product);
+      document.getElementById('offerItems').appendChild(radio);
+    });
+  }
+
+  // Function to render category items
+  function renderCategories(categories) {
+    categories.forEach(category => {
+      var radio = createRadioButton('selectedCategory', category._id, category.categoryName);
+      document.getElementById('offerItems').appendChild(radio);
+    });
+  }
+
+  // Function to create radio button element
+  function createRadioButton(name, value, labelText) {
+    var radio = document.createElement('input');
+    radio.type = 'radio'; 
+    radio.name = name; 
+    radio.value = value;
+    radio.onclick = function() {
+      handleRadioSelection(this.value);
+    };
+
+    var label = document.createElement('label');
+    label.appendChild(radio);
+    label.appendChild(document.createTextNode(labelText));
+
+    return label;
+  }
+
+  // Function to handle selection of radio button
+  function handleRadioSelection(selectedOffer) {
+    var offerType = document.getElementById('offerType').value;
+    console.log("Selected offer type:", offerType);
+    console.log("Selected offer:", selectedOffer);
+    document.getElementById('offerType').value = offerType;
+    document.getElementById('offerFor').value = selectedOffer;
+    console.log("Offer for:", document.getElementById('offerFor').value);
+  }
+</script>
+

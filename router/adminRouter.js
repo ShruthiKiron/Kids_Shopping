@@ -56,6 +56,7 @@ router.get('/offers',offerController.getOffer)
 router.get('/addOffers',offerController.getAddOffers)
 
 router.post('/addOffers',offerController.postAddOffers)
+router.get('/getOfferItems', offerController.getOfferItems);
 // router.post('/admin',adminController.postAdminLogin)
 // router.get('/dashboard',adminController.getDashboard)
 

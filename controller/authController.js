@@ -33,11 +33,13 @@ module.exports = {
             otp: otp,
             generatedTime: Date.now() + 60000,
           },
+          isReferred: req.body.isReferred,
         };
         console.log("otp" + otp);
         console.log(
           "post signup time " + req.session.userInfo.token.generatedTime
         );
+        console.log("is Referred ",req.session.userInfo.isReferred);
         res.redirect("/signup-otp");
       }
     } catch (error) {
@@ -63,6 +65,8 @@ module.exports = {
       const date = Date.now();
       console.log("DAte", date);
       console.log("time", otpExpiry);
+      const refferedUser = await userSchema.find({referralCode : req.session.userInfo.isReferred})
+      console.log("reffered "+refferedUser);
 
       if (date < otpExpiry) {
         if (otpValue == otp) {
@@ -96,6 +100,54 @@ module.exports = {
             }
           })
 
+        //   if (!refferedUser) {
+        //   await walletSchema.updateOne(
+        //     { userId: req.session.userId },
+        //     {
+        //       $inc: { wallet: 100 }, // Assuming 100 is the join bonus
+        //       $push: {
+        //         walletHistory: {
+        //           date: Date.now(),
+        //           amount: 100,
+        //           message: "Join bonus",
+        //         },
+        //       },
+        //     }
+        //   );
+        // }
+
+        // // If referred user exists, update their wallet and also the wallet of the referring user
+        if (refferedUser) {
+          await walletSchema.updateOne({userId: refferedUser._id},{
+            $inc : {
+              wallet : 50
+            },
+            $push : {
+              walletHistory : {
+                date : Date.now(),
+                amount : 50,
+                message : "Referral bonus"
+              }
+            }
+          })
+          
+        //   // Also, update the wallet of the referring user
+        await walletSchema.updateOne({userId : req.session.userId},{
+          $inc : {
+            wallet : 50
+          },
+          $push : {
+            walletHistory : {
+              date : Date.now(),
+              amount : 50,
+              message : "Referral bonus for referring a user"
+            }
+          }
+        })
+
+        }
+
+  
 
         res.json({ success: true });
         } else {

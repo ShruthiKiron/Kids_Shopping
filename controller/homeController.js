@@ -170,8 +170,21 @@ module.exports = {
   getWallet : async (req,res)=>{
     try {
       const useId = req.session.userId;
-      //const wallet = await walletSchema.find({userId : new ObjectId(useId)})
-      const wallet = await walletSchema.aggregate([{ $unwind: '$walletHistory' }]);
+     // const wallet = await walletSchema.findOne({userId : new ObjectId(useId)})
+     // const wallet = await walletSchema.aggregate([{ $unwind: '$walletHistory' }]);
+
+
+     const wallet = await walletSchema.aggregate([
+      { $match: { userId: new ObjectId(useId) } }, // Match the user by userId
+      { $unwind: "$walletHistory" } // Unwind the walletHistory array
+    ]).exec();
+
+
+
+
+
+
+
       console.log("walletDaat ",wallet);
       //console.log("wallet ",wallet);
       res.render('user/wallet',{wallet,useId})
