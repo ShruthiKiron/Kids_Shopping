@@ -3,6 +3,10 @@ const couponSchema = require("../models/couponModel");
 module.exports = {
   getCoupon: async (req, res) => {
     try {
+    //   if (!req.session.adminId) {
+    //     req.flash("error", "Please login");
+    //     return res.redirect('/admin');
+    // }
       const coupon = await couponSchema.find();
       res.render("admin/coupons", { coupon });
     } catch (error) {
@@ -32,7 +36,11 @@ module.exports = {
       } else if (req.body.endDate < formattedDate) {
         req.flash("error", "Invalid date");
         res.redirect("/addCoupons");
-      } else {
+      } else if(req.body.discount > 70){
+        req.flash("error","Discount cannot be more than 70%")
+        res.redirect("/addCoupons");
+      }
+      else {
         const couponDetails = new couponSchema({
           couponCode: req.body.code,
           discountPercentage: req.body.discount,

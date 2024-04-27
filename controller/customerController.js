@@ -8,6 +8,10 @@ module.exports = {
     getCustomer :async (req,res) => {
         
         try {
+            // if (!req.session.adminId) {
+            //     req.flash("error", "Please login");
+            //     return res.redirect('/admin');
+            // }
             const userData = await userSchema.find()
             res.render('admin/customers',{customers : userData})
             
@@ -22,23 +26,9 @@ module.exports = {
             
 console.log(req.params.id);
             const userData = await userSchema.findById({_id : req.params.id})
-            console.log(userData);
-            if(userData.isBlocked == true)
-            {
-                await userSchema.updateOne(
-                { _id: new ObjectId(req.params.id) },
-                { $set: { isBlocked: false } }
-              );
-                 
+            userData.isBlocked = !userData.isBlocked
+            await userData.save()
 
-            }
-            else{
-                await userSchema.updateOne(
-                    { _id: new ObjectId(req.params.id) },
-                    { $set: { isBlocked: true } }
-                  );
-
-            }
 
             console.log("user id "+ userData);
             res.redirect('/customers')

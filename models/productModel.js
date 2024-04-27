@@ -43,6 +43,13 @@ const productSchema = new mongoose.Schema({
     idealFor : {
         type : String,
         
+    },
+    offerFor: {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'offer', 
+    },
+    offerPrice : {
+        type : Number
     }
 
 

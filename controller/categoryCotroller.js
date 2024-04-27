@@ -6,6 +6,10 @@ module.exports = {
     getCategory : async (req,res) => {
         
         try {
+            // if (!req.session.adminId) {
+            //     req.flash("error", "Please login");
+            //     return res.redirect('/admin');
+            // }
             const categoryData = await categorySchema.find().sort({date : -1})
             res.render('admin/category',{category : categoryData,error : req.flash('error')})
             
@@ -16,7 +20,10 @@ module.exports = {
 
      addCategory : async (req,res) => {
         try {
-            const categoryDetails = await categorySchema.findOne({categoryName : req.body.newCategory})
+            // const categoryDetails = await categorySchema.findOne({categoryName : req.body.newCategory})
+            const categoryDetails = await categorySchema.findOne({ 
+                categoryName: { $regex: new RegExp('^' + req.body.newCategory + '$', 'i') } 
+            });
             console.log(req.body.newCategory);
             const img = []
             for( let items of req.files) {

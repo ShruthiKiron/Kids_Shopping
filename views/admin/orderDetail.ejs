@@ -1,0 +1,27 @@
+ <%-include('../includes/admin/adminHead')%>
+
+<div id="main-wrapper">
+  <%-include('../includes/admin/adminNav')%> <%-
+  include('../includes/admin/adminSidebar')%>
+
+  <div class="content-body">
+    <div class="container-fluid">
+      <h3 id="pgHead">ORDERS</h3>
+
+      <p>User Information:</p>
+      <ul>
+        <li>Name: <%= orderDetails.userInfo.firstName %> <%= orderDetails.userInfo.lastName %></li>
+        <li>Email: <%= orderDetails.userInfo.email %></li>
+        <li>Mobile: <%= orderDetails.userInfo.mobile %></li>
+      </ul>
+      <p>Address: <%= orderDetails.address %></p>
+      
+      <p>Ordered At: <%= orderDetails.orderedAt %></p>
+      <p>Order Stage: <%= orderDetails.orderStage %></p>
+      <p>Order Status: <%= orderDetails.orderStatus %></p>
+      <p>Grand Total: <%= orderDetails.grandTotal %></p>
+    </div>
+</div>
+</div>
+<%-include('../includes/admin/adminEnd')%> 
+

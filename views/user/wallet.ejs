@@ -22,6 +22,7 @@
         </tr>
     </thead>
      <tbody>
+        <% let totalBalance = 0 %>
        <% wallet.forEach(items => { %> 
                  <tr>
                      <td><%= items.walletHistory.date %></td>
@@ -32,11 +33,15 @@
                      <% } %>
                      <td><%= items.walletHistory.message %></td>
                  </tr>
-            
+            <% totalBalance += items.walletHistory.amount %>
         <% }) %>
      </tbody> 
     </table>
-    
+    <div class="card mt-4">
+        <div class="card-body">
+    <p class="card-text">Total Balance:<span class="text-success"> <%= totalBalance %> </span></p> <!-- Display total balance -->
+</div>
+</div>
 </div>
 </div>
 </div>

@@ -1,5 +1,6 @@
 const categorySchema = require('../models/categoryModel')
 const productSchema = require('../models/productModel')
+const offerSchema = require('../models/offermodel')
 const path = require('path')
 const fs = require('fs-extra')
 const { cropAndSaveImage } = require('../helpers/imageCrop')
@@ -8,7 +9,12 @@ module.exports = {
 
     getProduct : async(req,res) => {
         try {
+            // if (!req.session.adminId) {
+            //     req.flash("error", "Please login");
+            //     return res.redirect('/admin');
+            // }
             const productData = await productSchema.find().sort({date : -1})
+            
             const pro = productData
             
         res.render('admin/products',{products : productData })

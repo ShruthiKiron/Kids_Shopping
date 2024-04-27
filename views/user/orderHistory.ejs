@@ -11,9 +11,27 @@
             <li class="breadcrumb-item active" aria-current="page">My Order</li>
         </ol>
     </nav>
-        <div class="row">
+
+<div class="row">
+  <div class="col-md-6">
+    <select id="statusFilter" >
+    <option value="all">All</option>
+    <% const statusValues = ['PAYMENT PENDING', 'PREPARING FOR DISPATCH', 'DELIVERED', 'RETURN REQUESTED','RETURNED','CANCELLED']; %>
+    <% statusValues.forEach(status => { %>
+      <option value="<%= status %>"><%= status %></option>
+      <% }) %>
+    </select>
+    </div>
+    </div>
+    
+
+
+        <div class="row" id="ordersContainer">
           <% orderDetails.forEach(order =>{ %>
-            <div class="col-12">
+           
+            <!-- <div class="col-12"> -->
+              <div class="col-12 order" data-status="<%= order.status %>">
+
              <div class="d-flex align-items-top justify-content-between px-4 py-2">
                 <div class="bg-white"><span class="font-weight-bold">ID:</span><%= order.orderId %></div>
                 <div class=" col-md-4">
@@ -32,9 +50,60 @@
              </div>
              <div class="border my-2"></div>
             </div>
+           
             <% }) %>
         </div>
+
+
+        <nav aria-label="Page navigation">
+          <ul class="pagination justify-content-end">
+            <% if (currentPage > 1) { %>
+              <li class="page-item">
+                <a class="page-link" href="?page=<%= currentPage - 1 %>" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                  <span class="sr-only">Previous</span>
+                </a>
+              </li>
+            <% } %>
+  
+            <% for (let i = 1; i <= totalPages; i++) { %>
+              <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+              </li>
+            <% } %>
+  
+            <% if (currentPage < totalPages) { %>
+              <li class="page-item">
+                <a class="page-link" href="?page=<%= currentPage + 1 %>" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </li>
+            <% } %>
+          </ul>
+        </nav>
+
+
+
+
+
     </div>
   </div>
 </div>
+<script>
+  document.getElementById('statusFilter').addEventListener('change', function() {
+    const selectedStatus = this.value;
+    // Make an AJAX request to fetch filtered orders
+    fetch('/filteredOrders?status=' + selectedStatus)
+      .then(response => response.text()) // Get response as text
+      .then(data => {
+        // Update the ordersContainer with the filtered orders HTML
+        document.getElementById('ordersContainer').innerHTML = data;
+      })
+      .catch(error => console.error('Error fetching filtered orders:', error));
+  });
+</script>
+
+
+
 <%- include('../includes/user/userEnd') %>

@@ -3,7 +3,10 @@ const productSchema = require("../models/productModel");
 const categorySchema = require("../models/categoryModel");
 const wishlistSchema = require('../models/wishlistModel')
 const walletSchema = require('../models/walletModel')
+const offerSchema = require('../models/offermodel')
+const couponSchema = require('../models/couponModel')
 const {ObjectId} = require('mongodb')
+const {cartAggregation} = require('../helpers/aggregation')
 
 module.exports = {
   getHome: async (req, res) => {
@@ -12,7 +15,7 @@ module.exports = {
       const categoryData = await categorySchema.find();
 
       //const categoryNames = categoryData.map(category => category.image);
-      console.log(categoryData[0]);
+    //  console.log(categoryData[0]);
 
       if (req.session.userId) {
         const useId = req.session.userId;
@@ -35,9 +38,15 @@ module.exports = {
 
   getProduct: async (req, res) => {
     try {
+      // const page = parseInt(req.query.page) || 1; 
+      // const productsPerPage = 12;
+      // const skip = (page - 1) * productsPerPage;
       const productData = await productSchema.find();
       const categoryData = await categorySchema.find();
       const useId = req.session.userId;
+      const offerData = await offerSchema.find()
+     // console.log("offer test ",offerData);
+     
       const wishlistData = await wishlistSchema.aggregate([{$match : {userId : new ObjectId(useId)}},{$unwind : '$productId'
     },{$lookup : {
       from : 'products',
@@ -46,9 +55,9 @@ module.exports = {
       as : 'productData'
       
     }},{$unwind : '$productData'}])
-    console.log(wishlistData);
 
-      res.render("user/product", { products: productData,category: categoryData, useId ,wishlist : wishlistData,error : req.flash("error")});
+
+      res.render("user/product", { products: productData,category: categoryData, useId ,wishlist : wishlistData,offers : offerData,error : req.flash("error")});
     } catch (error) {
       console.log("Error in get user product " + error);
     }
@@ -92,15 +101,60 @@ module.exports = {
     }
 
   },
-  postFilter : async(req,res)=>{
+  postFilter: async (req, res) => {
     try {
-      console.log(req.body);
+      const page = parseInt(req.query.page) || 1;
+      const productsPerPage = 12;
+      console.log("Filter ", req.body);
+      const filters = req.body.filters;
+      const sortValue = req.body.sortValue;
       
+      const filterObject = {};
+      
+      if (filters.category && filters.category.length > 0) {
+        filterObject.category = { $in: filters.category };
+      }
+      
+      if (filters.color && filters.color.length > 0) {
+        filterObject.color = { $in: filters.color };
+      }
+      
+      if (filters.size && filters.size.length > 0) {
+        filterObject.size = { $in: filters.size };
+      }
+      filterObject.isDeleted = { $ne: true };
+      
+      let filteredProducts = await productSchema.find(filterObject);
+      
+      
+      if (sortValue === 'ascending' || sortValue === 'descending') {
+        filteredProducts.sort((a, b) => {
+          if (sortValue === 'ascending') {
+            return a.price - b.price;
+          } else {
+            return b.price - a.price;
+          }
+        });
+      } else if (sortValue === 'a-z' || sortValue === 'z-a') {
+        filteredProducts.sort((a, b) => {
+          const nameA = a.product.toUpperCase();
+          const nameB = b.product.toUpperCase();
+          if (sortValue === 'a-z') {
+            return nameA.localeCompare(nameB);
+          } else {
+            return nameB.localeCompare(nameA);
+          }
+        });
+      }
+      
+      res.json({ success: true, products: filteredProducts });
       
     } catch (error) {
-      console.log("Error in post filter "+error);
+      console.log("Error in post filter " + error);
+      res.status(500).json({ success: false, error: 'An error occurred while processing the request' });
     }
   },
+  
   getWishlist : async(req,res)=>{
     try {
       const useId = req.session.userId;
@@ -175,13 +229,9 @@ module.exports = {
 
 
      const wallet = await walletSchema.aggregate([
-      { $match: { userId: new ObjectId(useId) } }, // Match the user by userId
-      { $unwind: "$walletHistory" } // Unwind the walletHistory array
+      { $match: { userId: new ObjectId(useId) } },
+      { $unwind: "$walletHistory" } 
     ]).exec();
-
-
-
-
 
 
 
@@ -194,5 +244,62 @@ module.exports = {
     }
 
   },
+  applyCoupon : async(req,res)=>{
+    try{
+    console.log(req.body);
+    const couponCode = req.body.code;
+    const couponData = await couponSchema.findOne({ couponCode: { $regex: new RegExp(couponCode, "i") } });
+    console.log(couponData);
+    
+      console.log(couponData.discountPercentage);
+    
+    const currentDate = new Date();
+    if (currentDate > couponData.expiry) {
+      return res.status(400).json({ error: "Coupon has expired" });
+    }
+    const useId = req.session.userId;
+    const cartItem = await cartAggregation(useId);
+      const grandTotal = cartItem[0].grandTotal
+      console.log("grand total ",grandTotal);
+      console.log("discount ",couponData.discountPercentage);
+      const discountAmount = (couponData.discountPercentage / 100) * grandTotal;
+    const discountedTotal = grandTotal - discountAmount;
+    console.log("Discounted Total:", discountedTotal);
+
+    req.session.appliedCoupon = {
+      couponCode: couponData.couponCode,
+      discountPercentage: couponData.discountPercentage,
+      discountAmount: discountAmount
+  };
+
+
+    req.session.discountedTotal = discountedTotal
+    res.status(200).json({ discountedTotal,discountAmount ,success : true});
+  
+    }
+    catch(error){
+      console.log("Error in apply coupon ",error);
+    }  
+  },
+  removeCoupon: async (req, res) => {
+    try {
+      console.log("Remove coupon");
+      if(req.session.appliedCoupon){
+        delete req.session.appliedCoupon;
+        delete req.session.discountedTotal;
+        res.json({ success: true,msg : "Coupon removed Successfully" });
+      }
+      else{
+
+        res.json({couponNotAdded:true,msg : "Coupon is Missing" });
+      }
+        
+        
+    } catch (error) {
+        console.log("Error in removing coupon: ", error);
+        res.status(500).json({ success: false, error: 'An error occurred while removing the coupon' });
+    }
+  },
+  
 
 };

@@ -53,7 +53,13 @@ cartAggregation: async(useId) =>{
 
 },
 
-orderAggregation: async (useId) => {
+orderAggregation: async (useId,page, pageSize,filter) => {
+  const matchStage = {
+    userId: new ObjectId(useId)
+  };
+  if (filter && filter.orderStage) {
+    matchStage.orderStage = filter.orderStage;
+  }
    const orders= await orderSchema.aggregate([
         {
           $match: { userId:new ObjectId(useId) } 
@@ -101,7 +107,10 @@ orderAggregation: async (useId) => {
             grandTotal: { $first: "$grandTotal" },
             __v: { $first: "$__v" }
           }
-        }
+        },
+        { $sort: { orderedAt: -1 } }, // Sort by orderedAt in descending order
+        { $skip: (page - 1) * pageSize }, // Skip documents based on page number
+        { $limit: pageSize } // Limit the number of documents per page
       ]);
 
       return orders
@@ -218,6 +227,8 @@ adminOrderAggregation:async() => {
         grandTotal: { $first: "$grandTotal" },
         __v: { $first: "$__v" }
       }
+    },{
+      $sort : {orderedAt : 1}
     }
     
   ]);

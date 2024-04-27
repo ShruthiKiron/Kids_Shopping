@@ -108,10 +108,17 @@
                 <h5>₹ <%= grandTotal %></h5>
               </div>
               <hr class="my-4" />
+              <% if(grandTotal > 500) { %>
               <div class="d-flex justify-content-between mb-4">
                 <h5 class="text-uppercase">Shipping Charge</h5>
                 <h5>₹ 0</h5>
               </div>
+              <% } else { %>
+                <div class="d-flex justify-content-between mb-4">
+                  <h5 class="text-uppercase">Shipping Charge</h5>
+                  <h5>₹ 50</h5>
+                </div>
+              <% } %>
             </div>
           </div>
         </div>
@@ -121,38 +128,47 @@
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <%- include('../includes/user/userEnd') %>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
  <script>
 
-  $(document).ready(function() {
-    $(document).on('click','#place-order-button' ,function() {
-      var checkedAddressId = $('input[name="address"]:checked').data('address-id');
-      var paymentMethod = $('#payment-method').val()
-   
-       const data = {
-        address:checkedAddressId,
-        payment:paymentMethod
-       }
+$(document).ready(function() {
+  $(document).on('click', '#place-order-button', function() {
+    var checkedAddressId = $('input[name="address"]:checked').data('address-id');
+    var paymentMethod = $('#payment-method').val();
 
-       $.ajax({
-        url:'/place-order',
-        method:'POST',
-        data:data,
-        success:function(response){
-          if(response.orderPlaced){
+    const data = {
+      address: checkedAddressId,
+      payment: paymentMethod
+    };
 
-            location.href = '/order-success'
-          }
-          else{
-            razorPayment(response)            
-            console.log(response);
-          }
-
-        },error:function(error){
-          console.log(error)
+    $.ajax({
+      url: '/place-order',
+      method: 'POST',
+      data: data,
+      success: function(response) {
+        console.log("Server response:", response);
+        if (response.orderPlaced) {
+          location.href = '/order-success';
+        } else if (response.error) {
+          console.log("Error message:", response.message);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: response.message
+          });
+        } else {
+          razorPayment(response);
+          console.log(response);
         }
-       })
-    }) 
-  })
+      },
+      error: function(error) {
+        console.log(error);
+      }
+    });
+  });
+});
+
   function razorPayment(order) {
   var options = {
     key: "rzp_test_QUrSp68jcj7T0r",
@@ -163,7 +179,9 @@
     
     order_id: order.order.id,
     handler: function (response) {
-      verifyPayment(response, order);
+     
+     verifyPayment(response, order);
+  
     },
     prefill: {
       name: 'Customer Name',
@@ -179,6 +197,13 @@
   };
   var rzp1 = new Razorpay(options);
   rzp1.open();
+  rzp1.on('payment.failed',async function(response){
+  await  Swal.fire({
+    icon: 'error',
+    title: 'Transaction Failed',
+    text: 'Payment failed. Please try again later.'
+  });
+  })
 }
 function verifyPayment(payment, order){
   $.ajax({
@@ -202,121 +227,3 @@ function verifyPayment(payment, order){
 
   </script>
 
-  <!-- <script>
-    document.getElementById('place-order-button').addEventListener('click', async function() {
-    const paymentMethod = document.getElementById('payment-method').value;
-    try{
-      const response = await fetch('/place-order',{
-        method : 'POST',
-        headers:{
-                    'Content-Type':'application/json'
-                },
-        body : JSON.stringify({
-          paymentMethod : paymentMethod,
-
-
-      })  
-    })
-    await response.json
-    if(response.ok){
-      console.log('Payment successful');
-
-    }
-    else{
-      console.log('Payment failed:', response.statusText);
-    }
-    }    
-    
-    catch(error){
-      console.log("Error in fetching payment method");
-    }
-  })
-  </script> -->
-  <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-  <script>
-           const rzp = new Razorpay({
-    key: process.env.RAZORPAY_ID_KEY, 
-    amount: orderData.amount,
-    currency: orderData.currency,
-    order_id: orderData.id,
-    name: 'Giggle Wardrobe',
-    description: 'Kids dress',
-    handler: function(response) {
-      // Handle successful payment response
-      console.log('Payment successful:', response);
-      // Redirect to order success page or perform other actions
-      location.href = '/order-success';
-    },
-    prefill: {
-      name: 'Customer Name',
-      email: 'customer@example.com',
-      contact: '9999999999'
-    }
-  });
-    document.getElementById('place-order-button').addEventListener('click', async function() {
-      var checkedAddressId = document.querySelector('input[name="address"]:checked').dataset.addressId;
-      var paymentMethod = document.getElementById('payment-method').value;
-  
-      const data = {
-        address: checkedAddressId,
-        payment: paymentMethod
-      };
-  
-      try {
-        let response;
-        if (paymentMethod === 'COD') {
-          
-          response = await fetch('/place-order', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-          });
-        } else if (paymentMethod === 'ONLINE') {
-          // If Razorpay is selected, proceed with Razorpay integration
-          // Fetch necessary details to create the order
-          const orderData = await fetch('/create-order', { method: 'POST' }).then(res => res.json());
-  
-   
-  rzp.open();
-  
-          // Redirect to order success page after successful payment
-          //location.href = '/order-success';
-        } else {
-          // Handle other payment methods if necessary
-        }
-  
-        // Check the response if needed
-        if (response && response.ok) {
-          // Payment successful, handle accordingly
-          console.log('Payment successful');
-          // Redirect to order success page
-          location.href = '/order-success';
-        } else {
-          // Payment failed, handle accordingly
-          console.error('Payment failed:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error processing payment:', error);
-      }
-    });
-
-// Handler function for Razorpay payment completion
-// rzp.on('payment.success', function(response) {
-//     console.log('Payment successful:', response);
-//     // Redirect to order success page or perform other actions
-//     location.href = '/order-success';
-// });
-
-// // Handler function for Razorpay payment failure
-// rzp.on('payment.error', function(error) {
-//     console.error('Payment failed:', error);
-//     // Handle payment failure
-// });
-
-
-
-  </script>
-   -->

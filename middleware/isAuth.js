@@ -19,6 +19,7 @@ adminLogin : async(req,res,next) => {
     try {
         if(req.session.adminId){
             res.redirect('/admin')
+
         }
         else{
             next()
@@ -30,4 +31,18 @@ adminLogin : async(req,res,next) => {
 
 },
 
+adminLoggedIn : async(req,res,next)=>{
+    try {
+        if(req.session.adminId){
+            next()
+        }
+        else{
+            req.flash("error", "Please login");
+            res.redirect('/admin')
+        }
+        
+    } catch (error) {
+        
+    }
+}
 }

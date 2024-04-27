@@ -38,7 +38,7 @@ module.exports = {
   },
   makeOrder: async (orderGrandTotal, address, payment, userId) => {
     console.log(userId);
-    const uuid = uuidv4();
+    const uuid = uuidv4().slice(0,8);
     const cart = await cartSchema.findOne({ userId: new ObjectId(userId) });
     const order = {
       userId: new ObjectId(userId),
@@ -74,7 +74,7 @@ module.exports = {
       "PREPARING FOR DISPATCH",
       "DISPATCHED",
       "ORDER SHIPPED",
-      "OUT FOR DELIVERY",
+      "OUT OF DELIVERY",
       "DELIVERED",
       "RETURN REQUESTED",
       "RETURNED",

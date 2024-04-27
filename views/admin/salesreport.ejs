@@ -1,0 +1,142 @@
+<%-include('../includes/admin/adminHead')%>
+
+<div id="main-wrapper">
+
+    <%-include('../includes/admin/adminNav')%>
+    
+    <%- include('../includes/admin/adminSidebar')%>
+    
+    <div class="content-body">
+        <div class="container-fluid">
+            <h3 id="pgHead">SALES REPORT</h3>
+
+
+            <!-- <form id="downloadForm" action="/salesreport" method="get">
+                <div class="form-group">
+                    <label for="dateRange">Date Range:</label>
+                    <select class="form-control" id="dateRange" name="dateRange">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                        <option value="custom">Custom Date Range</option>
+                    </select>
+                </div>
+                <div id="customDateRange" style="display: none;">
+                    <div class="form-group">
+                        <label for="startDate">Start Date:</label>
+                        <input type="date" class="form-control" id="startDate" name="startDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">End Date:</label>
+                        <input type="date" class="form-control" id="endDate" name="endDate">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success">Download Excel</button>
+                    <button type="submit" class="btn btn-danger">Download PDF</button>
+                </div>
+            </form> -->
+            
+
+
+
+
+            <div class="container mt-4">
+                <div class="row">
+
+                    <div class="col-md-12">
+
+                        <div class="d-flex justify-content-between">
+                            <!-- <h1 class="rounded"
+                                style="font-size: 30px; text-align: center; font-family: Arial, Helvetica, sans-serif;">
+                                Sales Report</h1> -->
+
+                            <button class="btn btn-dark btn-sm mb-2" data-toggle="modal"
+                                data-target="#downloadModal">
+                                <!-- Download Sales Report -->
+                                Date Range
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                        </div>
+                        <!-- Download Modal -->
+                        <div class="modal mt-5" id="downloadModal" tabindex="-1" role="dialog"
+                            aria-labelledby="downloadModalLabel" aria-hidden="true" data-backdrop="false">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="downloadModalLabel"> Select Date Range</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="downloadForm" action="/salesreport" method="get">
+                                            <div class="form-group">
+                                                <label for="startDate">Start Date:</label>
+                                                <input type="date" class="form-control" id="startDate" name="startDate" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="endDate">End Date:</label>
+                                                <input type="date" class="form-control" id="endDate" name="endDate" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                                <!-- <button type="submit" class="btn btn-primary">Download PDF</button> -->
+                                            </div>
+                                        </form>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover" id="salesTable">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Order Id</th>
+                                        <!-- <th>Customer Name</th>-->
+                                        
+                                        <th>Product</th>
+                                        <th>Category</th> 
+                                        <th>Quantity Sold</th>
+                                        <th>Date Range</th>
+                                        <th>Total Revenue</th>
+                                    </tr>
+                                </thead>
+                                <tbody> 
+                                    <% if (reportData && reportData.length > 0) { %>
+                                    <% for (let i = 0; i < reportData.length; i++) { %>
+                                        <tr>
+                                            <td><%= i + 1 %></td>
+                                            <td><%= reportData[i].orderId %></td>
+                                            <!-- <td><%= reportData[i].firstName %></td>-->
+                                           
+                                            <td><%= reportData[i].product %></td>
+                                            <td><%= reportData[i].category %></td> 
+                                            <td><%= reportData[i].quantitySold %></td>
+                                            <td><%= dateRange %></td>
+                                            <td>₹<%= reportData[i].totalRevenue.toFixed(2) %></td> <!-- Assuming totalRevenue is in USD -->
+                                        </tr>
+                                    <% } %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="9" class="text-center">No sales report data available for the specified date range.</td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                            <div>
+                                <button type="submit" class="btn btn-dark"><a href="/downloadExcel" style="text-decoration: none;color: white;">Download Excel</a></button>
+                                <button type="submit" class="btn btn-dark"><a href="/downloadPdf" style="text-decoration: none;color: white;">Download PDF</a></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%-include('../includes/admin/adminEnd')%>

@@ -18,6 +18,8 @@
                 <th>Order Stage</th>
                 <th>Order Status</th>
                 <th>Update Orders</th>
+                <th> </th>
+                
                 <!-- <th></th> -->
             </tr>
         </thead>
@@ -46,8 +48,8 @@
             <td><%= item.paymentMethod %></td>
             
             <td>₹<%= item.grandTotal %></td>
-            <td><%= item.orderStage %></td>
-            <td><%= item.orderStatus %></td>
+            <td id="order-stage-<%= item._id %>"><%= item.orderStage %></td>
+            <td id="order-status-<%= item._id %>"><%= item.orderStatus %></td>
             
             <td>
 
@@ -58,14 +60,22 @@
                 <ul class="dropdown-menu">
                   <li><button class="btn" id="order-stage-update" data-order-id="<%= item._id %>" data-order-stage="DELIVERED" href="#">Delivered</button></li>
                   <li><button class="btn" id="order-stage-update" data-order-id="<%= item._id %>" data-order-stage="OUT OF DELIVERY" href="#">Out Of Delivery</button></li>
-                  <li><button class="btn" id="order-stage-update" data-order-id="<%= item._id %>" data-order-stage="SHIP ORDER" href="#">Ship Order</button></li>
-                  <li><button class="btn" id="order-stage-update" data-order-id="<%= item._id %>" data-order-stage="DISPATCH ORDER" href="#">Disptach Order</button></li>
-                  <li><button class="btn" id="order-stage-update" data-order-id="<%= item._id %>" data-order-stage="CANCEL ORDER" href="#">Cancel Order</button></li>
+                  <li><button class="btn" id="order-stage-update" data-order-id="<%= item._id %>" data-order-stage="ORDER SHIPPED" href="#">Ship Order</button></li>
+                  <li><button class="btn" id="order-stage-update" data-order-id="<%= item._id %>" data-order-stage="DISPATCHED" href="#">Disptach Order</button></li>
+                  
+                  <li><button class="btn cancel-btn" id="cancel-btn"  data-order-id="<%= item._id %>" data-order-stage="CANCEL ORDER" href="#">Cancel Order</button></li>
+               <% if(item.orderStage == 'RETURN REQUESTED') {%>
+                <li><button class="btn return-btn" id="order-stage-update"  data-order-id="<%= item._id %>" data-order-stage="RETURNED" href="#">Return Order</button></li>
+
+                <% } %>
                 </ul>
               </div>
-              
-              
+                           
                </td>
+               <td><div ><i onclick="location.href = '/view-orderdetails/<%=item._id %>'" class=' bx bx-show-alt fs-22'></i>
+               </div>
+               </td>
+               
         </tr>
         <% }) %>
         </tbody>
@@ -76,7 +86,7 @@
 <%-include('../includes/admin/adminEnd')%>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   $(document).ready(function() {
     $(document).on('click' , '#order-stage-update' ,function() {
@@ -95,10 +105,25 @@
         data:data,
         success:function(response ){
           if(response.success){
+            $(`#order-stage-${orderId}`).text(value);
+            $(`#order-status-${orderId}`).text(response.stage ? response.stage : 'ACTIVE'); 
            console.log(orderId)
            console.log(data)
-          }else{
-            alert(response.msg)
+           Swal.fire({
+        icon: 'success',
+        title: 'Order Updated',
+        text: response.msg,
+        confirmButtonColor: '#ae1313',
+        confirmButtonText: 'OK'
+      });
+          }else if(!response.success){
+            Swal.fire({
+        icon: 'warning',
+        title: 'Invalid Update',
+        text: response.msg,
+        confirmButtonColor: '#ae1313',
+        confirmButtonText: 'OK'
+      });
           }
         },error:function(error){
           console.log(error);
@@ -107,4 +132,45 @@
       })
     })
   })
+
+$(document).on('click','#cancel-btn',function(){
+  const orderId = $(this).data('order-id');
+  $.ajax({
+        url:'/cancel-order/'+orderId,
+        method:'PATCH',
+        success:function(response ){
+          if(response.invalid_stage){
+            Swal.fire({
+        icon: 'warning',
+        title: 'Invalid Order Update',
+        text: response.message,
+        confirmButtonColor: '#ae1313',
+        confirmButtonText: 'OK'
+      });
+          }else{
+            
+            Swal.fire({
+        icon: 'success',
+        title: 'Order Updated',
+        text: response.message,
+        confirmButtonColor: '#ae1313',
+        confirmButtonText: 'OK'
+      });
+      setTimeout(()=>{
+        location.reload()
+      },1500)
+      
+          }
+
+        },error:function(error){
+          console.log(error);
+        }
+
+        
+
+})
+
+})
+
+  
 </script>
