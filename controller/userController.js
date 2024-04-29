@@ -5,6 +5,7 @@ const addressSchema = require("../models/addressModel");
 const cartSchema = require("../models/cartModel");
 const orderSchema = require("../models/orderModel");
 const couponSchema = require('../models/couponModel')
+const walletSchema = require('../models/walletModel')
 const bcrypt = require("bcrypt");
 const Razorpay = require("razorpay");
 const CryptoJS = require("crypto-js");
@@ -13,6 +14,7 @@ const crypto = require('crypto')
 
 const {generateInvoice} = require('../helpers/invoice')
 //generateInvoice()
+const checkWallet = require('../helpers/walletHelper')
 
 const instance = new Razorpay({
   key_id: process.env.RAZORPAY_ID_KEY,
@@ -486,8 +488,32 @@ module.exports = {
             }
           })
          await generateInvoice(order.orderId);
-      }
-      
+      } else if (payment === "WALLET") {
+        const walletBalanceSufficient = await checkWallet(req.session.userId, orderTotal);
+        if (walletBalanceSufficient) {
+            const userWallet = await walletSchema.findOne({ userId: req.session.userId });
+            const newWalletBalance = userWallet.wallet - orderTotal;
+            await walletSchema.updateOne({ userId: req.session.userId }, { $set: { wallet: newWalletBalance } });
+            const transaction = {
+                date: new Date(),
+                amount: -orderTotal,
+                message: "Order placed"
+            };
+            await walletSchema.updateOne({ userId: req.session.userId }, { $push: { walletHistory: transaction } });
+            
+            const order = await makeOrder(orderTotal, address, payment, req.session.userId);
+            const updated = await orderSchema.insertMany(order);
+            if (updated) {
+                const updatedStock = await updateStock(req, cartData[0].products);
+                if (updatedStock) {
+                    await generateInvoice(order.orderId);
+                    res.json({ orderPlaced: true });
+                }
+            }
+        } else {
+            return res.json({ error: true, message: "Insufficient balance in wallet for payment" });
+        }
+
       } else {
         console.log("Out of stock "+ inStock);
         res.json({
@@ -496,6 +522,7 @@ module.exports = {
         });
       }
     } 
+  }
     catch (error) {
       console.log("Error in placing order"+error);
     }
@@ -661,4 +688,6 @@ res.json({order})
       console.log("Errror in retry payment ",error);
     }
   },
+
+ 
 };

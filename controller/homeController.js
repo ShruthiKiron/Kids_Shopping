@@ -46,7 +46,7 @@ module.exports = {
       const useId = req.session.userId;
       const offerData = await offerSchema.find()
      // console.log("offer test ",offerData);
-     
+    
       const wishlistData = await wishlistSchema.aggregate([{$match : {userId : new ObjectId(useId)}},{$unwind : '$productId'
     },{$lookup : {
       from : 'products',

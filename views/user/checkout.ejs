@@ -59,6 +59,7 @@
                 <select class="select" id="payment-method">
                   <option selected value="COD">Cash On Delivery</option>
                   <option value="ONLINE">Razorpay</option>
+                  <option value="WALLET">Wallet</option>
                  </select>
               </div>
               <button
@@ -125,6 +126,31 @@
       </div>
     </div>
   </div>
+
+  <!-- Wallet Amount Modal -->
+<div class="modal fade" id="walletModal" tabindex="-1" aria-labelledby="walletModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="walletModalLabel">Enter Wallet Amount</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="walletForm">
+          <div class="mb-3">
+            <label for="walletAmount" class="form-label">Amount</label>
+            <input type="number" class="form-control" id="walletAmount" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  
+  
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <%- include('../includes/user/userEnd') %>
 </div>
@@ -157,7 +183,8 @@ $(document).ready(function() {
             title: 'Oops...',
             text: response.message
           });
-        } else {
+        }   
+        else {
           razorPayment(response);
           console.log(response);
         }
@@ -167,6 +194,7 @@ $(document).ready(function() {
       }
     });
   });
+ 
 });
 
   function razorPayment(order) {
@@ -224,6 +252,43 @@ function verifyPayment(payment, order){
   });
 
 }
+
+  </script>
+  <script>
+    $(document).ready(function() {
+  $('#payment-method').change(function() {
+    if ($(this).val() === 'WALLET') {
+      $('#walletModal').modal('show');
+    }
+  });
+
+  $('#walletForm').submit(function(event) {
+    event.preventDefault();
+    var walletAmount = $('#walletAmount').val();
+    var userId = '<%= useId %>';
+
+    $.ajax({
+      url: '/place-order',
+      method: 'POST',
+      data: { userId: userId, walletAmount: walletAmount },
+      success: function(response) {
+        if (response.error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Insufficient Balance',
+            text: response.message
+          });
+        } else {
+          $('#walletModal').modal('hide'); 
+          $('#place-order-button').click();
+        }
+      },
+      error: function(error) {
+        console.log('Error checking wallet balance:', error);
+      }
+    });
+  });
+});
 
   </script>
 
