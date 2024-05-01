@@ -43,34 +43,34 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  date : {
-    type : Date,
-    default : Date.now()
+  date: {
+    type: Date,
+    default: Date.now()
   },
-//   wallet : {
-//     type : Number,
-//     default : 0
-// },
+  //   wallet : {
+  //     type : Number,
+  //     default : 0
+  // },
 
-// walletHistory : [{
-//     date : {
-//         type : Date,
-//     },
-//     amount : {
-//         type : Number
-//     },
-//     message : {
-//         type : String
-//     }
+  // walletHistory : [{
+  //     date : {
+  //         type : Date,
+  //     },
+  //     amount : {
+  //         type : Number
+  //     },
+  //     message : {
+  //         type : String
+  //     }
 
-// }],
-referralCode : {
-  type : String
-},
+  // }],
+  referralCode: {
+    type: String
+  },
 
-isReferred : {
-  type : String
-}
+  isReferred: {
+    type: String
+  }
 
 });
 

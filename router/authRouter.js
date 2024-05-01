@@ -5,30 +5,30 @@ const auth = require('../middleware/isAuth')
 const passport = require('passport')
 const authController = require('../controller/authController')
 
-router.get('/login',auth.userLogin,authController.getLogin)
-router.post('/login',auth.userLogin,authController.postLogin)
+router.get('/login', auth.userLogin, authController.getLogin)
+router.post('/login', auth.userLogin, authController.postLogin)
 
-router.get('/signup',auth.userLogin,authController.getSignup)
-router.post('/signup',auth.userLogin,authController.postSignup)
+router.get('/signup', auth.userLogin, authController.getSignup)
+router.post('/signup', auth.userLogin, authController.postSignup)
 
-router.get('/signup-otp',auth.userLogin,authController.getSignupOtp)
-router.post('/signup-otp',auth.userLogin,authController.postSignupOtp)
+router.get('/signup-otp', auth.userLogin, authController.getSignupOtp)
+router.post('/signup-otp', auth.userLogin, authController.postSignupOtp)
 
-router.post('/resend-otp',auth.userLogin,authController.resendOtp)
+router.post('/resend-otp', auth.userLogin, authController.resendOtp)
 
-router.get('/auth/google',auth.userLogin,passport.authenticate('google',{scope : ['email','profile']}))
-router.get('/auth/google/home',auth.userLogin,passport.authenticate('google'),authController.googleLogin)
+router.get('/auth/google', auth.userLogin, passport.authenticate('google', { scope: ['email', 'profile'] }))
+router.get('/auth/google/home', auth.userLogin, passport.authenticate('google'), authController.googleLogin)
 
-router.get('/forgotPassword',auth.userLogin,authController.getForgotPassword)
-router.post('/forgotPassword',auth.userLogin,authController.postForgotPassword)
+router.get('/forgotPassword', auth.userLogin, authController.getForgotPassword)
+router.post('/forgotPassword', auth.userLogin, authController.postForgotPassword)
 
-router.get('/forgotPassword-otp',auth.userLogin,authController.getForgotPasswordOTP)
-router.post('/forgotPassword-otp',auth.userLogin,authController.postForgotPasswordOTP)
-router.post('/forgot-resend-otp',auth.userLogin,authController.forgotResendotp)
+router.get('/forgotPassword-otp', auth.userLogin, authController.getForgotPasswordOTP)
+router.post('/forgotPassword-otp', auth.userLogin, authController.postForgotPasswordOTP)
+router.post('/forgot-resend-otp', auth.userLogin, authController.forgotResendotp)
 
-router.get('/newPassword',auth.userLogin,authController.getNewPassword)
-router.post('/newPassword',auth.userLogin,authController.postNewPassword)
+router.get('/newPassword', auth.userLogin, authController.getNewPassword)
+router.post('/newPassword', auth.userLogin, authController.postNewPassword)
 
-router.get('/logout',authController.userLogout)
+router.get('/logout', authController.userLogout)
 
 module.exports = router

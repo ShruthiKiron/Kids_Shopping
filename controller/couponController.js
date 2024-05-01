@@ -3,10 +3,7 @@ const couponSchema = require("../models/couponModel");
 module.exports = {
   getCoupon: async (req, res) => {
     try {
-    //   if (!req.session.adminId) {
-    //     req.flash("error", "Please login");
-    //     return res.redirect('/admin');
-    // }
+
       const coupon = await couponSchema.find();
       res.render("admin/coupons", { coupon });
     } catch (error) {
@@ -27,8 +24,8 @@ module.exports = {
       const month = String(currentDate.getMonth() + 1).padStart(2, "0");
       const day = String(currentDate.getDate()).padStart(2, "0");
       const formattedDate = `${year}-${month}-${day}`;
-        console.log(formattedDate);
-        console.log(req.body.endDate);
+      console.log(formattedDate);
+      console.log(req.body.endDate);
       const coupon = await couponSchema.findOne({ couponCode: req.body.code });
       if (coupon) {
         req.flash("error", "Coupon code already exist");
@@ -36,8 +33,8 @@ module.exports = {
       } else if (req.body.endDate < formattedDate) {
         req.flash("error", "Invalid date");
         res.redirect("/addCoupons");
-      } else if(req.body.discount > 70){
-        req.flash("error","Discount cannot be more than 70%")
+      } else if (req.body.discount > 70) {
+        req.flash("error", "Discount cannot be more than 70%")
         res.redirect("/addCoupons");
       }
       else {

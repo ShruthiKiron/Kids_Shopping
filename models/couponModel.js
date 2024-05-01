@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const couponSchema = mongoose.Schema({
-  
+
   // userId: {
   //   type: mongoose.Schema.Types.ObjectId,
   //   required: true,
@@ -28,14 +28,14 @@ const couponSchema = mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  usedUsers:[
+  usedUsers: [
     {
-        user_id:{
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "user",
-        }
+      user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+      }
     }
   ]
 });
-const couponModel = new mongoose.model('coupon' ,couponSchema)
+const couponModel = new mongoose.model('coupon', couponSchema)
 module.exports = couponModel

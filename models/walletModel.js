@@ -5,24 +5,24 @@ const walletSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "user",
-      },
-      
-    wallet : {
-        type : Number,
-        default : 0
     },
-    
-    walletHistory : [{
-        date : {
-            type : Date,
+
+    wallet: {
+        type: Number,
+        default: 0
+    },
+
+    walletHistory: [{
+        date: {
+            type: Date,
         },
-        amount : {
-            type : Number
+        amount: {
+            type: Number
         },
-        message : {
-            type : String
+        message: {
+            type: String
         }
-    
+
     }],
 })
 const walletModel = new mongoose.model("wallet", walletSchema);

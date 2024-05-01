@@ -2,7 +2,6 @@ const userSchema = require("../models/userModel");
 const walletSchema = require('../models/walletModel')
 
 const verificationController = require("./verificationController");
-//const homeController = require('./homeController')
 const bcrypt = require("bcrypt");
 
 module.exports = {
@@ -10,7 +9,6 @@ module.exports = {
 
   getSignup: (req, res) => {
     res.render("auth/signup", { error: req.flash("error") });
-    ///console.log("user data getSignup  "+req.session.user)
   },
 
   // signing up using post
@@ -39,7 +37,7 @@ module.exports = {
         console.log(
           "post signup time " + req.session.userInfo.token.generatedTime
         );
-        console.log("is Referred ",req.session.userInfo.isReferred);
+        console.log("is Referred ", req.session.userInfo.isReferred);
         res.redirect("/signup-otp");
       }
     } catch (error) {
@@ -65,8 +63,8 @@ module.exports = {
       const date = Date.now();
       console.log("DAte", date);
       console.log("time", otpExpiry);
-      const refferedUser = await userSchema.find({referralCode : req.session.userInfo.isReferred})
-      console.log("reffered "+refferedUser);
+      const refferedUser = await userSchema.find({ referralCode: req.session.userInfo.isReferred })
+      console.log("reffered " + refferedUser);
 
       if (date < otpExpiry) {
         if (otpValue == otp) {
@@ -76,8 +74,8 @@ module.exports = {
             lastName: req.session.userInfo.lastName,
             email: req.session.userInfo.email,
             password: req.session.userInfo.password,
-            
-            referralCode : referralCode,
+
+            referralCode: referralCode,
             token: {
               otp: req.session.userInfo.otp,
               generatedTime: req.session.userInfo.generatedTime,
@@ -86,70 +84,53 @@ module.exports = {
 
           const user = await userSchema.insertMany(userData);
           req.session.userId = user[0]._id;
-          await walletSchema.insertMany({userId : req.session.userId})
-          await walletSchema.updateOne({userId : req.session.userId},{
-            $inc : {
-              wallet : 100
+          await walletSchema.insertMany({ userId: req.session.userId })
+          await walletSchema.updateOne({ userId: req.session.userId }, {
+            $inc: {
+              wallet: 100
             },
-            $push : {
-              walletHistory : {
-                date : Date.now(),
-                amount : 100,
-                message : "Join bonus"
+            $push: {
+              walletHistory: {
+                date: Date.now(),
+                amount: 100,
+                message: "Join bonus"
               }
             }
           })
 
-        //   if (!refferedUser) {
-        //   await walletSchema.updateOne(
-        //     { userId: req.session.userId },
-        //     {
-        //       $inc: { wallet: 100 }, // Assuming 100 is the join bonus
-        //       $push: {
-        //         walletHistory: {
-        //           date: Date.now(),
-        //           amount: 100,
-        //           message: "Join bonus",
-        //         },
-        //       },
-        //     }
-        //   );
-        // }
 
-        // // If referred user exists, update their wallet and also the wallet of the referring user
-        if (refferedUser) {
-          await walletSchema.updateOne({userId: refferedUser._id},{
-            $inc : {
-              wallet : 50
-            },
-            $push : {
-              walletHistory : {
-                date : Date.now(),
-                amount : 50,
-                message : "Referral bonus"
+          if (refferedUser) {
+            await walletSchema.updateOne({ userId: refferedUser._id }, {
+              $inc: {
+                wallet: 50
+              },
+              $push: {
+                walletHistory: {
+                  date: Date.now(),
+                  amount: 50,
+                  message: "Referral bonus"
+                }
               }
-            }
-          })
-          
-        //   // Also, update the wallet of the referring user
-        await walletSchema.updateOne({userId : req.session.userId},{
-          $inc : {
-            wallet : 50
-          },
-          $push : {
-            walletHistory : {
-              date : Date.now(),
-              amount : 50,
-              message : "Referral bonus for referring a user"
-            }
+            })
+
+            await walletSchema.updateOne({ userId: req.session.userId }, {
+              $inc: {
+                wallet: 50
+              },
+              $push: {
+                walletHistory: {
+                  date: Date.now(),
+                  amount: 50,
+                  message: "Referral bonus for referring a user"
+                }
+              }
+            })
+
           }
-        })
 
-        }
 
-  
 
-        res.json({ success: true });
+          res.json({ success: true });
         } else {
           res.json({ invalid: true, message: "Invalid OTP" });
         }
@@ -202,7 +183,7 @@ module.exports = {
     try {
       const userData = await userSchema.findOne({ email: req.body.email });
       console.log("User just login " + userData);
-     
+
       console.log("user id " + req.session.userId);
       if (userData) {
         const passwordMatch = await bcrypt.compare(
@@ -213,7 +194,7 @@ module.exports = {
           if (!userData.isBlocked) {
             req.session.user = true;
             req.session.userId = userData._id;
-            console.log("user id when password match "+req.session.userId);
+            console.log("user id when password match " + req.session.userId);
             res.redirect("/home");
           } else {
             req.flash("error", "User is Blocked");
@@ -228,7 +209,7 @@ module.exports = {
         res.redirect("/login");
       }
       console.log("Login error" + error);
-    } catch (error) {}
+    } catch (error) { }
   },
 
   googleLogin: async (req, res) => {
@@ -355,13 +336,12 @@ module.exports = {
       console.log("Error in post new password " + error);
     }
   },
-  userLogout : async (req,res) => {
-    try{
-       console.log('logout')
-       delete req.session.userId
-       res.redirect('/home')
-    }catch(er)
-    {
+  userLogout: async (req, res) => {
+    try {
+      console.log('logout')
+      delete req.session.userId
+      res.redirect('/home')
+    } catch (er) {
       console.log(er)
     }
   }

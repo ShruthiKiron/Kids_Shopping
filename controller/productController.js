@@ -7,48 +7,45 @@ const { cropAndSaveImage } = require('../helpers/imageCrop')
 
 module.exports = {
 
-    getProduct : async(req,res) => {
+    getProduct: async (req, res) => {
         try {
-            // if (!req.session.adminId) {
-            //     req.flash("error", "Please login");
-            //     return res.redirect('/admin');
-            // }
-            const productData = await productSchema.find().sort({date : -1})
-            
+
+            const productData = await productSchema.find().sort({ date: -1 })
+
             const pro = productData
-            
-        res.render('admin/products',{products : productData })
+
+            res.render('admin/products', { products: productData })
         } catch (error) {
-           console.log("Error in get product "+error); 
+            console.log("Error in get product " + error);
         }
-        
+
     },
 
-    getAddProducts : async(req,res) => {
+    getAddProducts: async (req, res) => {
         try {
             const categories = await categorySchema.find()
 
-           res.render('admin/addProducts',{category : categories,error: req.flash("error")}) 
-            
+            res.render('admin/addProducts', { category: categories, error: req.flash("error") })
+
         } catch (error) {
-            console.log('Error in post products '+error);
+            console.log('Error in post products ' + error);
         }
     },
-    postAddProducts : async (req,res) => {
+    postAddProducts: async (req, res) => {
         try {
 
             console.log("At post add products ");
 
 
-            for(let file of req.files){
-                if(
+            for (let file of req.files) {
+                if (
                     file.mimetype !== 'image/jpg' &&
                     file.mimetype !== 'image/jpeg' &&
                     file.mimetype !== 'image/png' &&
                     file.mimetype !== 'image/gif' &&
                     file.mimetype !== 'image/webp'
-                ){
-                    req.flash("error","Check the image type")
+                ) {
+                    req.flash("error", "Check the image type")
                     return res.redirect('/addProducts')
                 }
             }
@@ -56,91 +53,83 @@ module.exports = {
             console.log(req.files);
             console.log(req.body);
             const img = []
-            for( let items of req.files) {
-
-                // const croppedImage = await cropAndSaveImage(items);
-                // img.push(path.basename(croppedImage));
+            for (let items of req.files) {
 
                 img.push(items.filename)
             }
-            if(req.body.price < 0)
-            {
-                req.flash('error','Invalid price')
+            if (req.body.price < 0) {
+                req.flash('error', 'Invalid price')
                 res.redirect('/addProducts')
             }
-            else if(req.body.stock < 0){
-                req.flash('error','Invalid stock')
+            else if (req.body.stock < 0) {
+                req.flash('error', 'Invalid stock')
                 res.redirect('/addProducts')
             }
-            else{
+            else {
 
-            const productDetail = new productSchema({
-                product : req.body.productName,
-                category : req.body.categoryName,
-                size : req.body.size,
-                color : req.body.colour,
-                price : req.body.price,
-                stock : req.body.stock,
-                description : req.body.description,
-                image : img
-            })
+                const productDetail = new productSchema({
+                    product: req.body.productName,
+                    category: req.body.categoryName,
+                    size: req.body.size,
+                    color: req.body.colour,
+                    price: req.body.price,
+                    stock: req.body.stock,
+                    description: req.body.description,
+                    image: img
+                })
 
-             await productDetail.save()
-            res.redirect('/products')
+                await productDetail.save()
+                res.redirect('/products')
 
-        }
+            }
 
         } catch (error) {
-            console.log("Error in post add products "+error);
+            console.log("Error in post add products " + error);
         }
 
 
 
 
     },
-    getEditProduct : async (req,res) => {
+    getEditProduct: async (req, res) => {
         try {
-            
+
             console.log("edit Product")
-            const productData = await productSchema.findOne({_id : req.params.id})
+            const productData = await productSchema.findOne({ _id: req.params.id })
             console.log(productData)
-            
-            if(productData)
-            {
+
+            if (productData) {
                 const category = await categorySchema.find()
                 const selectedCategory = productData.category
                 console.log(selectedCategory);
 
-                // console.log(productData.image);
-
-                res.render('admin/editProduct',{ productData ,category,selectedCategory})
-            }            
+                res.render('admin/editProduct', { productData, category, selectedCategory })
+            }
 
         } catch (error) {
-            console.log("Error in get product "+error);
+            console.log("Error in get product " + error);
         }
     },
 
-    patchEditProduct : async (req,res) => {
+    patchEditProduct: async (req, res) => {
         try {
             console.log("patch edit product");
 
-            
 
-            const productData = await productSchema.findOne({_id : req.params.id})
-             const image = productData.image   
-            let images = productData.image          
-            // console.log("Image "+image)
 
-            for(let file of req.files){
-                if(
+            const productData = await productSchema.findOne({ _id: req.params.id })
+            const image = productData.image
+            let images = productData.image
+
+            for (let file of req.files) {
+                if (
                     file.mimetype !== 'image/jpg' &&
                     file.mimetype !== 'image/jpeg' &&
                     file.mimetype !== 'image/png' &&
                     file.mimetype !== 'image/gif' &&
                     file.mimetype !== 'image/webp'
-                ){
-                    req.flash("error","Check the image type")
+                ) {
+                    req.flash("error", "Check the image type")
                     return res.redirect('/ediProducts')
                 }
             }
@@ -148,13 +137,12 @@ module.exports = {
             console.log("Uploaded Files: ", req.files);
             let newImages = [];
 
-    // Push the new image filenames to the array
-    for (let file of req.files) {
-      newImages.push(file.filename);
-    }
-    const updatedImages = images.concat(newImages);
+            for (let file of req.files) {
+                newImages.push(file.filename);
+            }
+            const updatedImages = images.concat(newImages);
 
-    console.log("Updated Image Array: ", updatedImages);
+            console.log("Updated Image Array: ", updatedImages);
 
 
 
@@ -163,93 +151,85 @@ module.exports = {
 
             let img = []
             img = image
-           
+
             if (req.files && req.files.length > 0) {
-                // Remove existing images from the array
                 images = [];
-    
-                // Add new images to the array
+
                 for (let file of req.files) {
                     images.push(file.filename);
                 }
             }
 
-
-            // for (let items of req.files) {
-            //     // const croppedImage = await cropAndSaveImage(items);
-            //     // image.push(path.basename(croppedImage));
-            //     // console.log("Pushed Image: ", path.basename(croppedImage));
-            //     img.push(items.filename)
-            // }
             console.log("Final Image Array: ", image);
-        
-            
-            
-            await productSchema.updateOne({_id : req.params.id},
-                {$set : {
-                product : req.body.productName,
-                category : req.body.categoryName,
-                size : (productData.size)? productData.size : req.body.size,
-                color : req.body.colour,
-                price : req.body.price,
-                stock : req.body.stock,
-                description : req.body.description,
-                image : updatedImages,
-    
-            }})
-            
+
+
+
+            await productSchema.updateOne({ _id: req.params.id },
+                {
+                    $set: {
+                        product: req.body.productName,
+                        category: req.body.categoryName,
+                        size: (productData.size) ? productData.size : req.body.size,
+                        color: req.body.colour,
+                        price: req.body.price,
+                        stock: req.body.stock,
+                        description: req.body.description,
+                        image: updatedImages,
+
+                    }
+                })
+
             res.redirect('/products')
 
-            
+
         } catch (error) {
-            console.log("Error in patch edit product " +error);
+            console.log("Error in patch edit product " + error);
         }
     },
-    
-    deleteProduct : async (req,res) =>{
+
+    deleteProduct: async (req, res) => {
         try {
-            const productData = await productSchema.find({_id : req.params.id})
-            await productSchema.updateOne({_id : req.params.id},{$set : {isDeleted : true}})
+            const productData = await productSchema.find({ _id: req.params.id })
+            await productSchema.updateOne({ _id: req.params.id }, { $set: { isDeleted: true } })
             res.redirect('/products')
         } catch (error) {
-            console.log("Error in delete product "+error);
-            
+            console.log("Error in delete product " + error);
+
         }
     },
-     postSearch : async (req,res) => {
+    postSearch: async (req, res) => {
         try {
             const value = req.body.value
-            const searchData = await categorySchema.find({$or : [{categoryName}]})
-            
+            const searchData = await categorySchema.find({ $or: [{ categoryName }] })
+
         } catch (error) {
-            console.log("Error in search "+error);
+            console.log("Error in search " + error);
         }
-     },
-     deleteImage: async (req, res) => {
+    },
+    deleteImage: async (req, res) => {
         try {
             const productId = req.params.id;
             const imageName = req.params.imageName;
-            console.log(req.params.imageName);    
+            console.log(req.params.imageName);
             await productSchema.findOneAndUpdate(
                 { _id: productId },
                 { $pull: { image: imageName } }
             );
-            const filePath = path.join(__dirname,'../public/images/productImages/'+imageName);
+            const filePath = path.join(__dirname, '../public/images/productImages/' + imageName);
             console.log(filePath);
             fs.unlink(filePath, (err) => {
                 if (err) {
-                  console.error("Error deleting image:", err);
+                    console.error("Error deleting image:", err);
                 } else {
-                  console.log("Image deleted successfully");
+                    console.log("Image deleted successfully");
                 }
-              });     
-              res.redirect('/products')     
-    
-           // res.redirect(`/editProduct/${productId}`);
+            });
+            res.redirect('/products')
+
         } catch (error) {
             console.log("Error in delete image in edit product page " + error);
         }
     },
-   
+
 
 }

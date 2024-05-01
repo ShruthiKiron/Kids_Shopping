@@ -2,14 +2,12 @@ const orderSchema = require('../models/orderModel');
 const excel = require('exceljs');
 module.exports = {
 
-   
+
     generateSalesReport: async (startDate, endDate) => {
         try {
             if (!startDate || !endDate) {
                 startDate = new Date();
-              //  startDate.setDate(startDate.getDate() - 1);
                 endDate = new Date();
-              //  endDate.setDate(endDate.getDate() + 1);
             }
             const dateRange = `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
 
@@ -28,7 +26,7 @@ module.exports = {
                     }
                 },
                 {
-                    $unwind: "$product" // Unwind the product array
+                    $unwind: "$product"
                 },
                 {
                     $lookup: {
@@ -40,26 +38,26 @@ module.exports = {
                 },
                 {
                     $addFields: {
-                        "product.name": { $arrayElemAt: ["$productDetails.product", 0] }, // Assuming product name is stored in the "name" field of the products collection
-                        "product.category": { $arrayElemAt: ["$productDetails.category", 0] } // Assuming category is stored in the "category" field of the products collection
+                        "product.name": { $arrayElemAt: ["$productDetails.product", 0] },
+                        "product.category": { $arrayElemAt: ["$productDetails.category", 0] }
                     }
                 },
                 {
                     $group: {
-                        _id: "$_id", // Group by order ID or any unique identifier
+                        _id: "$_id",
                         orderId: { $first: "$orderId" },
                         customerName: { $first: { $arrayElemAt: ["$user.firstName", 0] } },
                         phone: { $first: { $arrayElemAt: ["$user.mobile", 0] } },
                         product: { $push: "$product.name" },
-                        category: {$push: "$product.category"},
+                        category: { $push: "$product.category" },
                         quantitySold: { $sum: "$product.quantity" },
                         dateRangeStart: { $first: startDate.toLocaleDateString() }, // Accumulate start date
-                        dateRangeEnd: { $first: endDate.toLocaleDateString() } ,
+                        dateRangeEnd: { $first: endDate.toLocaleDateString() },
                         totalRevenue: { $first: "$grandTotal" }
                     }
                 }
             ]);
-            console.log("reportData ",reportData);
+            console.log("reportData ", reportData);
 
             let totalSales = 0;
             let overallOrderAmount = 0;
@@ -79,9 +77,9 @@ module.exports = {
                 overallDiscount,
                 overallSalesCount
             };
-            
 
-            return { reportData, summary, dateRange};
+
+            return { reportData, summary, dateRange };
         } catch (error) {
             console.error("Error generating sales report:", error);
             throw error;
@@ -103,11 +101,11 @@ module.exports = {
                     order.category.join(', '),
                     order.quantitySold,
                     dateRange,
-                   
+
                     order.totalRevenue.toFixed(2)
                 ]);
             });
-           // worksheet.getCell('E1').value = dateRange;
+            // worksheet.getCell('E1').value = dateRange;
             res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             res.setHeader('Content-Disposition', 'attachment; filename=sales_report.xlsx');
             await workbook.xlsx.write(res);
@@ -117,5 +115,5 @@ module.exports = {
             res.status(500).send("Error generating Excel file");
         }
     },
-   
+
 }

@@ -18,19 +18,19 @@ const cartSchema = new mongoose.Schema({
         type: Number,
         default: 1,
       },
-      size : {
+      size: {
         type: String,
 
       },
       price: {
-        type : Number
+        type: Number
       },
-      
+
     }
   ],
 });
 
 
 
-const cartModel = new mongoose.model('cart',cartSchema)
+const cartModel = new mongoose.model('cart', cartSchema)
 module.exports = cartModel

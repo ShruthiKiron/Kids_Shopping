@@ -15,8 +15,8 @@ const checkOfferExpiry = async (req, res, next) => {
                 const productsToUpdate = await productSchema.find({ offerFor: offer._id });
 
                 for (const product of productsToUpdate) {
-                    product.price = product.offerPrice; 
-                    product.offerPrice = 0; 
+                    product.price = product.offerPrice;
+                    product.offerPrice = 0;
                     await product.save();
                 }
             }

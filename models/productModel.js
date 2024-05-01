@@ -2,60 +2,60 @@ const mongoose = require('mongoose')
 
 const productSchema = new mongoose.Schema({
 
-    product : {
-        type : String,
-        require : true
+    product: {
+        type: String,
+        require: true
     },
-    
-    color : {
-        type : String,
+
+    color: {
+        type: String,
 
     },
-    price : {
-        type : Number,
-        
-    },
-    size : {
-        type : Array,
-    },
-    image : {
-        type : Array,
-    },
-    description : {
-        type : String,
-    },
-    category : {
-        type : String,
-        ref : 'category',
+    price: {
+        type: Number,
 
     },
-    stock : {
-        type : Number,
+    size: {
+        type: Array,
     },
-    isDeleted : {
-        type : Boolean,
-        default : false
+    image: {
+        type: Array,
     },
-    date : {
-        type : Date,
-        default : Date.now()
+    description: {
+        type: String,
     },
-    idealFor : {
-        type : String,
-        
+    category: {
+        type: String,
+        ref: 'category',
+
+    },
+    stock: {
+        type: Number,
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+    date: {
+        type: Date,
+        default: Date.now()
+    },
+    idealFor: {
+        type: String,
+
     },
     offerFor: {
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'offer', 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'offer',
     },
-    offerPrice : {
-        type : Number
+    offerPrice: {
+        type: Number
     }
 
 
 
 })
 
-const productModel = new mongoose.model('product',productSchema)
+const productModel = new mongoose.model('product', productSchema)
 
 module.exports = productModel

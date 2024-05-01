@@ -1,28 +1,7 @@
 const productSchema = require('../models/productModel')
 const categorySchema = require('../models/categoryModel')
 const orderSchema = require('../models/orderModel')
-const {ObjectId} = require('mongodb')
-// async function findTopSellingProducts() {
-//     const orders = await orderSchema.find({});
-//     const productCounts = {};
-    
-//     orders.forEach(order => {
-//         order.product.forEach(item => {
-//             const productId = item.productId.toString();
-//             if (!productCounts[productId]) {
-//                 productCounts[productId] = 0;
-//             }
-//             productCounts[productId] += item.quantity;
-//         });
-//     });
-//     const sortedProductCounts = Object.entries(productCounts).sort((a, b) => b[1] - a[1]);
-//     const topThreeProducts = sortedProductCounts.slice(0, 3).map(([productId, count]) => ({
-//         productId,
-//         count
-//     }));
-    
-//     return topThreeProducts;
-// }
+const { ObjectId } = require('mongodb')
 
 async function findTopSellingProducts() {
     const topThreeProducts = await orderSchema.aggregate([
@@ -81,4 +60,4 @@ async function findTopSellingCategories() {
 
     return topThreeCategories;
 }
- module.exports = {findTopSellingProducts,findTopSellingCategories}
+module.exports = { findTopSellingProducts, findTopSellingCategories }

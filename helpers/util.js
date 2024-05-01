@@ -38,7 +38,7 @@ module.exports = {
   },
   makeOrder: async (orderGrandTotal, address, payment, userId) => {
     console.log(userId);
-    const uuid = uuidv4().slice(0,8);
+    const uuid = uuidv4().slice(0, 8);
     const cart = await cartSchema.findOne({ userId: new ObjectId(userId) });
     const order = {
       userId: new ObjectId(userId),
@@ -49,7 +49,7 @@ module.exports = {
       orderStatus: payment == "ONLINE" ? "PAYMENT PENDING" : "ACTIVE",
       product: cart.items,
       grandTotal: orderGrandTotal,
-      paymentMethod:payment
+      paymentMethod: payment
     };
 
     return order;
@@ -62,14 +62,14 @@ module.exports = {
           { $inc: { stock: -items.quantity } }
         );
       }
-      await cartSchema.updateOne({userId:new ObjectId(req.session.userId)},{$set:{items:[]}})
+      await cartSchema.updateOne({ userId: new ObjectId(req.session.userId) }, { $set: { items: [] } })
 
       return true
     } catch (er) {
       console.log(er);
     }
   },
-  checkOrderTransition:async (currentStage, requestedStage) => {
+  checkOrderTransition: async (currentStage, requestedStage) => {
     const allowedStages = [
       "PREPARING FOR DISPATCH",
       "DISPATCHED",
@@ -79,18 +79,18 @@ module.exports = {
       "RETURN REQUESTED",
       "RETURNED",
     ];
-  
+
     if (!allowedStages.includes(requestedStage)) {
       return false;
     }
-  
+
     const currentIndex = allowedStages.indexOf(currentStage);
     const requestedIndex = allowedStages.indexOf(requestedStage);
-  
+
     if (requestedIndex <= currentIndex) {
       return false;
     }
-  
+
     return true;
   }
 };

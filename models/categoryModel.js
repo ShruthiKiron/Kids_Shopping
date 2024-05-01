@@ -1,26 +1,26 @@
-const mongoose = require ('mongoose')
+const mongoose = require('mongoose')
 
 const categorySchema = new mongoose.Schema({
-    categoryName : {
-        type : String,        
-        require : true,
-        unique : true,
+    categoryName: {
+        type: String,
+        require: true,
+        unique: true,
     },
-    isDeleted : {
-        type : Boolean,
-        default : false
+    isDeleted: {
+        type: Boolean,
+        default: false
     },
-    date : {
-        type : Date,
-        default : Date.now()
+    date: {
+        type: Date,
+        default: Date.now()
     },
-    image : {
-        type : Array,
+    image: {
+        type: Array,
     }
-        
-    
+
+
 })
 
-const categoryModel = new mongoose.model('category',categorySchema)
+const categoryModel = new mongoose.model('category', categorySchema)
 
 module.exports = categoryModel
