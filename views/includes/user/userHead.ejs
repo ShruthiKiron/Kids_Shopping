@@ -285,7 +285,7 @@
 			</div>
 
 			<!-- Icon header -->
-			<div class="wrap-icon-header flex-w flex-r-m m-r-15">
+			<!-- <div class="wrap-icon-header flex-w flex-r-m m-r-15">
 				<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
 					<i class="zmdi zmdi-search"></i>
 				</div>
@@ -297,7 +297,7 @@
 				<a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti" data-notify="0">
 					<i class="zmdi zmdi-favorite-outline"></i>
 				</a>
-			</div>
+			</div> -->
 
 			<!-- Button show menu -->
 			<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
@@ -353,6 +353,35 @@
 										My Cart
 									</a>
 								<%}%>
+
+								<% if(useId){ %>
+									<a href="/order-history/<%= useId %>" class="flex-c-m p-lr-10 trans-04">
+										My Order
+									</a>
+								<%}else { %>
+									<a href="/login" class="flex-c-m p-lr-10 trans-04">
+										My Order
+									</a>
+								<%}%>
+								<% if(useId){ %>
+									<a href="/wishlist/<%= useId %>" class="flex-c-m p-lr-10 trans-04">
+										My Wishlist
+									</a>
+								<%}else { %>
+									<a href="/login" class="flex-c-m p-lr-10 trans-04">
+										My Wishlist 
+									</a>
+								<%}%>
+								<% if(useId){ %>
+									<a href="/wallet/<%= useId %>" class="flex-c-m p-lr-10 trans-04">
+										My Wallet
+									</a>
+								<%}else { %>
+									<a href="/login" class="flex-c-m p-lr-10 trans-04">
+										My Wallet
+									</a>
+								<%}%>
+
 
 
 

@@ -61,7 +61,9 @@ router.post('/apply-coupon', homeController.applyCoupon)
 router.patch('/remove-coupon', homeController.removeCoupon);
 
 router.patch('/retry-payment/:id', userController.retryPayment)
-router.get('/filteredOrders', userController.getfilteredOrders)
+router.post('/filteredOrders/:id', userController.getfilteredOrders)
+
+router.post('/cancel-single-product/:id',userController.postCancelSingleProduct)
 
 
 

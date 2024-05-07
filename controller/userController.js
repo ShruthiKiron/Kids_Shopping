@@ -551,16 +551,11 @@ module.exports = {
 
   getOrderHistory: async (req, res) => {
     try {
-      console.log(req.params.id);
       let page = parseInt(req.query.page) || 1;
       let pageSize = 5;
-      let selectedStatus = req.query.status || 'all';
-      let filter = {};
-      if (selectedStatus !== 'all') {
-        filter.orderStage = selectedStatus;
-      }
+    
 
-      let orderDetails = await orderAggregation(req.params.id, page, pageSize, filter)
+      let orderDetails = await orderAggregation(req.params.id, page, pageSize)
 
       orderDetails.forEach((item) => {
         item.orderedAt = new Date(item.orderedAt);
@@ -571,11 +566,11 @@ module.exports = {
       const totalOrdersCount = await orderSchema.countDocuments({ userId: req.params.id });
 
       res.render("user/orderHistory", {
-        useId: req.session.userid,
+        useId: req.params.id,
         orderDetails,
         currentPage: page,
         totalPages: Math.ceil(totalOrdersCount / pageSize),
-        selectedStatus
+        //selectedStatus
       });
     } catch (error) {
       console.log("Error in get order history " + error);
@@ -583,20 +578,49 @@ module.exports = {
   },
   getfilteredOrders: async (req, res) => {
     try {
-      const selectedStatus = req.body.status || req.query.status || 'all';
-      const allOrders = await orderSchema.find({ userId: new ObjectId(req.params.id) });
+      let selectedStatus = req.body.status || req.query.status || 'ALL';
+      selectedStatus = selectedStatus.trim().toUpperCase(); 
+      if (!req.params.id) {
+        throw new Error('User ID is missing');
+      }
+      
+     const allOrders = await orderSchema.aggregate([
+      {$match : {userId : new ObjectId(req.params.id)}},
+      {$lookup : {
+        from : 'products',
+        localField : 'product.productId',
+        foreignField : '_id',
+        as : 'productDetails'
+      }
 
+      },
+     
+    ])
       let filteredOrders;
-      if (selectedStatus === 'all') {
-        filteredOrders = allOrders;
+      if (selectedStatus === 'ALL') {
+       filteredOrders = allOrders;
+
       } else {
-        filteredOrders = await orderSchema.findOne({ userId: new ObjectId(req.params.id), orderStatus: selectedStatus });
+       
+        filteredOrders = await orderSchema.aggregate([
+          {$match : {userId : new ObjectId(req.params.id), orderStatus : selectedStatus }},
+          {$lookup : {
+            from : 'products',
+            localField : 'product.productId',
+            foreignField : '_id',
+            as : 'productDetails'
+          }
+
+          },
+         
+        ])
+       
 
       }
       res.json(filteredOrders);
     } catch (error) {
       console.log("Error in get filtered orders ", error);
-      res.status(500).json({ error: 'Error fetching filtered orders' });
+      res.json({ error: 'Error fetching filtered orders' });
     }
   },
 
@@ -669,6 +693,52 @@ module.exports = {
       console.log("Errror in retry payment ", error);
     }
   },
+  postCancelSingleProduct: async (req, res) => {
+    try {
+      
+        const orderId = req.params.id;
+        const productId =  req.body.productId;   
+
+        const order = await orderSchema.findOne({ _id: new ObjectId(orderId) });  
+        const product = await productSchema.findOne({_id : productId})   
+      
+       const productIndex = order.product.findIndex(product => {
+       console.log(product.productId);
+        return product.productId.equals(new ObjectId(productId)) ;
+    });
+
+        console.log("indexx ",productIndex);
+       
+        if (productIndex !== -1) {
+          order.product.splice(productIndex, 1);
+          const balance = Number(order.grandTotal) - Number(product.price)
+          order.grandTotal = balance
+
+          await order.save();
+          const wallet = await walletSchema.findOne({userId : order.userId})
+          const walletUpdate = {
+            date : new Date(),
+            amount : product.price,
+            message : 'Credited from single product cancelation'
+          }
+          wallet.wallet += product.price
+          wallet.walletHistory.push(walletUpdate)
+          await wallet.save()
+            console.log("Item has been cancelled");
+            product.stock += 1
+            await product.save()
+
+            return res.json({ success: true, msg: 'Item has been cancelled successfully' });
+      } else {
+          return res.json({ success: false, msg: 'Product not found in order' });
+      }
+      
+    } catch (error) {
+        console.log("Error in canceling single product: ", error);
+        return res.json({ success: false, msg: 'Internal server error' });
+    }
+}
+
 
 
 };

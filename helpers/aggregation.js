@@ -53,13 +53,14 @@ module.exports = {
 
   },
 
-  orderAggregation: async (useId, page, pageSize, filter) => {
-    const matchStage = {
-      userId: new ObjectId(useId)
-    };
-    if (filter && filter.orderStage) {
-      matchStage.orderStage = filter.orderStage;
-    }
+  orderAggregation: async (useId, page, pageSize) => {
+    // const matchStage = {
+    //   userId: new ObjectId(useId)
+    // };
+    // if (filter && filter.orderStage) {
+    //   matchStage.orderStage = filter.orderStage;
+    // }
+   
     const orders = await orderSchema.aggregate([
       {
         $match: { userId: new ObjectId(useId) }

@@ -1,15 +1,16 @@
 <%- include('../includes/user/userHead') %>
-<style>
-  body {
+    <style>
+        body {
             min-height: 100vh;
             background-size: cover;
             font-family: 'Lato', sans-serif;
             color: rgba(116, 116, 116, 0.667);
-               
+
 
         }
+
         .container-fluid {
-            margin-top: 200px ;
+            margin-top: 200px;
         }
 
         p {
@@ -126,292 +127,386 @@
         .border-line {
             border-right: 1px solid rgb(226, 206, 226)
         }
-</style>
-<div style="padding-top: 50px;">
-  <div class="bg0 m-t-23 p-b-140">
-      <div class="container">
-<div class="container-fluid my-5  d-flex  justify-content-center">
-  <div class="card card-1">
-      <div class="card-header bg-white">
-          <div class="media flex-sm-row flex-column-reverse justify-content-between  ">
-              <div class="col my-auto"> <h4 class="mb-0">Thanks for your Order !</h4> </div>
-            
-          </div>
-      </div>
-      <div class="card-body">
-          <div class="row justify-content-between mb-3">
-              <div class="col-auto"> <h6 class="color-1 mb-0 change-color">Receipt</h6> </div>
-              <div class="col-auto  "> <small><%= orderId  %></small> </div>
-          </div>
-        <% orderDetail.product.forEach(item => { %>
-          <div class="row mt-4">
-              <div class="col">
-                  <div class="card card-2">
-                      <div class="card-body">
-                          <div class="media">
-                              <div class="sq align-self-center "> <img class="img-fluid  my-auto align-self-center mr-2 mr-md-4 pl-0 p-0 m-0" src="/images/productImages/<%= item.productDetails.images[0] %>" width="135" height="135" /> </div>
-                              <div class="media-body my-auto text-right">
-                                  <div class="row  my-auto flex-column flex-md-row">
-                                      <div class="col my-auto"> <h6 class="mb-0"> <%= item.productDetails.productName %></h6>  </div>
-                                     
-                                      <div class="col my-auto"> <small>Size : <%= item.size %></small></div>
-                                      <div class="col my-auto"> <small>Qty :  <%= item.quantity %></small></div>
-                                      <div class="col my-auto"><h6 class="mb-0">&#8377; <%= item.orderTotal %></h6>
-                                      
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <hr class="my-3 ">
-                          <!-- <div class="row">
-                              <div class="col-md-3 mb-3"> <small> Track Order <span><i class=" ml-2 fa fa-refresh"  aria-hidden="true"></i></span></small> </div>
-                              <div class="col mt-auto">
-                                  <div class="progress my-auto"> <div class="progress-bar progress-bar  rounded" style="width: 62%" role="progressbar" aria-valuenow="25" aria-valuemin="0"  aria-valuemax="100"></div> </div>
-                                  <div class="media row justify-content-between ">
-                                      <div class="col-auto text-right"><span> <small  class="text-right mr-sm-2"></small> <i class="fa fa-circle active"></i> </span></div>
-                                      <div class="flex-col"> <span> <small class="text-right mr-sm-2">Out for delivary</small><i class="fa fa-circle active"></i></span></div>
-                                      <div class="col-auto flex-col-auto"><small  class="text-right mr-sm-2">Delivered</small><span> <i  class="fa fa-circle"></i></span></div>
-                                  </div>
-                              </div>
-                          </div> -->
-                          <% if(orderDetail.orderStage == 'PREPARING FOR DISPATCH' || orderDetail.orderStage == 'ORDER SHIPPED'){%>
-                          <div class="row">
-                            <div class="col-md-3 mb-3"> <small> Track Order <span><i class="ml-2 fa fa-refresh" aria-hidden="true"></i></span></small> </div>
-                            <div class="col mt-auto">
-                                <div class="progress my-auto">
-                                    <div class="progress-bar progress-bar rounded" style="width: 42%" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+    </style>
+    <div style="padding-top: 50px;">
+        <div class="bg0 m-t-23 p-b-140">
+            <div class="container">
+                <div class="container-fluid my-5  d-flex  justify-content-center">
+                    <div class="card card-1">
+                        <div class="card-header bg-white">
+                            <div class="media flex-sm-row flex-column-reverse justify-content-between  ">
+                                <div class="col my-auto">
+                                    <h4 class="mb-0">Thanks for your Order !</h4>
                                 </div>
-                                <div class="media row justify-content-between ">
-                                    <div class="col-auto text-right"><span> <small class="text-right mr-sm-2">Order Placed</small> <i class="fa fa-circle active"></i> </span></div>
-                                    <div class="flex-col"> <span> <small class="text-right mr-sm-2">Out for Delivery</small><i class="fa fa-circle "></i></span></div>
-                                    <div class="col-auto flex-col-auto"><small class="text-right mr-sm-2">Delivered</small><span> <i class="fa fa-circle"></i></span></div>
-                                </div>
-                                
+
                             </div>
                         </div>
-                        <% } else if(orderDetail.orderStage == 'OUT OF DELIVERY') {%>
-                            <div class="row">
-                                <div class="col-md-3 mb-3"> <small> Track Order <span><i class="ml-2 fa fa-refresh" aria-hidden="true"></i></span></small> </div>
-                                <div class="col mt-auto">
-                                    <div class="progress my-auto">
-                                        <div class="progress-bar progress-bar rounded" style="width: 62%" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                        <div class="card-body">
+                            <div class="row justify-content-between mb-3">
+                                <div class="col-auto">
+                                    <h6 class="color-1 mb-0 change-color">Receipt</h6>
+                                </div>
+                                <div class="col-auto  "> <small>
+                                        <%= orderId %>
+                                    </small> </div>
+                            </div>
+                            <% orderDetail.product.forEach(item=> { %>
+                                <div class="row mt-4">
+                                    <div class="col">
+                                        <div class="card card-2">
+                                            <div class="card-body">
+                                                <div class="media">
+                                                    <div class="sq align-self-center "> <img
+                                                            class="img-fluid  my-auto align-self-center mr-2 mr-md-4 pl-0 p-0 m-0"
+                                                            src="/images/productImages/<%= item.productDetails.images[0] %>"
+                                                            width="135" height="135" /> </div>
+                                                    <div class="media-body my-auto text-right">
+                                                        <div class="row  my-auto flex-column flex-md-row">
+                                                            <div class="col my-auto">
+                                                                <h6 class="mb-0">
+                                                                    <%= item.productDetails.productName %>
+                                                                </h6>
+                                                            </div>
+
+                                                            <div class="col my-auto"> <small>Size : <%= item.size %>
+                                                                        </small></div>
+                                                            <div class="col my-auto"> <small>Qty : <%= item.quantity %>
+                                                                        </small></div>
+                                                            <div class="col my-auto">
+                                                                <h6 class="mb-0">&#8377; <%= item.orderTotal %>
+                                                                </h6>
+
+                                                            </div>
+                                                            <div><button class="btn cancel-single-product" 
+                                                                    data-productid="<%= item.productId %>"
+                                                                    data-orderid="<%= orderDetail._id %>">CANCEL</button></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr class="my-3 ">
+
+                                                <% if(orderDetail.orderStage=='PREPARING FOR DISPATCH' ||
+                                                    orderDetail.orderStage=='ORDER SHIPPED' ){%>
+                                                    <div class="row">
+                                                        <div class="col-md-3 mb-3"> <small> Track Order <span><i
+                                                                        class="ml-2 fa fa-refresh"
+                                                                        aria-hidden="true"></i></span></small> </div>
+                                                        <div class="col mt-auto">
+                                                            <div class="progress my-auto">
+                                                                <div class="progress-bar progress-bar rounded"
+                                                                    style="width: 42%" role="progressbar"
+                                                                    aria-valuenow="25" aria-valuemin="0"
+                                                                    aria-valuemax="100"></div>
+                                                            </div>
+                                                            <div class="media row justify-content-between ">
+                                                                <div class="col-auto text-right"><span> <small
+                                                                            class="text-right mr-sm-2">Order
+                                                                            Placed</small> <i
+                                                                            class="fa fa-circle active"></i> </span>
+                                                                </div>
+                                                                <div class="flex-col"> <span> <small
+                                                                            class="text-right mr-sm-2">Out for
+                                                                            Delivery</small><i
+                                                                            class="fa fa-circle "></i></span></div>
+                                                                <div class="col-auto flex-col-auto"><small
+                                                                        class="text-right mr-sm-2">Delivered</small><span>
+                                                                        <i class="fa fa-circle"></i></span></div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                    <% } else if(orderDetail.orderStage=='OUT OF DELIVERY' ) {%>
+                                                        <div class="row">
+                                                            <div class="col-md-3 mb-3"> <small> Track Order <span><i
+                                                                            class="ml-2 fa fa-refresh"
+                                                                            aria-hidden="true"></i></span></small>
+                                                            </div>
+                                                            <div class="col mt-auto">
+                                                                <div class="progress my-auto">
+                                                                    <div class="progress-bar progress-bar rounded"
+                                                                        style="width: 62%" role="progressbar"
+                                                                        aria-valuenow="25" aria-valuemin="0"
+                                                                        aria-valuemax="100"></div>
+                                                                </div>
+                                                                <div class="media row justify-content-between ">
+                                                                    <div class="col-auto text-right"><span> <small
+                                                                                class="text-right mr-sm-2">Order
+                                                                                Placed</small> <i
+                                                                                class="fa fa-circle active"></i> </span>
+                                                                    </div>
+                                                                    <div class="flex-col"> <span> <small
+                                                                                class="text-right mr-sm-2">Out for
+                                                                                Delivery</small><i
+                                                                                class="fa fa-circle active"></i></span>
+                                                                    </div>
+                                                                    <div class="col-auto flex-col-auto"><small
+                                                                            class="text-right mr-sm-2">Delivered</small><span>
+                                                                            <i class="fa fa-circle"></i></span></div>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <%} else if(orderDetail.orderStage=='DELIVERED' ) {%>
+                                                            <div class="row">
+                                                                <div class="col-md-3 mb-3"> <small> Track Order <span><i
+                                                                                class="ml-2 fa fa-refresh"
+                                                                                aria-hidden="true"></i></span></small>
+                                                                </div>
+                                                                <div class="col mt-auto">
+                                                                    <div class="progress my-auto">
+                                                                        <div class="progress-bar progress-bar rounded"
+                                                                            style="width: 100%" role="progressbar"
+                                                                            aria-valuenow="25" aria-valuemin="0"
+                                                                            aria-valuemax="100"></div>
+                                                                    </div>
+                                                                    <div class="media row justify-content-between ">
+                                                                        <div class="col-auto text-right"><span> <small
+                                                                                    class="text-right mr-sm-2">Order
+                                                                                    Placed</small> <i
+                                                                                    class="fa fa-circle active"></i>
+                                                                            </span></div>
+                                                                        <div class="flex-col"> <span> <small
+                                                                                    class="text-right mr-sm-2">Out for
+                                                                                    Delivery</small><i
+                                                                                    class="fa fa-circle active"></i></span>
+                                                                        </div>
+                                                                        <div class="col-auto flex-col-auto"><small
+                                                                                class="text-right mr-sm-2">Delivered</small><span>
+                                                                                <i
+                                                                                    class="fa fa-circle active"></i></span>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+
+                                                            <% } %>
+
+
+
+
+
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="media row justify-content-between ">
-                                        <div class="col-auto text-right"><span> <small class="text-right mr-sm-2">Order Placed</small> <i class="fa fa-circle active"></i> </span></div>
-                                        <div class="flex-col"> <span> <small class="text-right mr-sm-2">Out for Delivery</small><i class="fa fa-circle active"></i></span></div>
-                                        <div class="col-auto flex-col-auto"><small class="text-right mr-sm-2">Delivered</small><span> <i class="fa fa-circle"></i></span></div>
+                                </div>
+                                <% }) %>
+                                    <div class="row mt-4">
+                                        <div class="col">
+                                            <div class="row justify-content-between">
+                                                <div class="col-auto">
+                                                    <p class="mb-1 text-dark"><b>Order Details</b></p>
+                                                </div>
+                                                <div class="flex-sm-col text-right col">
+                                                    <p class="mb-1"><b>Total</b></p>
+                                                </div>
+                                                <div class="flex-sm-col col-auto">
+                                                    <p class="mb-1">&#8377; <%= grandTotal %>
+                                                    </p>
+                                                </div>
+
+                                            </div>
+                                            <div>
+                                                <% if(orderDetail.orderStage=='CANCELLATION REQUESTED' ){%>
+                                                    <button disabled type="" id="order-cancel-button"
+                                                        data-order-id="<%= orderDetail._id %>"
+                                                        class="btn">CANCEL</button>
+                                                    <% } else if(orderDetail.orderStage=='CANCELLED' ) { %>
+                                                        <button disabled type="" id="order-cancel-button"
+                                                            data-order-id="<%= orderDetail._id %>"
+                                                            class="btn">CANCEL</button>
+
+                                                        <% } else if(orderDetail.orderStage=='DELIVERED' ){ %>
+
+                                                            <!-- <button  type="" id="order-return-button" data-order-id="<%= orderDetail._id %>" class="btn">RETURN</button> -->
+                                                            <button type="" id="order-return-button"
+                                                                data-order-id="<%= orderDetail._id %>" class="btn"
+                                                                data-toggle="modal"
+                                                                data-target="#returnReasonModal">RETURN</button>
+
+                                                            <% } else if(orderDetail.orderStage=='RETURN REQUESTED' ){
+                                                                %>
+                                                                <button disabled type="" id="order-return-button"
+                                                                    data-order-id="<%= orderDetail._id %>"
+                                                                    class="btn">RETURN</button>
+                                                                <% } else if(orderDetail.orderStage=='RETURNED' ) { %>
+                                                                    <button disabled type="" id="order-return-button"
+                                                                        data-order-id="<%= orderDetail._id %>"
+                                                                        class="btn">RETURN</button>
+                                                                    <% } else
+                                                                        if(orderDetail.orderStage=="PAYMENT PENDING"
+                                                                        ){%>
+                                                                        <button type="" id="order-retryPayment-button"
+                                                                            data-order-id="<%= orderDetail._id %>"
+                                                                            class="btn">RETRY PAYMENT</button>
+
+                                                                        <% }else { %>
+                                                                            <button type="" id="order-cancel-button"
+                                                                                data-order-id="<%= orderDetail._id %>"
+                                                                                class="btn" data-toggle="modal"
+                                                                                data-target="#cancelReasonModal">CANCEL</button>
+                                                                            <% } %>
+                                            </div>
+
+                                        </div>
                                     </div>
-                                    
+
+                        </div>
+                        <div class="card-footer">
+                            <div class="jumbotron-fluid">
+                                <div class="row justify-content-between ">
+
+                                    <div class="col-auto my-auto ">
+                                        <h2 class="mb-0 font-weight-bold">TOTAL PAID</h2>
+                                    </div>
+                                    <div class="col-auto my-auto ml-auto">
+                                        <h1 class="display-3 ">&#8377; <%= grandTotal %>
+                                        </h1>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+                <!-- Modal for Return Reason -->
+                <div class="modal fade" id="returnReasonModal" tabindex="-1" aria-labelledby="returnReasonModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="returnReasonModalLabel">Select Return Reason</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="returnReasonSelect" class="form-label">Select Reason:</label>
+                                    <select class="form-select" id="returnReasonSelect">
+                                        <option value="1">Item Damaged</option>
+                                        <option value="2">Wrong Item Received</option>
+                                        <option value="3">Different size</option>
+                                        <option value="4">Differet colour</option>
+                                        <!-- Add more options as needed -->
+                                    </select>
                                 </div>
                             </div>
-                        
-                        <%} else if(orderDetail.orderStage =='DELIVERED') {%>
-                            <div class="row">
-                                <div class="col-md-3 mb-3"> <small> Track Order <span><i class="ml-2 fa fa-refresh" aria-hidden="true"></i></span></small> </div>
-                                <div class="col mt-auto">
-                                    <div class="progress my-auto">
-                                        <div class="progress-bar progress-bar rounded" style="width: 100%" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <div class="media row justify-content-between ">
-                                        <div class="col-auto text-right"><span> <small class="text-right mr-sm-2">Order Placed</small> <i class="fa fa-circle active"></i> </span></div>
-                                        <div class="flex-col"> <span> <small class="text-right mr-sm-2">Out for Delivery</small><i class="fa fa-circle active"></i></span></div>
-                                        <div class="col-auto flex-col-auto"><small class="text-right mr-sm-2">Delivered</small><span> <i class="fa fa-circle active"></i></span></div>
-                                    </div>
-                                    
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" id="submitReturnReason">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Modal for Cancel Reason -->
+                <div class="modal fade" id="cancelReasonModal" tabindex="-1" aria-labelledby="cancelReasonModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="cancelReasonModalLabel">Select Cancel Reason</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="cancelReasonSelect" class="form-label">Select Reason:</label>
+                                    <select class="form-select" id="cancelReasonSelect">
+                                        <option value="1">Changed My Mind</option>
+                                        <option value="2">Found Cheaper Option</option>
+                                        <option value="3">Item No Longer Needed</option>
+                                        <option value="4">Other</option>
+
+                                    </select>
                                 </div>
                             </div>
-                                    
-                            <% } %>
-                        
-
-
-
-
-                      </div>
-                  </div>
-              </div>
-          </div>
-         <% }) %>
-          <div class="row mt-4">
-              <div class="col">
-                  <div class="row justify-content-between">
-                      <div class="col-auto"><p class="mb-1 text-dark"><b>Order Details</b></p></div>
-                      <div class="flex-sm-col text-right col"> <p class="mb-1"><b>Total</b></p> </div>
-                      <div class="flex-sm-col col-auto"> <p class="mb-1">&#8377; <%= grandTotal %></p> </div>
-                     
-                  </div>
-                  <div>
-                    <% if(orderDetail.orderStage == 'CANCELLATION REQUESTED'){%>
-                    <button disabled type="" id="order-cancel-button" data-order-id="<%= orderDetail._id %>" class="btn">CANCEL</button>
-                 <% } else if(orderDetail.orderStage == 'CANCELLED') { %>
-                    <button disabled type="" id="order-cancel-button" data-order-id="<%= orderDetail._id %>" class="btn">CANCEL</button>
-                    
-                 <% } else if(orderDetail.orderStage =='DELIVERED'){ %>
-                    
-                    <!-- <button  type="" id="order-return-button" data-order-id="<%= orderDetail._id %>" class="btn">RETURN</button> -->
-                    <button type="" id="order-return-button" data-order-id="<%= orderDetail._id %>" class="btn" data-toggle="modal" data-target="#returnReasonModal">RETURN</button>
-
-                    <% } else if(orderDetail.orderStage == 'RETURN REQUESTED'){ %>
-                    <button disabled type="" id="order-return-button" data-order-id="<%= orderDetail._id %>" class="btn">RETURN</button>
-                    <% } else if(orderDetail.orderStage == 'RETURNED') { %>
-                        <button disabled type="" id="order-return-button" data-order-id="<%= orderDetail._id %>" class="btn">RETURN</button>
-                        <% } else if(orderDetail.orderStage == "PAYMENT PENDING"){%>
-                            <button  type="" id="order-retryPayment-button" data-order-id="<%= orderDetail._id %>" class="btn">RETRY PAYMENT</button>
-
-                    <% }else { %>
-                 <button  type="" id="order-cancel-button" data-order-id="<%= orderDetail._id %>" class="btn" data-toggle="modal" data-target="#cancelReasonModal">CANCEL</button>
-                <% } %>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" id="submitCancelReason">Submit</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                  
-              </div>
-          </div>
-          
-      </div>
-      <div class="card-footer">
-          <div class="jumbotron-fluid">
-              <div class="row justify-content-between ">
-                  
-                  <div class="col-auto my-auto "><h2 class="mb-0 font-weight-bold">TOTAL PAID</h2></div>
-                  <div class="col-auto my-auto ml-auto"><h1 class="display-3 ">&#8377; <%= grandTotal %></h1></div>
-              </div>
-              
-          </div>
-      </div>
-  </div>
-</div>
 
 
 
 
 
-<!-- Modal for Return Reason -->
-<div class="modal fade" id="returnReasonModal" tabindex="-1" aria-labelledby="returnReasonModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="returnReasonModalLabel">Select Return Reason</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label for="returnReasonSelect" class="form-label">Select Reason:</label>
-                    <select class="form-select" id="returnReasonSelect">
-                        <option value="1">Item Damaged</option>
-                        <option value="2">Wrong Item Received</option>
-                        <option value="3">Different size</option>
-                        <option value="4">Differet colour</option>
-                        <!-- Add more options as needed -->
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="submitReturnReason">Submit</button>
+
             </div>
         </div>
     </div>
-</div>
+    <%- include('../includes/user/userEnd') %>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            //      $(document).ready(function() {
+            //     $(document).on('click' , '#order-cancel-button' ,function() {
 
-  
-<!-- Modal for Cancel Reason -->
-<div class="modal fade" id="cancelReasonModal" tabindex="-1" aria-labelledby="cancelReasonModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="cancelReasonModalLabel">Select Cancel Reason</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label for="cancelReasonSelect" class="form-label">Select Reason:</label>
-                    <select class="form-select" id="cancelReasonSelect">
-                        <option value="1">Changed My Mind</option>
-                        <option value="2">Found Cheaper Option</option>
-                        <option value="3">Item No Longer Needed</option>
-                        <option value="4">Other</option>
-                        
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="submitCancelReason">Submit</button>
-            </div>
-        </div>
-    </div>
-</div>
+            //        const orderId = $(this).data('order-id');
 
+            //       $.ajax({
+            //         url:'/cancel-order/'+orderId,
+            //         method:'POST',
 
+            //         success:function(response ){
+            //           if(response.success){
+            //           // alert(response.msg)
+            //           Swal.fire({
+            //               title: "Success",
+            //               text: response.msg,
+            //               icon: "success",
+            //             });
+            //           }else{
+            //             //alert(response.msg)
+            //             Swal.fire({
+            //               title: "Error",
+            //               text: response.msg,
+            //               icon: "error",
+            //             });
+            //           }
+            //         },error:function(error){
+            //           console.log(error);
+            //         }
 
+            //       })
+            //     })
+            //   })
+            // Cancel reason modal
+            $(document).ready(function () {
+                $(document).on('click', '#submitCancelReason', function () {
+                    const orderId = $('#order-cancel-button').data('order-id');
+                    const cancelReason = $('#cancelReasonSelect').val();
 
-
-
-  </div>
-  </div>
-  </div>
-  <%- include('../includes/user/userEnd') %>
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script>
-//      $(document).ready(function() {
-//     $(document).on('click' , '#order-cancel-button' ,function() {
-
-//        const orderId = $(this).data('order-id');
-     
-//       $.ajax({
-//         url:'/cancel-order/'+orderId,
-//         method:'POST',
-        
-//         success:function(response ){
-//           if(response.success){
-//           // alert(response.msg)
-//           Swal.fire({
-//               title: "Success",
-//               text: response.msg,
-//               icon: "success",
-//             });
-//           }else{
-//             //alert(response.msg)
-//             Swal.fire({
-//               title: "Error",
-//               text: response.msg,
-//               icon: "error",
-//             });
-//           }
-//         },error:function(error){
-//           console.log(error);
-//         }
-
-//       })
-//     })
-//   })
-// Cancel reason modal
-$(document).ready(function() {
-    $(document).on('click', '#submitCancelReason', function() {
-        const orderId = $('#order-cancel-button').data('order-id');
-        const cancelReason = $('#cancelReasonSelect').val();
-
-        $.ajax({
-            url: '/cancel-order/' + orderId,
-            method: 'PATCH',
-            data: { reason: cancelReason }, 
-            success: function(response) {
-                if (response.success) {
-                    $('#cancelReasonModal').modal('hide');
-                    Swal.fire({
-               title: "Success",
-               text: 'Order Cancelled Successfully',
-               icon: "success",
-             }).then((result) => {
-                        if (result.isConfirmed || result.dismiss === Swal.DismissReason.backdrop || result.dismiss === Swal.DismissReason.esc || result.dismiss === Swal.DismissReason.close) {
-                            location.reload();
+                    $.ajax({
+                        url: '/cancel-order/' + orderId,
+                        method: 'PATCH',
+                        data: { reason: cancelReason },
+                        success: function (response) {
+                            if (response.success) {
+                                $('#cancelReasonModal').modal('hide');
+                                Swal.fire({
+                                    title: "Success",
+                                    text: 'Order Cancelled Successfully',
+                                    icon: "success",
+                                }).then((result) => {
+                                    if (result.isConfirmed || result.dismiss === Swal.DismissReason.backdrop || result.dismiss === Swal.DismissReason.esc || result.dismiss === Swal.DismissReason.close) {
+                                        location.reload();
+                                    }
+                                });
+                            }
                         }
                     });
-                }
-            }
-        });
-    })
-});
+                })
+            });
 
 
 
@@ -420,107 +515,165 @@ $(document).ready(function() {
 
 
 
-//return reason
-$(document).ready(function() {
-        $(document).on('click', '#submitReturnReason', function() {
-            const orderId = $('#order-return-button').data('order-id');
-            const returnReason = $('#returnReasonSelect').val();
+            //return reason
+            $(document).ready(function () {
+                $(document).on('click', '#submitReturnReason', function () {
+                    const orderId = $('#order-return-button').data('order-id');
+                    const returnReason = $('#returnReasonSelect').val();
 
-    $.ajax({
-        url: '/return-order/' + orderId,
-        method: 'PATCH',
-        data: { reason: returnReason }, 
-        success: function(response) {
-            if (response.success) {
-                $('#returnReasonModal').modal('hide');
-                Swal.fire({
-                    title: "Success",
-                    text: response.msg,
-                    icon: "success",
-                }).then((result) => {
-                    if (result.isConfirmed || result.dismiss === Swal.DismissReason.backdrop || result.dismiss === Swal.DismissReason.esc || result.dismiss === Swal.DismissReason.close) {
-                                location.reload();
+                    $.ajax({
+                        url: '/return-order/' + orderId,
+                        method: 'PATCH',
+                        data: { reason: returnReason },
+                        success: function (response) {
+                            if (response.success) {
+                                $('#returnReasonModal').modal('hide');
+                                Swal.fire({
+                                    title: "Success",
+                                    text: response.msg,
+                                    icon: "success",
+                                }).then((result) => {
+                                    if (result.isConfirmed || result.dismiss === Swal.DismissReason.backdrop || result.dismiss === Swal.DismissReason.esc || result.dismiss === Swal.DismissReason.close) {
+                                        location.reload();
+                                    }
+                                });
                             }
-                        });
+                        }
+                    });
+                })
+            });
+
+
+
+            $(document).ready(function () {
+                $(document).on('click', '#order-retryPayment-button', function () {
+
+                    const orderId = $('#order-retryPayment-button').data('order-id');
+                    $.ajax({
+                        url: '/retry-payment/' + orderId,
+                        method: 'PATCH',
+                        success: function (response) {
+                            razorPayment(response)
+                        }
+
+                    })
+
+
+                })
+            })
+            function razorPayment(order) {
+                var options = {
+                    key: "rzp_test_QUrSp68jcj7T0r",
+                    amount: order.order.amount,
+                    currency: "INR",
+                    name: "Giggle Wardrobe",
+                    description: "Test Transaction",
+
+                    order_id: order.order.id,
+                    handler: function (response) {
+
+                        verifyPayment(response, order);
+
+                    },
+                    prefill: {
+                        name: 'Customer Name',
+                        email: 'customer@example.com',
+                        contact: '9999999999'
+                    },
+                    notes: {
+                        address: "Razorpay Corporate Office",
+                    },
+                    theme: {
+                        color: "#dc3545",
+                    },
+                };
+                var rzp1 = new Razorpay(options);
+                rzp1.open();
+                rzp1.on('payment.failed', async function (response) {
+                    await Swal.fire({
+                        icon: 'error',
+                        title: 'Transaction Failed',
+                        text: 'Payment failed. Please try again later.'
+                    });
+                })
             }
-        }
-    });
-})
-});
+            function verifyPayment(payment, order) {
+                $.ajax({
+                    url: "/verify_payment",
+                    data: {
+                        payment,
+                        order,
+                    },
+                    method: "POST",
+                    success: function (response) {
+                        if (response.paymentSuccess) {
+                            location.href = '/order-success'
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    },
+                });
 
-
-
-$(document).ready(function(){
-    $(document).on('click','#order-retryPayment-button',function(){
-        
-        const orderId = $('#order-retryPayment-button').data('order-id');
-        $.ajax({
-            url:'/retry-payment/'+orderId,
-            method : 'PATCH',
-            success : function(response){
-                razorPayment(response)
             }
 
-        })
 
-
-    })
-})
-function razorPayment(order) {
-  var options = {
-    key: "rzp_test_QUrSp68jcj7T0r",
-    amount: order.order.amount,
-    currency: "INR",
-    name: "Giggle Wardrobe",
-    description: "Test Transaction",
+        </script>
     
-    order_id: order.order.id,
-    handler: function (response) {
-     
-     verifyPayment(response, order);
-  
-    },
-    prefill: {
-      name: 'Customer Name',
-      email: 'customer@example.com',
-      contact: '9999999999'
-    },
-    notes: {
-      address: "Razorpay Corporate Office",
-    },
-    theme: {
-      color: "#dc3545",
-    },
-  };
-  var rzp1 = new Razorpay(options);
-  rzp1.open();
-  rzp1.on('payment.failed',async function(response){
-  await  Swal.fire({
-    icon: 'error',
-    title: 'Transaction Failed',
-    text: 'Payment failed. Please try again later.'
-  });
-  })
-}
-function verifyPayment(payment, order){
-  $.ajax({
-    url: "/verify_payment",
-    data: {
-      payment,
-      order,
-    },
-    method: "POST",
-    success: function (response) {
-      if (response.paymentSuccess) {
-        location.href = '/order-success'
-      } 
-    },
-    error: function (error) {
-      console.log(error);
-    },
-  });
+<script>
+    const btns = document.querySelectorAll('.cancel-single-product')
+    btns.forEach((btn)=>{
+        btn.addEventListener("click",async ()=>{
+            const orderId = btn.dataset.orderid
+            const productId = btn.dataset.productid
+            console.log(orderId);
+            Swal.fire({
+                icon: 'warning',
+                title: 'Cancel Product',
+                text: 'Do you want to cancel this ordered item?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, cancel',
+                cancelButtonText: 'No, keep it',
+            }).then(async(result) => {
+                if (result.isConfirmed) {
+            const response = await fetch('/cancel-single-product/' + orderId,{
+                method : 'POST',
+                headers : {
+                    "content-type" : "application/json"
+                },
+                body : JSON.stringify({
+                    productId
 
-}
-
-
-  </script>
+                })
+               
+            })
+            const result = await response.json()
+                if(!response.ok){
+                    Swal.fire({
+                                title: "Error",
+                                text: 'Failed to cancel item',
+                                icon: "error",
+                            });
+                }
+                else{
+                    if(result.success === false) {
+                        Swal.fire({
+                                    title: "Error",
+                                    text: result.msg,
+                                    icon: "error",
+                                });
+                    }
+                    else{
+                        Swal.fire({
+                                    title: "Success",
+                                    text: result.msg,
+                                    icon: "success",
+                                })
+                    }
+                }
+                location.reload()
+        }
+    })
+        })
+    })
+</script>
