@@ -7,7 +7,7 @@ const { checkOrderTransition } = require("../helpers/util")
 const { ObjectId } = require("mongodb")
 
 module.exports = {
-  getOrder: async (req, res) => {
+  getOrder: async (req, res, next) => {
     try {
 
       const orderData = await adminOrderAggregation()
@@ -15,10 +15,11 @@ module.exports = {
       res.render("admin/orders", { order: orderData });
     } catch (error) {
       console.log("Error in admin get order " + error);
+      next(error)
     }
   },
 
-  postUpdateStage: async (req, res) => {
+  postUpdateStage: async (req, res, next) => {
     try {
       const order = await orderSchema.findById(req.params.id);
       console.log("Update order: ", order);
@@ -80,9 +81,10 @@ module.exports = {
     } catch (error) {
       console.log("Error in post update stage: ", error);
       res.json({ success: false, msg: "Internal server error" });
+      next(error)
     }
   },
-  cancelOrder: async (req, res) => {
+  cancelOrder: async (req, res, next) => {
     try {
       console.log(req.params);
       const orderData = await orderSchema.findOne({ _id: new ObjectId(req.params.id) })
@@ -115,11 +117,12 @@ module.exports = {
       }
 
     } catch (error) {
-
+      console.log(error);
+      next(error)
     }
   },
 
-  getOrderDetails: async (req, res) => {
+  getOrderDetails: async (req, res, next) => {
     try {
       const orderId = req.params.id;
       const orderData = await orderSchema.findOne({ _id: new ObjectId(orderId) });
@@ -153,6 +156,7 @@ module.exports = {
     } catch (error) {
       console.error("Error in getOrderDetails: ", error);
       res.status(500).json({ success: false, message: "Internal server error" });
+      next(error)
     }
   }
 

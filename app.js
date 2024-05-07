@@ -5,6 +5,7 @@ const session = require('express-session')
 const methodOverride = require('method-override')
 const flash = require('express-flash')
 const passport = require('passport')
+const errorController = require("./controller/errorController");
 
 //const bodyParser = require('body-parser')
 
@@ -48,13 +49,13 @@ app.use('/',authRouter)
 app.use('/',homeRouter)
 app.use('/',adminRouter)
 
-app.use((req, res) => {
-    res.status(404).render("user/error");
-  });
+// app.use((req, res) => {
+//     res.status(404).render("user/error");
+//   });
   //error handling middleware
-//   app.use((err, req, res, next) => {
-//     res.status(500).send(err.stack);
-//   });*/
+app.use(errorController.get404);
+app.use("/500", errorController.get500);
+app.use(errorController.errorHandler);
   
 
 app.listen(process.env.PORT || 4000,() =>{

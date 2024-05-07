@@ -7,13 +7,18 @@ const bcrypt = require("bcrypt");
 module.exports = {
   //Getting signup page
 
-  getSignup: (req, res) => {
+  getSignup: (req, res,next) => {
+    try{
     res.render("auth/signup", { error: req.flash("error") });
+    }catch(error){
+      console.log(error);
+      next(error)
+    }
   },
 
   // signing up using post
 
-  postSignup: async (req, res) => {
+  postSignup: async (req, res, next) => {
     try {
       const userData = await userSchema.findOne({ email: req.body.email });
       if (userData) {
@@ -42,19 +47,25 @@ module.exports = {
       }
     } catch (error) {
       console.log("Error in postsignup " + error);
+      next(error)
     }
   },
 
   // get signup-otp
 
-  getSignupOtp: async (req, res) => {
+  getSignupOtp: async (req, res,next) => {
+    try{
     res.render("auth/signup-otp");
     console.log("Get signup otp");
+    }catch(error){
+      console.log(error);
+      next(error)
+    }
   },
 
   // post signup otp
 
-  postSignupOtp: async (req, res) => {
+  postSignupOtp: async (req, res,next) => {
     try {
       const otpValue = req.body.value;
       console.log(req.body.value);
@@ -139,12 +150,13 @@ module.exports = {
       }
     } catch (error) {
       console.log("Error post signup otp " + error);
+      next(error)
     }
   },
 
   //Resend OTP
 
-  resendOtp: async (req, res) => {
+  resendOtp: async (req, res,next) => {
     try {
       const otp = verificationController.sendEmail(req.session.userInfo.email);
 
@@ -164,22 +176,24 @@ module.exports = {
       }
     } catch (error) {
       console.log("Error resendp " + error);
+      next(error)
     }
   },
 
   // User get login
 
-  getLogin: async (req, res) => {
+  getLogin: async (req, res,next) => {
     try {
       res.render("auth/login", { error: req.flash("error") });
     } catch (error) {
       console.log("Error in get login " + error);
+      next(error)
     }
   },
 
   // User post login
 
-  postLogin: async (req, res) => {
+  postLogin: async (req, res,next) => {
     try {
       const userData = await userSchema.findOne({ email: req.body.email });
       console.log("User just login " + userData);
@@ -209,26 +223,31 @@ module.exports = {
         res.redirect("/login");
       }
       console.log("Login error" + error);
-    } catch (error) { }
+    } catch (error) { 
+      console.log(error);
+      next(error)
+    }
   },
 
-  googleLogin: async (req, res) => {
+  googleLogin: async (req, res,next) => {
     try {
       req.session.user = req.user;
       res.redirect("/home");
     } catch (error) {
       console.log("Error in google login " + error);
+      next(error)
     }
   },
-  getForgotPassword: async (req, res) => {
+  getForgotPassword: async (req, res,next) => {
     try {
       res.render("auth/forgotPassword");
     } catch (error) {
       console.log("Error in get forgot password");
+      next(error)
     }
   },
 
-  postForgotPassword: async (req, res) => {
+  postForgotPassword: async (req, res,next) => {
     try {
       const userEmail = await userSchema.findOne({ email: req.body.email });
       if (userEmail) {
@@ -242,9 +261,10 @@ module.exports = {
       }
     } catch (error) {
       console.log("Error in post forgot password " + error);
+      next(error)
     }
   },
-  forgotResendotp: async (req, res) => {
+  forgotResendotp: async (req, res,next) => {
     try {
       const otp = verificationController.sendEmail(req.session.userEmail);
       const generatedTime = Date.now() + 60000;
@@ -258,17 +278,19 @@ module.exports = {
       }
     } catch (error) {
       console.log(error);
+      next(error)
     }
   },
 
-  getForgotPasswordOTP: async (req, res) => {
+  getForgotPasswordOTP: async (req, res,next) => {
     try {
       res.render("auth/forgotPassword-otp");
     } catch (error) {
       console.log("Error in get forgot password otp " + error);
+      next(error)
     }
   },
-  postForgotPasswordOTP: async (req, res) => {
+  postForgotPasswordOTP: async (req, res,next) => {
     try {
       const otpValue = req.body.otpvalue;
       const otpTime = Date.now();
@@ -283,9 +305,10 @@ module.exports = {
       }
     } catch (error) {
       console.log("Error in post forgot password otp " + error);
+      next(error)
     }
   },
-  forgotPasswordResendOTP: async (req, res) => {
+  forgotPasswordResendOTP: async (req, res,next) => {
     try {
       const resendOtp = verificationController.sendEmail(req.session.userEmail);
       const reGeneratedTime = Date.now() + 60000;
@@ -302,16 +325,18 @@ module.exports = {
       }
     } catch (error) {
       console.log("Error in resend otp for forgot password " + error);
+      next(error)
     }
   },
-  getNewPassword: async (req, res) => {
+  getNewPassword: async (req, res,next) => {
     try {
       res.render("auth/newPassword");
     } catch (error) {
       console.log("Error get new password " + error);
+      next(error)
     }
   },
-  postNewPassword: async (req, res) => {
+  postNewPassword: async (req, res,next) => {
     try {
 
       const newPassword = req.body.password;
@@ -334,15 +359,17 @@ module.exports = {
       }
     } catch (error) {
       console.log("Error in post new password " + error);
+      next(error)
     }
   },
-  userLogout: async (req, res) => {
+  userLogout: async (req, res,next) => {
     try {
       console.log('logout')
       delete req.session.userId
       res.redirect('/home')
-    } catch (er) {
-      console.log(er)
+    } catch (error) {
+      console.log(error)
+      next(error)
     }
   }
 };

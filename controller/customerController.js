@@ -5,7 +5,7 @@ const { ObjectId } = require("mongodb");
 module.exports = {
 
 
-    getCustomer: async (req, res) => {
+    getCustomer: async (req, res,next) => {
 
         try {
 
@@ -14,11 +14,12 @@ module.exports = {
 
         } catch (error) {
             console.log("Error in customers get " + error);
+            next(error)
         }
 
     },
 
-    userBlock: async (req, res) => {
+    userBlock: async (req, res,next) => {
         try {
 
             console.log(req.params.id);
@@ -33,7 +34,7 @@ module.exports = {
 
         } catch (error) {
             console.log("Error in blocking user by admin " + error);
-
+            next(error)
         }
     },
 

@@ -15,11 +15,17 @@ const { findTopSellingProducts, findTopSellingCategories } = require('../helpers
 module.exports = {
     //admin signup
 
-    getAdminSignup: async (req, res) => {
-        res.render('admin/adminSignup', { error: req.flash("error") })
+    getAdminSignup: async (req, res, next) => {
+        try {
+            res.render('admin/adminSignup', { error: req.flash("error") })
+        } catch (error) {
+           console.log(error); 
+           next(error)
+        }
+        
     },
 
-    postAdminSignup: async (req, res) => {
+    postAdminSignup: async (req, res, next) => {
         try {
 
             const adminData = await adminSchema.findOne({ email: req.body.email })
@@ -45,19 +51,27 @@ module.exports = {
 
         } catch (error) {
             console.log("Error in admin signup " + error)
+           
+           next(error)
 
         }
     },
 
     //get Admin login
 
-    getAdminLogin: async (req, res) => {
-        res.render('admin/admin', { error: req.flash("error") })
+    getAdminLogin: async (req, res,next) => {
+        try {
+            res.render('admin/admin', { error: req.flash("error") })
+        } catch (error) {
+            console.log(error); 
+           next(error)
+        }
+        
     },
 
     //post Admin login
 
-    postAdminLogin: async (req, res) => {
+    postAdminLogin: async (req, res, next) => {
         try {
             const adminData = await adminSchema.findOne({ email: req.body.email })
             if (!adminData) {
@@ -81,31 +95,36 @@ module.exports = {
         } catch (error) {
 
             console.log("Error in admin login " + error);
+            
+           next(error)
 
         }
     },
-    adminLogout: async (req, res) => {
+    adminLogout: async (req, res,next) => {
         try {
             console.log('logout')
             delete req.session.adminId
 
             res.redirect('/admin')
-        } catch (er) {
-            console.log(er)
+        } catch (error) {
+            console.log(error); 
+           next(error)
+
         }
     },
 
-    getDashboard: async (req, res) => {
+    getDashboard: async (req, res, next) => {
         try {
             const orderData = await adminOrderAggregation();
 
             res.render("admin/dashboard", { order: orderData });
         } catch (error) {
             console.log("Error in dashboard " + error);
+            next(error)
         }
 
     },
-    getDashboardStat: async (req, res) => {
+    getDashboardStat: async (req, res,next) => {
 
         try {
             const { timeRange } = req.query;
@@ -187,12 +206,13 @@ module.exports = {
         } catch (error) {
             console.log("Error in dashboard stat ", error);
             res.json({ message: "Internal server error" });
+            next(error)
         }
     },
 
 
 
-    getSalesreport: async (req, res) => {
+    getSalesreport: async (req, res,next) => {
         try {
 
             if (!req.session.adminId) {
@@ -212,10 +232,11 @@ module.exports = {
 
         } catch (error) {
             console.error("Error in getSalesreport:", error);
+            next(error)
 
         }
     },
-    downloadExcelHandler: async (req, res) => {
+    downloadExcelHandler: async (req, res,next) => {
         try {
             const { startDate, endDate } = req.session.dates;
             //const { startDate, endDate } = req.query; 
@@ -229,9 +250,11 @@ module.exports = {
         } catch (error) {
             console.error("Error handling download Excel request:", error);
             res.status(500).send("Error generating Excel file");
+            next(error)
+
         }
     },
-    downloadPdfHandler: async (req, res) => {
+    downloadPdfHandler: async (req, res,next) => {
         try {
             const { startDate, endDate } = req.session.dates;
             const start = new Date(startDate);
@@ -262,9 +285,11 @@ module.exports = {
         } catch (error) {
             console.error("Error handling download PDF request:", error);
             res.status(500).send("Error generating PDF file");
+            next(error)
+
         }
     },
-    getTopProducts: async (req, res) => {
+    getTopProducts: async (req, res, next) => {
         try {
             const topSellingProducts = await findTopSellingProducts();
             const productsWithNames = await Promise.all(topSellingProducts.map(async product => {
@@ -278,14 +303,18 @@ module.exports = {
         } catch (error) {
             console.log("Error in get top products ", error);
             res.status(500).json({ error: "Internal server error" });
+            next(error)
+
         }
     },
-    getTopCategories: async (req, res) => {
+    getTopCategories: async (req, res,next) => {
         try {
             const topSellingCategories = await findTopSellingCategories();
             res.json(topSellingCategories);
         } catch (error) {
             console.log("Error in get top categories ", error);
+            next(error)
+
         }
     }
 

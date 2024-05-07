@@ -3,7 +3,7 @@ const categorySchema = require('../models/categoryModel')
 
 module.exports = {
 
-    getCategory: async (req, res) => {
+    getCategory: async (req, res,next) => {
 
         try {
 
@@ -12,10 +12,11 @@ module.exports = {
 
         } catch (error) {
             console.log("Error in get category " + error)
+            next(error)
         }
     },
 
-    addCategory: async (req, res) => {
+    addCategory: async (req, res,next) => {
         try {
             const categoryDetails = await categorySchema.findOne({
                 categoryName: { $regex: new RegExp('^' + req.body.newCategory + '$', 'i') }
@@ -39,12 +40,13 @@ module.exports = {
 
         } catch (error) {
             console.log("Error in adding category " + error);
+            next(error)
 
         }
 
     },
 
-    getEditCategory: async (req, res) => {
+    getEditCategory: async (req, res,next) => {
         try {
             const catData = await categorySchema.findOne({ _id: req.params.id })
             if (catData) {
@@ -54,11 +56,11 @@ module.exports = {
 
         } catch (error) {
             console.log("Error in editing category " + error);
-
+            next(error)
         }
     },
 
-    patchEditCategory: async (req, res) => {
+    patchEditCategory: async (req, res,next) => {
         try {
 
             const catData = await categorySchema.findOne({ _id: req.params.id })
@@ -77,9 +79,10 @@ module.exports = {
         } catch (error) {
 
             console.log("Error in patch edit " + error);
+            next(error)
         }
     },
-    deleteCategory: async (req, res) => {
+    deleteCategory: async (req, res,next) => {
         try {
             const catData = await categorySchema.findOne({ _id: req.params.id })
 
@@ -90,6 +93,7 @@ module.exports = {
 
         } catch (error) {
             console.log("Error in deleting category " + error);
+            next(error)
         }
     }
 

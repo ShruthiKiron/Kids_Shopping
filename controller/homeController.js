@@ -9,7 +9,7 @@ const { ObjectId } = require('mongodb')
 const { cartAggregation } = require('../helpers/aggregation')
 
 module.exports = {
-  getHome: async (req, res) => {
+  getHome: async (req, res,next) => {
     try {
       const productData = await productSchema.find();
       const categoryData = await categorySchema.find();
@@ -31,10 +31,11 @@ module.exports = {
       }
     } catch (error) {
       console.log("Error in get home " + error);
+      next(error)
     }
   },
 
-  getProduct: async (req, res) => {
+  getProduct: async (req, res,next) => {
     try {
       const productData = await productSchema.find();
       const categoryData = await categorySchema.find();
@@ -57,10 +58,11 @@ module.exports = {
       res.render("user/product", { products: productData, category: categoryData, useId, wishlist: wishlistData, offers: offerData, error: req.flash("error") });
     } catch (error) {
       console.log("Error in get user product " + error);
+      next(error)
     }
   },
 
-  getProductDetail: async (req, res) => {
+  getProductDetail: async (req, res,next) => {
     try {
       console.log("get product detail is called");
       const productData = await productSchema.findOne({ _id: req.params.id });
@@ -69,11 +71,12 @@ module.exports = {
       res.render("user/productDetail", { product: productData, useId });
     } catch (error) {
       console.log("Error in get product detail " + error);
+      next(error)
     }
   },
 
 
-  postSearch: async (req, res) => {
+  postSearch: async (req, res,next) => {
     try {
 
       const searchProduct = req.body.value
@@ -92,10 +95,11 @@ module.exports = {
       }
     } catch (error) {
       console.log("Error in post search " + error);
+      next(error)
     }
 
   },
-  postFilter: async (req, res) => {
+  postFilter: async (req, res,next) => {
     try {
       const page = parseInt(req.query.page) || 1;
       const productsPerPage = 12;
@@ -146,10 +150,11 @@ module.exports = {
     } catch (error) {
       console.log("Error in post filter " + error);
       res.status(500).json({ success: false, error: 'An error occurred while processing the request' });
+      next(error)
     }
   },
 
-  getWishlist: async (req, res) => {
+  getWishlist: async (req, res,next) => {
     try {
       const useId = req.session.userId;
       const wishlistData = await wishlistSchema.aggregate([{ $match: { userId: new ObjectId(useId) } }, {
@@ -169,10 +174,11 @@ module.exports = {
 
     } catch (error) {
       console.log("Error in get wishlist " + error);
+      next(error)
     }
 
   },
-  addWishlist: async (req, res) => {
+  addWishlist: async (req, res,next) => {
     try {
       console.log("clicked");
       const useId = req.session.userId;
@@ -197,10 +203,11 @@ module.exports = {
 
     } catch (error) {
       console.log("Error in add wishlist " + error);
+      next(error)
     }
 
   },
-  deleteWishlist: async (req, res) => {
+  deleteWishlist: async (req, res,next) => {
     try {
       const useId = req.session.userId;
       const productId = req.params.id
@@ -213,9 +220,10 @@ module.exports = {
 
     } catch (error) {
       console.log("Error in deleting wishlist");
+      next(error)
     }
   },
-  getWallet: async (req, res) => {
+  getWallet: async (req, res,next) => {
     try {
       const useId = req.session.userId;
 
@@ -232,10 +240,11 @@ module.exports = {
 
     } catch (error) {
       console.log("Error in get wallet " + error);
+      next(error)
     }
 
   },
-  applyCoupon: async (req, res) => {
+  applyCoupon: async (req, res,next) => {
     try {
       console.log(req.body);
       const couponCode = req.body.code;
@@ -270,9 +279,10 @@ module.exports = {
     }
     catch (error) {
       console.log("Error in apply coupon ", error);
+      next(error)
     }
   },
-  removeCoupon: async (req, res) => {
+  removeCoupon: async (req, res,next) => {
     try {
       console.log("Remove coupon");
       if (req.session.appliedCoupon) {
@@ -285,10 +295,10 @@ module.exports = {
         res.json({ couponNotAdded: true, msg: "Coupon is Missing" });
       }
 
-
     } catch (error) {
       console.log("Error in removing coupon: ", error);
       res.status(500).json({ success: false, error: 'An error occurred while removing the coupon' });
+      next(error)
     }
   },
 

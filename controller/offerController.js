@@ -3,7 +3,7 @@ const categorySchema = require('../models/categoryModel')
 const productSchema = require('../models/productModel')
 const { ObjectId } = require('mongodb')
 module.exports = {
-    getOffer: async (req, res) => {
+    getOffer: async (req, res,next) => {
         try {
 
             const offerData = await offerSchema.find()
@@ -12,18 +12,20 @@ module.exports = {
             res.render('admin/offers', { offers: offerData, category: categoryData, product: productData })
         } catch (error) {
             console.log("Error in get offer ", error);
+            next(error)
         }
 
     },
-    getAddOffers: async (req, res) => {
+    getAddOffers: async (req, res,next) => {
         try {
             res.render("admin/addOffers", { error: req.flash("error") });
         } catch (error) {
             console.log("Error in get add offers ", error);
+            next(error)
         }
 
     },
-    postAddOffers: async (req, res) => {
+    postAddOffers: async (req, res,next) => {
         try {
             const currentDate = new Date();
             const year = currentDate.getFullYear();
@@ -64,11 +66,12 @@ module.exports = {
             }
         } catch (error) {
             console.log("Error in post add offer ", error);
+            next(error)
         }
 
     },
 
-    getOfferItems: async (req, res) => {
+    getOfferItems: async (req, res,next) => {
         try {
             const offerType = req.query.offerType;
             let items;
@@ -86,6 +89,7 @@ module.exports = {
         } catch (error) {
             console.log("Error in fetching offer items:", error);
             res.status(500).json({ error: 'Internal server error' });
+            next(error)
         }
     },
 

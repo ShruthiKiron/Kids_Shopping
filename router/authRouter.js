@@ -1,5 +1,4 @@
 const router = require('express').Router()
-require('../middleware/googlePassport')
 const auth = require('../middleware/isAuth')
 
 const passport = require('passport')

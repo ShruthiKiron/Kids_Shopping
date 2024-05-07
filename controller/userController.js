@@ -39,7 +39,7 @@ const {
 } = require("../helpers/util");
 
 module.exports = {
-  getUserProfile: async (req, res) => {
+  getUserProfile: async (req, res, next) => {
     try {
       console.log("At userProfile");
       const useId = req.session.userId;
@@ -57,10 +57,11 @@ module.exports = {
 
     } catch (error) {
       console.log("Error in get user profile " + error);
+      next(error)
     }
   },
 
-  getEditProfile: async (req, res) => {
+  getEditProfile: async (req, res, next) => {
     try {
       const useId = req.session.userId;
       console.log("at edit " + useId);
@@ -70,10 +71,11 @@ module.exports = {
       res.render("user/editProfile", { useId, user: userData });
     } catch (error) {
       console.log("Error in get edit profile " + error);
+      next(error)
     }
   },
 
-  patchEditProfile: async (req, res) => {
+  patchEditProfile: async (req, res, next) => {
     try {
       const useId = req.session.userId;
       const userData = await userSchema.findOne({ _id: useId });
@@ -99,19 +101,21 @@ module.exports = {
       res.redirect("/userProfile/" + useId);
     } catch (error) {
       console.log("Error in post edit profile " + error);
+      next(error)
     }
   },
 
-  getAddAddress: async (req, res) => {
+  getAddAddress: async (req, res, next) => {
     try {
       const useId = req.session.userId;
       res.render("user/addAddress", { useId });
     } catch (error) {
       console.log("Error in get add address " + error);
+      next(error)
     }
   },
 
-  postAddAddress: async (req, res) => {
+  postAddAddress: async (req, res, next) => {
     try {
       const useId = req.session.userId;
       const { houseName, country, state, city, zip } = req.body;
@@ -133,20 +137,22 @@ module.exports = {
       }
     } catch (error) {
       console.log("Error in post add address " + error);
+      next(error)
     }
   },
 
-  getEditAddress: async (req, res) => {
+  getEditAddress: async (req, res, next) => {
     try {
       const addressData = await addressSchema.findOne({ _id: req.params.id });
       const useId = req.session.userId;
       res.render("user/editAddress", { address: addressData, useId });
     } catch (error) {
       console.log("Error in get edit address " + error);
+      next(error)
     }
   },
 
-  postEditAddress: async (req, res) => {
+  postEditAddress: async (req, res, next) => {
     try {
       const { houseName, country, state, city, zip } = req.body;
       const useId = req.session.userId;
@@ -170,17 +176,23 @@ module.exports = {
       }
     } catch (error) {
       console.log("Error in post edit address " + error);
+      next(error)
     }
   },
-  patchDeleteAddress: async (req, res) => {
-    const useId = req.session.userId;
-    const addressData = await addressSchema.updateOne(
-      { _id: req.params.id },
-      { $set: { isDeleted: true } }
-    );
-    res.redirect("/userProfile/" + useId);
+  patchDeleteAddress: async (req, res, next) => {
+    try {
+      const useId = req.session.userId;
+      const addressData = await addressSchema.updateOne(
+        { _id: req.params.id },
+        { $set: { isDeleted: true } }
+      );
+      res.redirect("/userProfile/" + useId);
+    } catch (error) {
+      console.log(error);
+      next(error)
+    }
   },
-  getChangePassword: async (req, res) => {
+  getChangePassword: async (req, res, next) => {
     try {
       const useId = req.session.userId;
       console.log("Get Change password");
@@ -189,10 +201,11 @@ module.exports = {
       console.log("passwordChanged value in get ", req.session.passwordChanged);
     } catch (error) {
       console.log("Error in get change password " + error);
+      next(error)
     }
   },
 
-  postChangePassword: async (req, res) => {
+  postChangePassword: async (req, res, next) => {
     try {
       console.log("Change Password");
       const useId = req.session.userId;
@@ -241,6 +254,7 @@ module.exports = {
       res.redirect("/userProfile/" + useId);
     } catch (error) {
       console.log("Error in post change password " + error);
+      next(error)
     }
   },
 
@@ -248,7 +262,7 @@ module.exports = {
 
 
 
-  getUserCart: async (req, res) => {
+  getUserCart: async (req, res, next) => {
     try {
       const useId = req.session.userId;
 
@@ -281,10 +295,11 @@ module.exports = {
 
     } catch (error) {
       console.log("Error in get user cart ", error);
+      next(error)
     }
   },
 
-  postAddCart: async (req, res) => {
+  postAddCart: async (req, res, next) => {
     try {
       const useId = req.session.userId;
       const cartExist = await cartSchema.findOne({
@@ -331,9 +346,10 @@ module.exports = {
       res.json({ success: true });
     } catch (error) {
       console.log("Error in add to cart " + error);
+      next(error)
     }
   },
-  changeCartQuantity: async (req, res) => {
+  changeCartQuantity: async (req, res, next) => {
     try {
       const cartData = await cartSchema.find({
         userId: req.session.userId,
@@ -353,10 +369,11 @@ module.exports = {
 
     } catch (error) {
       console.log(error);
+      next(error)
     }
   },
 
-  deleteItemCart: async (req, res) => {
+  deleteItemCart: async (req, res, next) => {
     try {
       const useId = req.session.userId;
 
@@ -370,10 +387,11 @@ module.exports = {
       res.redirect(`/cart/${useId}`);
     } catch (error) {
       console.log("Error in delete items from cart " + error);
+      next(error)
     }
   },
 
-  getCheckout: async (req, res) => {
+  getCheckout: async (req, res, next) => {
     try {
       const useId = req.session.userId;
       const cartData = await cartAggregation(useId);
@@ -402,11 +420,12 @@ module.exports = {
       }
     } catch (error) {
       console.log("Error in get checkout " + error);
+      next(error)
     }
   },
 
 
-  postPlaceOrder: async (req, res) => {
+  postPlaceOrder: async (req, res, next) => {
     try {
       const { address, payment } = req.body;
 
@@ -506,10 +525,11 @@ module.exports = {
     }
     catch (error) {
       console.log("Error in placing order" + error);
+      next(error)
     }
 
   },
-  postVerifyPayment: async (req, res) => {
+  postVerifyPayment: async (req, res, next) => {
     try {
       console.log(req.body);
       let hmac = crypto.createHmac("sha256", process.env.RAZORPAY_SECRET_KEY);
@@ -537,23 +557,25 @@ module.exports = {
 
     } catch (error) {
       console.error(error);
+      next(error)
 
     }
   },
 
-  getOrderSuccess: async (req, res) => {
+  getOrderSuccess: async (req, res, next) => {
     try {
       res.render("user/order-success", { useId: req.session.userId });
     } catch (error) {
       console.log("Error in get order success message " + error);
+      next(error)
     }
   },
 
-  getOrderHistory: async (req, res) => {
+  getOrderHistory: async (req, res, next) => {
     try {
       let page = parseInt(req.query.page) || 1;
       let pageSize = 5;
-    
+
 
       let orderDetails = await orderAggregation(req.params.id, page, pageSize)
 
@@ -574,57 +596,61 @@ module.exports = {
       });
     } catch (error) {
       console.log("Error in get order history " + error);
+      next(error)
     }
   },
-  getfilteredOrders: async (req, res) => {
+  getfilteredOrders: async (req, res, next) => {
     try {
       let selectedStatus = req.body.status || req.query.status || 'ALL';
-      selectedStatus = selectedStatus.trim().toUpperCase(); 
+      selectedStatus = selectedStatus.trim().toUpperCase();
       if (!req.params.id) {
         throw new Error('User ID is missing');
       }
-      
-     const allOrders = await orderSchema.aggregate([
-      {$match : {userId : new ObjectId(req.params.id)}},
-      {$lookup : {
-        from : 'products',
-        localField : 'product.productId',
-        foreignField : '_id',
-        as : 'productDetails'
-      }
 
-      },
-     
-    ])
-      let filteredOrders;
-      if (selectedStatus === 'ALL') {
-       filteredOrders = allOrders;
-
-      } else {
-       
-        filteredOrders = await orderSchema.aggregate([
-          {$match : {userId : new ObjectId(req.params.id), orderStatus : selectedStatus }},
-          {$lookup : {
-            from : 'products',
-            localField : 'product.productId',
-            foreignField : '_id',
-            as : 'productDetails'
+      const allOrders = await orderSchema.aggregate([
+        { $match: { userId: new ObjectId(req.params.id) } },
+        {
+          $lookup: {
+            from: 'products',
+            localField: 'product.productId',
+            foreignField: '_id',
+            as: 'productDetails'
           }
 
+        },
+
+      ])
+      let filteredOrders;
+      if (selectedStatus === 'ALL') {
+        filteredOrders = allOrders;
+
+      } else {
+
+        filteredOrders = await orderSchema.aggregate([
+          { $match: { userId: new ObjectId(req.params.id), orderStatus: selectedStatus } },
+          {
+            $lookup: {
+              from: 'products',
+              localField: 'product.productId',
+              foreignField: '_id',
+              as: 'productDetails'
+            }
+
           },
-         
+
         ])
-       
+
 
       }
       res.json(filteredOrders);
     } catch (error) {
       console.log("Error in get filtered orders ", error);
       res.json({ error: 'Error fetching filtered orders' });
+      next(error)
     }
   },
 
-  getOrderDetail: async (req, res) => {
+  getOrderDetail: async (req, res, next) => {
     try {
 
       const orderDetail = await orderDetailAggregation(req.params.id);
@@ -641,9 +667,10 @@ module.exports = {
 
     } catch (error) {
       console.log("Error in order detail " + error);
+      next(error)
     }
   },
-  postCancelOrder: async (req, res) => {
+  postCancelOrder: async (req, res, next) => {
     try {
       const orderData = await orderSchema.findOne({ _id: new ObjectId(req.params.id) })
       console.log("Or ", orderData.orderStage);
@@ -657,20 +684,22 @@ module.exports = {
 
     } catch (error) {
       console.log("Error in post cancel order " + error);
+      next(error)
     }
 
   },
-  returnOrder: async (req, res) => {
+  returnOrder: async (req, res, next) => {
     try {
       console.log(req.params);
       await orderSchema.updateOne({ _id: new ObjectId(req.params.id) }, { $set: { orderStage: "RETURN REQUESTED" } })
       res.json({ success: true, msg: "ORDER IS REQUESTED FOR RETURN" })
     } catch (error) {
       console.log("Error in return order ", error);
+      next(error)
     }
   },
 
-  retryPayment: async (req, res) => {
+  retryPayment: async (req, res, next) => {
     try {
       let orders = await orderSchema.find({ _id: req.params.id })
       console.log("Order Detailssss ", orders);
@@ -691,53 +720,55 @@ module.exports = {
       })
     } catch (error) {
       console.log("Errror in retry payment ", error);
+      next(error)
     }
   },
-  postCancelSingleProduct: async (req, res) => {
+  postCancelSingleProduct: async (req, res, next) => {
     try {
-      
-        const orderId = req.params.id;
-        const productId =  req.body.productId;   
 
-        const order = await orderSchema.findOne({ _id: new ObjectId(orderId) });  
-        const product = await productSchema.findOne({_id : productId})   
-      
-       const productIndex = order.product.findIndex(product => {
-       console.log(product.productId);
-        return product.productId.equals(new ObjectId(productId)) ;
-    });
+      const orderId = req.params.id;
+      const productId = req.body.productId;
 
-        console.log("indexx ",productIndex);
-       
-        if (productIndex !== -1) {
-          order.product.splice(productIndex, 1);
-          const balance = Number(order.grandTotal) - Number(product.price)
-          order.grandTotal = balance
+      const order = await orderSchema.findOne({ _id: new ObjectId(orderId) });
+      const product = await productSchema.findOne({ _id: productId })
 
-          await order.save();
-          const wallet = await walletSchema.findOne({userId : order.userId})
-          const walletUpdate = {
-            date : new Date(),
-            amount : product.price,
-            message : 'Credited from single product cancelation'
-          }
-          wallet.wallet += product.price
-          wallet.walletHistory.push(walletUpdate)
-          await wallet.save()
-            console.log("Item has been cancelled");
-            product.stock += 1
-            await product.save()
+      const productIndex = order.product.findIndex(product => {
+        console.log(product.productId);
+        return product.productId.equals(new ObjectId(productId));
+      });
 
-            return res.json({ success: true, msg: 'Item has been cancelled successfully' });
+      console.log("indexx ", productIndex);
+
+      if (productIndex !== -1) {
+        order.product.splice(productIndex, 1);
+        const balance = Number(order.grandTotal) - Number(product.price)
+        order.grandTotal = balance
+
+        await order.save();
+        const wallet = await walletSchema.findOne({ userId: order.userId })
+        const walletUpdate = {
+          date: new Date(),
+          amount: product.price,
+          message: 'Credited from single product cancelation'
+        }
+        wallet.wallet += product.price
+        wallet.walletHistory.push(walletUpdate)
+        await wallet.save()
+        console.log("Item has been cancelled");
+        product.stock += 1
+        await product.save()
+
+        return res.json({ success: true, msg: 'Item has been cancelled successfully' });
       } else {
-          return res.json({ success: false, msg: 'Product not found in order' });
+        return res.json({ success: false, msg: 'Product not found in order' });
       }
-      
+
     } catch (error) {
-        console.log("Error in canceling single product: ", error);
-        return res.json({ success: false, msg: 'Internal server error' });
+      console.log("Error in canceling single product: ", error);
+      return res.json({ success: false, msg: 'Internal server error' });
+      next(error)
     }
-}
+  }
 
 
 

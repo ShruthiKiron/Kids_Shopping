@@ -1,23 +1,25 @@
 const couponSchema = require("../models/couponModel");
 
 module.exports = {
-  getCoupon: async (req, res) => {
+  getCoupon: async (req, res,next) => {
     try {
 
       const coupon = await couponSchema.find();
       res.render("admin/coupons", { coupon });
     } catch (error) {
       console.log("Error in get coupon page " + error);
+      next(error)
     }
   },
-  getAddCoupons: async (req, res) => {
+  getAddCoupons: async (req, res,next) => {
     try {
       res.render("admin/addCoupons", { error: req.flash("error") });
     } catch (error) {
       console.log("Error in get add coupons " + error);
+      next(error)
     }
   },
-  postAddCoupons: async (req, res) => {
+  postAddCoupons: async (req, res,next) => {
     try {
       const currentDate = new Date();
       const year = currentDate.getFullYear();
@@ -50,15 +52,17 @@ module.exports = {
       }
     } catch (error) {
       console.log("Error in post add coupons " + error);
+      next(error)
     }
   },
-  deleteCoupon: async (req, res) => {
+  deleteCoupon: async (req, res,next) => {
     try {
       console.log("Delete item " + req.params.id);
       await couponSchema.findOneAndDelete({ _id: req.params.id });
       res.redirect("/coupons");
     } catch (error) {
       console.log("Error in delete coupon " + error);
+      next(error)
     }
   },
 };

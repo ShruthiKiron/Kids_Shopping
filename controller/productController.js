@@ -7,7 +7,7 @@ const { cropAndSaveImage } = require('../helpers/imageCrop')
 
 module.exports = {
 
-    getProduct: async (req, res) => {
+    getProduct: async (req, res, next) => {
         try {
 
             const productData = await productSchema.find().sort({ date: -1 })
@@ -17,11 +17,12 @@ module.exports = {
             res.render('admin/products', { products: productData })
         } catch (error) {
             console.log("Error in get product " + error);
+            next(error)
         }
 
     },
 
-    getAddProducts: async (req, res) => {
+    getAddProducts: async (req, res, next) => {
         try {
             const categories = await categorySchema.find()
 
@@ -29,9 +30,10 @@ module.exports = {
 
         } catch (error) {
             console.log('Error in post products ' + error);
+            next(error)
         }
     },
-    postAddProducts: async (req, res) => {
+    postAddProducts: async (req, res, next) => {
         try {
 
             console.log("At post add products ");
@@ -85,13 +87,14 @@ module.exports = {
 
         } catch (error) {
             console.log("Error in post add products " + error);
+            next(error)
         }
 
 
 
 
     },
-    getEditProduct: async (req, res) => {
+    getEditProduct: async (req, res, next) => {
         try {
 
             console.log("edit Product")
@@ -108,10 +111,11 @@ module.exports = {
 
         } catch (error) {
             console.log("Error in get product " + error);
+            next(error)
         }
     },
 
-    patchEditProduct: async (req, res) => {
+    patchEditProduct: async (req, res, next) => {
         try {
             console.log("patch edit product");
 
@@ -184,29 +188,31 @@ module.exports = {
 
         } catch (error) {
             console.log("Error in patch edit product " + error);
+            next(error)
         }
     },
 
-    deleteProduct: async (req, res) => {
+    deleteProduct: async (req, res, next) => {
         try {
             const productData = await productSchema.find({ _id: req.params.id })
             await productSchema.updateOne({ _id: req.params.id }, { $set: { isDeleted: true } })
             res.redirect('/products')
         } catch (error) {
             console.log("Error in delete product " + error);
-
+            next(error)
         }
     },
-    postSearch: async (req, res) => {
+    postSearch: async (req, res, next) => {
         try {
             const value = req.body.value
             const searchData = await categorySchema.find({ $or: [{ categoryName }] })
 
         } catch (error) {
             console.log("Error in search " + error);
+            next(error)
         }
     },
-    deleteImage: async (req, res) => {
+    deleteImage: async (req, res, next) => {
         try {
             const productId = req.params.id;
             const imageName = req.params.imageName;
@@ -228,6 +234,7 @@ module.exports = {
 
         } catch (error) {
             console.log("Error in delete image in edit product page " + error);
+            next(error)
         }
     },
 
