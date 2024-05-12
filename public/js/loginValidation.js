@@ -57,3 +57,28 @@ const validateInputs = () => {
          }
     
 }
+async function handleGoogleAuth(response){
+    console.log("handleGoogleAuth response ",response);
+      const url = '/auth/googlesignin'
+      const method = "POST"
+      const body = {
+        googleResponse : response
+      }
+      const data = await fetchFunction(url,method,body);
+      console.log("Data in google auth ",data);
+      if(data.status === true){
+        return location.assign('/home');
+      }
+    }
+
+    async function fetchFunction(url, method,body) {
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body : JSON.stringify(body)
+        });
+        const data = await response.json()
+        return data;
+    }

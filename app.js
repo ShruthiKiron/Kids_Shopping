@@ -6,7 +6,7 @@ const methodOverride = require('method-override')
 const flash = require('express-flash')
 const passport = require('passport')
 const errorController = require("./controller/errorController");
-
+//require('./middleware/googlePassport')
 //const bodyParser = require('body-parser')
 
 require('./config/dbConnection')
@@ -36,6 +36,13 @@ app.use(session({
     resave: false,
     saveUninitialized: true
 }));
+
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', 0);
+  next();
+});
 
 app.use(flash())
 

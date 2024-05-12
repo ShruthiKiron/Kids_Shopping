@@ -61,7 +61,13 @@ module.exports = {
 
     getAdminLogin: async (req, res,next) => {
         try {
+            
+            if(req.session.admin){
+                res.redirect('/dashboard')
+            }
+            
             res.render('admin/admin', { error: req.flash("error") })
+
         } catch (error) {
             console.log(error); 
            next(error)
@@ -104,6 +110,7 @@ module.exports = {
         try {
             console.log('logout')
             delete req.session.adminId
+            delete req.session.admin
 
             res.redirect('/admin')
         } catch (error) {
@@ -116,6 +123,8 @@ module.exports = {
     getDashboard: async (req, res, next) => {
         try {
             const orderData = await adminOrderAggregation();
+            console.log(req.session.admin);
+            console.log(req.session.adminId);
 
             res.render("admin/dashboard", { order: orderData });
         } catch (error) {

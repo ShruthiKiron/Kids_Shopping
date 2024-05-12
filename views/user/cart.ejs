@@ -184,7 +184,7 @@ border-bottom-right-radius: 16px;
               
                                 <div class="d-flex justify-content-between mb-5">
                                   <h5 class="text-uppercase">Total price</h5>
-                                  <h5 id="grandTotal">₹ <%= grandTotal %></h5>
+                                  <h5 class="grandTotal">₹ <%= grandTotal %></h5>
                                 </div>
                                 <% if(products.length > 0) { %>
                                 <button type="submit" class="btn btn-dark btn-block btn-lg"
@@ -273,11 +273,14 @@ border-bottom-right-radius: 16px;
       if(data.success){
         console.log(data);
         var cpn = document.getElementById('cpn')
-        var grandTotal = document.getElementById('grandTotal')
+        const grandTotal = document.querySelectorAll('.grandTotal')
         console.log(grandTotal);
         cpn.innerHTML = `₹${data.discountAmount}`
-        grandTotal.innerHTML = `₹${data.discountedTotal}`
+        grandTotal.forEach((element)=>{
+          
+          element.innerHTML = `₹${data.discountedTotal}`
 
+      })
       }
     })
 
@@ -363,6 +366,7 @@ changeQuantityButtons.forEach(button => {
     })
     .then(data => {
       if(data.success){
+        console.log(data);
         const price = document.getElementById(`price${id}`)
         const quantity = document.getElementById(`quantity${id}`)
         const grandTotal = document.querySelectorAll('.grandTotal')

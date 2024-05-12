@@ -21,17 +21,48 @@
     <canvas id="orderChart"></canvas>
 
 
-
-    <div>
-        <h3>Top Selling Products</h3>
-        <ul id="topSellingProducts"></ul>
-    </div>
-
-    <div>
-        <h3>Top Selling Categories</h3>
-        <ul id="topSellingCategories"></ul>
-    </div>
-
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+    </style>
+    
+    <table>
+        <tr>
+            <th colspan="2">Top Selling Products</th>
+        </tr>
+        <tr>
+            <td>
+                <ol id="topSellingProducts"></ol>
+            </td>
+        </tr>
+    </table>
+    
+    <table>
+        <tr>
+            <th colspan="2">Top Selling Categories</th>
+        </tr>
+        <tr>
+            <td>
+                <ul id="topSellingCategories"></ul>
+            </td>
+        </tr>
+    </table>
             </div>
         </div>
   

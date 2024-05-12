@@ -3,6 +3,7 @@ const walletSchema = require('../models/walletModel')
 
 const verificationController = require("./verificationController");
 const bcrypt = require("bcrypt");
+const googleHelper = require('../helpers/googleHelper')
 
 module.exports = {
   //Getting signup page
@@ -222,7 +223,7 @@ module.exports = {
         req.flash("error", "User doesn't exist");
         res.redirect("/login");
       }
-      console.log("Login error" + error);
+      
     } catch (error) { 
       console.log(error);
       next(error)
@@ -231,8 +232,40 @@ module.exports = {
 
   googleLogin: async (req, res,next) => {
     try {
-      req.session.user = req.user;
-      res.redirect("/home");
+      const { googleResponse } = req.body;
+    //  console.log("Google ",googleResponse);
+    const token = googleResponse.credential;
+    const googlePayload = await googleHelper.verifyGoogleToken(token);
+    console.log(googlePayload);
+    const { given_name, family_name, sub, email} = googlePayload;
+    const userData = await userSchema.findOne({ googleId: sub });
+    console.log("UD ",userData);
+    if(!userData){
+      const userDetails = new userSchema({
+        firstName: given_name,
+        lastName: family_name,
+        email: email,
+        googleId: sub,
+      });
+      const user = await userSchema.insertMany(userDetails);
+      req.session.userId = user[0]._id;
+      console.log(req.session.userId);
+      await walletSchema.insertMany({ userId: req.session.userId })
+          await walletSchema.updateOne({ userId: req.session.userId }, {
+            $inc: {
+              wallet: 100
+            },
+            $push: {
+              walletHistory: {
+                date: Date.now(),
+                amount: 100,
+                message: "Join bonus using google login"
+              }
+            }
+          })
+
+    }
+    res.json({ status: true });
     } catch (error) {
       console.log("Error in google login " + error);
       next(error)

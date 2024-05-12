@@ -68,11 +68,11 @@
                         
                         <% if(useId) { %>
                             <button class="btn btn-cart" data-product-id="<%= product._id %>"  id="cart">Add to Cart</button>
-                        <button class="btn btn-buy-now">Buy Now</button>
+                        <!-- <button class="btn btn-buy-now">Buy Now</button> -->
                         <button class="btn btn-wishlist wishlist-btn" data-product-id="<%= product._id %>" data-toggle="modal" data-target="#exampleModal">Add to Wishlist</button>
                             <% } else { %>
                                 <button class="btn btn-cart" onclick="location.href='/login'"  >Add to Cart</button>
-                        <button class="btn btn-buy-now" onclick="location.href='/login'" >Buy Now</button>
+                        <!-- <button class="btn btn-buy-now" onclick="location.href='/login'" >Buy Now</button> -->
                         <button class="btn btn-wishlist" onclick="location.href='/login'" >Add to Wishlist</button>
                                 <% } %>
                         

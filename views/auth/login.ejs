@@ -11,6 +11,8 @@
 
   <!-- Boxicons CSS -->
 <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
   <section class="container forms">
@@ -39,21 +41,32 @@
         <span>Don't have an account? <a href="/signup" class="signup-link">Signup</a></span>
 
       </div>
+       <div class="line">
+
+    </div>
+    
+<div style="margin-left: 155px;">
+      <div id="g_id_onload"
+    data-client_id="<%=process.env.CLIENT_ID %>"
+    data-context="signin"
+    data-ux_mode="popup"
+    data-callback="handleGoogleAuth"
+    data-auto_prompt="false">
+</div>
+
+<div class="g_id_signin"
+    data-type="icon"
+    data-shape="circle"
+    data-theme="filled_blue"
+    data-text="signin_with"
+    data-size="large">
+</div>
+    
+</div>
       
     </form>
     
-    <!-- <div class="line">
-
-    </div>
-    <div class="media-options">
-      <a href="/auth/google" class="field google">
-        <img src="images/google.png" alt="" class="google-img">
-        <span>Login with Google</span>
-      </a>
-    </div> -->
-    
-
-
+   
 
 
   </div>

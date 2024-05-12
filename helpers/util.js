@@ -51,7 +51,7 @@ module.exports = {
       grandTotal: orderGrandTotal,
       paymentMethod: payment
     };
-
+    console.log("Make order ",order);
     return order;
   },
   updateStock: async (req, products) => {

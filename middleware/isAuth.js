@@ -17,12 +17,13 @@ module.exports = {
     },
     adminLogin: async (req, res, next) => {
         try {
-            if (req.session.adminId) {
-                res.redirect('/admin')
+            if (req.session.admin) {
+                res.redirect('/dashboard')
 
             }
             else {
                 next()
+               // res.redirect('/admin')
             }
 
         } catch (error) {

@@ -15,8 +15,7 @@ router.post('/signup-otp', auth.userLogin, authController.postSignupOtp)
 
 router.post('/resend-otp', auth.userLogin, authController.resendOtp)
 
-router.get('/auth/google', auth.userLogin, passport.authenticate('google', { scope: ['email', 'profile'] }))
-router.get('/auth/google/home', auth.userLogin, passport.authenticate('google'), authController.googleLogin)
+router.post('/auth/googlesignin',auth.userLogin,authController.googleLogin)
 
 router.get('/forgotPassword', auth.userLogin, authController.getForgotPassword)
 router.post('/forgotPassword', auth.userLogin, authController.postForgotPassword)

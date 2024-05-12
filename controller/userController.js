@@ -264,6 +264,9 @@ module.exports = {
 
   getUserCart: async (req, res, next) => {
     try {
+      if(req.session.discountedTotal){
+        delete req.session.discountedTotal
+      }
       const useId = req.session.userId;
 
       const cartData = await cartAggregation(useId);
@@ -351,21 +354,25 @@ module.exports = {
   },
   changeCartQuantity: async (req, res, next) => {
     try {
+      const useId = req.session.userId;
       const cartData = await cartSchema.find({
         userId: req.session.userId,
         "items._id": req.params.id,
       });
-      console.log(req.params.id);
-      console.log(cartData[0].items);
+      console.log("items._id",req.params.id);
+      console.log("cart data",cartData[0].items);
 
-      const updatedCart = await cartSchema.updateOne(
+      const updatedCart = await cartSchema.findOneAndUpdate(
         {
           userId: new ObjectId(req.session.userId),
           "items._id": new ObjectId(req.params.id),
         },
-        { $inc: { "items.$.quantity": Number(req.body.quantity) } }
+        { $inc: { "items.$.quantity": Number(req.body.quantity) } },
+        {returnDocument : "after"}
       );
-
+      const data = await cartAggregation(useId);
+      
+      res.json({ success: true, cart : updatedCart ,grandTotal : data[0].grandTotal});
 
     } catch (error) {
       console.log(error);
@@ -468,11 +475,13 @@ module.exports = {
             payment,
             req.session.userId
           );
+          let amnt = req.session.discountedTotal ? Number(req.session.discountedTotal) : cartData[0].grandTotal
+          let ship = amnt > 500 ? amnt : Number(amnt + 50)
           let orders = await orderSchema.insertMany(order);
           const orderId = generateOrderID();
           const options = {
 
-            amount: req.session.discountedTotal ? Number(req.session.discountedTotal) * 100 : cartData[0].grandTotal * 100,
+            amount : ship*100,
             currency: "INR",
             receipt: "" + order.orderId,
 
@@ -487,7 +496,7 @@ module.exports = {
               res.json({ order })
             }
           })
-          await generateInvoice(order.orderId);
+         await generateInvoice(order.orderId);
         } else if (payment === "WALLET") {
           const walletBalanceSufficient = await checkWallet(req.session.userId, orderTotal);
           if (walletBalanceSufficient) {
@@ -506,7 +515,7 @@ module.exports = {
             if (updated) {
               const updatedStock = await updateStock(req, cartData[0].products);
               if (updatedStock) {
-                await generateInvoice(order.orderId);
+               await generateInvoice(order.orderId);
                 res.json({ orderPlaced: true });
               }
             }
@@ -549,7 +558,11 @@ module.exports = {
             }
           })
         const useId = req.session.userId;
+        const cartData = await cartAggregation(useId)
+        console.log("Cart Data ",cartData);
         await cartSchema.updateOne({ userId: new Object(useId) }, { $set: { items: [] } })
+        
+        await updateStock(req,cartData[0].products)
         res.json({ paymentSuccess: true })
       }
 
@@ -564,6 +577,7 @@ module.exports = {
 
   getOrderSuccess: async (req, res, next) => {
     try {
+      req.session.discountedTotal = null
       res.render("user/order-success", { useId: req.session.userId });
     } catch (error) {
       console.log("Error in get order success message " + error);
@@ -672,6 +686,7 @@ module.exports = {
   },
   postCancelOrder: async (req, res, next) => {
     try {
+      
       const orderData = await orderSchema.findOne({ _id: new ObjectId(req.params.id) })
       console.log("Or ", orderData.orderStage);
       if (orderData.orderStage !== 'OUT OF DELIVERY') {

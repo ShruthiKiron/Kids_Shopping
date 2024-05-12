@@ -103,23 +103,31 @@
               </div>
               <% } ) %>
               <hr class="my-4" />
-
-              <div class="d-flex justify-content-between mb-5">
-                <h5 class="text-uppercase">Total price</h5>
-                <h5>₹ <%= grandTotal %></h5>
-              </div>
-              <hr class="my-4" />
               <% if(grandTotal > 500) { %>
-              <div class="d-flex justify-content-between mb-4">
-                <h5 class="text-uppercase">Shipping Charge</h5>
-                <h5>₹ 0</h5>
-              </div>
-              <% } else { %>
                 <div class="d-flex justify-content-between mb-4">
                   <h5 class="text-uppercase">Shipping Charge</h5>
-                  <h5>₹ 50</h5>
+                  <h5>₹ 0</h5>
                 </div>
-              <% } %>
+                <% } else { %>
+                  <div class="d-flex justify-content-between mb-4">
+                    <h5 class="text-uppercase">Shipping Charge</h5>
+                    <h5>₹ 50</h5>
+                  </div>
+                <% } %>
+
+              
+              <hr class="my-4" />
+              <% if(grandTotal > 500) { %>
+              <div class="d-flex justify-content-between mb-5">
+                <h5 class="text-uppercase">Total price</h5>
+                <h5 >₹<span class="grandTotalCheckOut"> <%= grandTotal %></span></h5>
+              </div>
+              <% } else { %>
+                <div class="d-flex justify-content-between mb-5">
+                  <h5 class="text-uppercase">Total price</h5>
+                  <h5 >₹ <span class="grandTotalCheckOut"><%= grandTotal+Number(50) %></span></h5>
+                </div>
+                <% } %>
             </div>
           </div>
         </div>
@@ -198,9 +206,14 @@ $(document).ready(function() {
 });
 
   function razorPayment(order) {
+
+let finalAmount = order.order.amount;
+
+
+console.log(finalAmount);
   var options = {
     key: "rzp_test_QUrSp68jcj7T0r",
-    amount: order.order.amount,
+    amount:  finalAmount,
     currency: "INR",
     name: "Giggle Wardrobe",
     description: "Test Transaction",
@@ -223,6 +236,7 @@ $(document).ready(function() {
       color: "#dc3545",
     },
   };
+  console.log(options);
   var rzp1 = new Razorpay(options);
   rzp1.open();
   rzp1.on('payment.failed',async function(response){

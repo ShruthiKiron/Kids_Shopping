@@ -488,7 +488,7 @@
 
                     $.ajax({
                         url: '/cancel-order/' + orderId,
-                        method: 'PATCH',
+                        method: 'POST',
                         data: { reason: cancelReason },
                         success: function (response) {
                             if (response.success) {
